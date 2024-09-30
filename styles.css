@@ -1,0 +1,55 @@
+/* Custom styles for the big header */
+
+body {
+	background-color: black;
+}
+
+/* Make the video cover the entire background */
+#backgroundVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+	top: -20px;
+    max-width: 100%;
+    z-index: -1;
+}
+
+/* Center the content over the video */
+.content {
+    position: relative;
+    z-index: 1;
+    height: 100vh; /* Full height of the viewport */
+    display: flex; /* Flexbox layout */
+    justify-content: center; /* Horizontally center content */
+    align-items: center; /* Vertically center content */
+}
+
+/* Custom styles for the big header */
+.big-header {
+    font-size: 10rem;
+	user-select: none;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Custom button styles */
+.btn-custom {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    border: none; /* Remove default border */
+    border-radius: 30px; /* Rounded corners */
+    transition: background-color 0.1s ease, transform 0.1s ease; /* Smooth transition */
+}
+
+/* Gradient background */
+.btn-gradient {
+    background: linear-gradient(45deg, #ff6a00, #ee0979); /* Gradient colors */
+    color: white; /* Text color */
+}
+
+/* Hover effect */
+.btn-gradient:hover {
+    transform: scale(1.2); /* Slightly scale the button on hover */
+    background: linear-gradient(45deg, #ee0979, #ff6a00); /* Inverted gradient on hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+}
