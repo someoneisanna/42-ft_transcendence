@@ -1,25 +1,45 @@
 /* Custom styles for the big header */
 
 body {
-	background-color: black;
+    background-color: black;
 }
 
-/* Make the video cover the entire background */
+div {
+
+    display: none;
+}
+
+div.active {
+
+    display: block;
+}
+
+
+.backgroundVideo-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
 #backgroundVideo {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-	top: -20px;
-    max-width: 100%;
-    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
-
+  
 /* Center the content over the video */
 .content {
     position: relative;
     z-index: 1;
     height: 100vh; /* Full height of the viewport */
-    display: flex; /* Flexbox layout */
+    /* display: flex; */
     justify-content: center; /* Horizontally center content */
     align-items: center; /* Vertically center content */
 }
@@ -27,7 +47,7 @@ body {
 /* Custom styles for the big header */
 .big-header {
     font-size: 10rem;
-	user-select: none;
+    user-select: none;
     font-weight: bold;
     color: #fff;
 }
