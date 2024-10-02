@@ -18,5 +18,8 @@
 
 // JavaScript code for handling the button click event
 document.getElementById('myButton').addEventListener('click', function() {
-    alert('Button clicked!');
+    const titleContainer = document.getElementById('title-container');
+    titleContainer.classList.toggle('shrink');
+    const button = document.getElementById('myButton');
+    button.classList.toggle('hide');
 });

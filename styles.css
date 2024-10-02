@@ -1,15 +1,11 @@
-/* Custom styles for the big header */
-
 body {
     background-color:black;
 }
 
 .hide {
-
     display: none;
 }
 
-/* set the video as page background */
 .backgroundVideo-container {
 	z-index: -1;
     position: absolute;
@@ -39,6 +35,16 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
 	user-select: none;
+    font-size: 150px;
+    transition: all 1s ease;
+}
+
+#title-container.shrink {
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    font-style: italic;
+    font-size: 30px;
 }
 
 @keyframes title-blink {
@@ -54,6 +60,7 @@ body {
 @keyframes title-rotate {
 	100% {transform:rotate(360deg);}
 }
+
 /*
 animation:	<animation-name>
 			<animation-duration>
@@ -64,9 +71,10 @@ animation:	<animation-name>
 			<animation-fill-mode>
 			<animation-play-state>;
 */
+
 #title-text {
 	font-family: 'Courier New', Courier, monospace;
-	font-size:100px;
+	/*font-size:100px;*/
 	color: white;
 	text-align: center;
 
@@ -88,36 +96,34 @@ animation:	<animation-name>
 	}
 }
 
-/* Center the content over the video */
 .button-container {
     position: relative;
-    height: 100vh; /* Full height of the viewport */
+    height: 100vh;
     display: flex;
-    justify-content: center; /* Horizontally center content */
-    align-items: center; /* Vertically center content */
+    justify-content: center;
+    align-items: center;
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* Initially disable interaction */
-    animation: button-fade 1s ease-in 5s forwards;
+    pointer-events: none;
+    animation: button-fade 1s ease-in 4s forwards;
 }
-/* Custom button styles */
+
 .btn-custom {
     font-size: 1.5rem;
-    padding: 1rem 2rem;
-    border: none; /* Remove default border */
-    border-radius: 30px; /* Rounded corners */
-    transition: background-color 0.1s ease, transform 0.1s ease; /* Smooth transition */
+    padding: 0.5rem 5rem;
+    border: none;
+    transition: background-color 0.1s ease, transform 0.1s ease;
 }
 
-/* Gradient background */
 .btn-gradient {
-    background: linear-gradient(45deg, #ff6a00, #ee0979); /* Gradient colors */
-    color: white; /* Text color */
+    background: linear-gradient(45deg, #000000, #091e4b);
+    box-shadow: 0 1px 20px rgba(255, 255, 255, 0.3);
+    color: white;
 }
 
-/* Hover effect */
 .btn-gradient:hover {
-    transform: scale(1.2); /* Slightly scale the button on hover */
-    background: linear-gradient(45deg, #ee0979, #ff6a00); /* Inverted gradient on hover */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+    transform: scale(1.2);
+    background: linear-gradient(45deg, #12295a, #000000);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
+    color: white;
 }
