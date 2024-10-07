@@ -1,5 +1,6 @@
 body {
     background-color:black;
+    overflow: hidden;
 }
 
 .hide {
@@ -14,6 +15,10 @@ body {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
+}
+
+.blur {
+    filter: blur(5px);
 }
 
 #backgroundVideo {
@@ -129,8 +134,8 @@ animation:	<animation-name>
 }
 
 .modal-content {
-    background-color: rgba(0, 0, 0, 0.9); /* Transparent black */
-    backdrop-filter: blur(5px); /* Blurring the background */
+    background-color: rgba(0, 0, 0, 0.1); /* Transparent black */
+    backdrop-filter: blur(20px); /* Blurring the background */
     border: none; /* Remove default border */
 }
 
@@ -138,4 +143,21 @@ animation:	<animation-name>
     border: 2px solid rgb(179, 214, 255); /* Solid blue border */
     box-shadow: 0 0 10px rgba(179, 214, 255, 1), 0 0 20px rgba(179, 214, 255, 0.5); /* Neon glow effect */
     border-radius: 10px; /* Optional: Add rounded corners */
+}
+
+.modalText {
+    color: white;
+    font-size: 1rem;
+}
+
+.inactive-tab {
+    background-color: transparent; /* No background color for inactive tab */
+    border: 2px solid white; /* White border for inactive tab */
+    color: white; /* Text color for inactive tab */
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #4a7aad; /* Active tab background color */
+    color: white; /* Active tab text color */
+    border-color: #4a7aad; /* Match border color with background */
 }
