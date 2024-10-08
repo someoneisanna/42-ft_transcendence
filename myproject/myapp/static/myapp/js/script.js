@@ -43,11 +43,11 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		return response.json();
 	})
 	.then(data => {
-		console.log('Success:', data);
+		console.log('Login Success:', data);
 		alert('Login successful!');
 	})
 	.catch((error) => {
-		console.error('Error:', error);
+		console.error('Login Error:', error);
 	});
 });
 
@@ -93,11 +93,11 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 		return response.json();
 	})
 	.then(data => {
-		console.log('Success:', data);
+		console.log('Registration Success:', data);
 		alert('Registration successful!');
 	})
 	.catch((error) => {
-		console.error('Error:', error);
+		console.error('Registration Error:', error);
 	});
 });
 

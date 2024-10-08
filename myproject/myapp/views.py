@@ -11,15 +11,6 @@ import datetime
 def index(request):
 	return render(request, 'myapp/index.html')
 
-# GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
-
-@csrf_exempt
-def users(request):
-	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password')
-		user_list = list(users)
-		return JsonResponse(user_list, safe=False)
-	
 # CREATE A JWT TOKEN FOR A USER -----------------------------------------------------------------------------------
 
 def create_jwt_token(user):
@@ -29,6 +20,15 @@ def create_jwt_token(user):
 	}
 	token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 	return token
+
+# GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
+
+@csrf_exempt
+def users(request):
+	if request.method == 'GET':
+		users = User.objects.all().values('id', 'username', 'password')
+		user_list = list(users)
+		return JsonResponse(user_list, safe=False)
 
 # LOGIN USERS -----------------------------------------------------------------------------------------------------
 
@@ -47,7 +47,10 @@ def login(request):
 			if user.password != password_input:
 				return JsonResponse({'error': 'Incorrect password. Please try again.'}, status=400)
 			
-			return JsonResponse({'username': user.username, 'password': user.password}, status=200)
+			token = create_jwt_token(user)
+			response = JsonResponse({'username': user.username, 'token': token}, status=200)
+			response.set_cookie('jwt', token, httponly=True, max_age=None, expires=None)
+			return response
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
