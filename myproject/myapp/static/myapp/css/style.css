@@ -20,7 +20,7 @@ body {
 .backgroundGIF-container img {
     width: 100%;
     height: 100%;
-    object-fit: scale-down; /* Ensures the GIF scales to cover the full container without distorting */
+    object-fit: contain; /* Ensures the GIF scales to cover the full container without distorting */
 }
 
 .blur {

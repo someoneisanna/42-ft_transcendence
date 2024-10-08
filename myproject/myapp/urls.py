@@ -2,7 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='index'),  # URL for the homepage
-    path('users/', views.user_list, name='user-list'),
-	path('users/<str:username>/', views.user_detail, name='user-detail'),
+	path('', views.index, name='index'),
+	path('users/', views.users, name='users'),				# API for getting all users
+	path('login/', views.login, name='login'),				# API for logging in
+	path('register/', views.register, name='register'),		# API for registering
 ]
