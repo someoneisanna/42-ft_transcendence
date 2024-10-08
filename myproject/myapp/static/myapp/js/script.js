@@ -20,10 +20,59 @@
 document.getElementById('myButton').addEventListener('click', function() {
     const titleContainer = document.getElementById('title-container');
     titleContainer.classList.toggle('shrink');
-    const videoContainer = document.querySelector('.backgroundVideo-container');
-    videoContainer.classList.toggle('blur');
+    // const videoContainer = document.querySelector('.backgroundVideo-container');
+    // videoContainer.classList.toggle('blur');
     // const button = document.getElementById('myButton');
     // button.classList.toggle('hide');
+});
+
+function simpleHash(input) {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+        hash = (hash << 5) - hash + input.charCodeAt(i); // hash * 31 + charCode
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString();
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(event) {   
+    event.preventDefault(); // Prevent the default form submission
+
+    // Get the values from the input fields
+    const username_input = document.getElementById('inputLoginUsername').value;
+    const password_input = CryptoJS.SHA256(document.getElementById('inputLoginPassword').value).toString();
+
+    // Create the data object
+    const user_data = {
+        username: username_input,
+        password: password_input
+    };
+
+    // Send GET request to your API
+    fetch('http://127.0.0.1:8000/users/', {  // Replace with your actual API URL
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user_data)  // Convert data object to JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {  // Parse the error message
+                document.getElementById('loginError').innerText = err.error;  // Display the error message
+                throw new Error(err.error);  // Throw an error with the message from the server
+            });
+        }
+        return response.json();  // Parse the success response
+    })
+    .then(data => {
+        console.log('Success:', data);
+        // You can display a success message or redirect the user here
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        //alert(`Registration failed: ${error.message}`);  // Show the error message in an alert
+    });
 });
 
 document.getElementById('registerForm').addEventListener('submit', function(event) {
@@ -31,17 +80,17 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 
     // Get the values from the input fields
     const username_input = document.getElementById('inputRegisterUsername').value;
-    const password_input = document.getElementById('inputRegisterPassword').value;
-    const confirmPassword_input = document.getElementById('inputRegisterConfirmPassword').value;
+    const password_input = CryptoJS.SHA256(document.getElementById('inputRegisterPassword').value).toString();
+    const confirmPassword_input = CryptoJS.SHA256(document.getElementById('inputRegisterConfirmPassword').value).toString();
 
     // Validate passwords match
     if (password_input !== confirmPassword_input) {
-        alert('Passwords do not match!');
+        document.getElementById('registerError').innerText = 'Passwords do not match!';
         return;
     }
 
     // Create the data object
-    const data = {
+    const user_data = {
         username: username_input,
         password: password_input
     };
@@ -52,13 +101,16 @@ document.getElementById('registerForm').addEventListener('submit', function(even
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)  // Convert data object to JSON
+        body: JSON.stringify(user_data)  // Convert data object to JSON
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            return response.json().then(err => {  // Parse the error message
+                document.getElementById('registerError').innerText = err.error;  // Display the error message
+                throw new Error(err.error);  // Throw an error with the message from the server
+            });
         }
-        return response.json();
+        return response.json();  // Parse the success response
     })
     .then(data => {
         console.log('Success:', data);
@@ -66,7 +118,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     })
     .catch((error) => {
         console.error('Error:', error);
-        alert('Registration failed!');
+        //alert(`Registration failed: ${error.message}`);  // Show the error message in an alert
     });
 });
 

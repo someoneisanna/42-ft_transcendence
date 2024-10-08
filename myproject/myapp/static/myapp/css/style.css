@@ -7,14 +7,20 @@ body {
     display: none;
 }
 
-.backgroundVideo-container {
-	z-index: -1;
+.backgroundGIF-container {
+    z-index: -1;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden; /* Ensures that the GIF fills the container without spilling over */
+}
+
+.backgroundGIF-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down; /* Ensures the GIF scales to cover the full container without distorting */
 }
 
 .blur {
@@ -25,7 +31,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-	
 }
 
 .landing-page {
@@ -160,4 +165,12 @@ animation:	<animation-name>
     background-color: #4a7aad; /* Active tab background color */
     color: white; /* Active tab text color */
     border-color: #4a7aad; /* Match border color with background */
+}
+
+#registerError {
+    color: red;
+}
+
+#loginError {
+    color: red;
 }

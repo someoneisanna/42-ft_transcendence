@@ -17,11 +17,8 @@
 
 <body>
 
-	<div class="backgroundVideo-container" >
-		<video autoplay muted loop id="backgroundVideo">
-			<source src="{% static 'myapp/videos/pongvideo.mp4' %}" type="video/mp4">
-			Your browser does not support the video tag.
-		</video>
+	<div class="backgroundGIF-container" >
+		<img src="{% static 'myapp/videos/pong.gif' %}" alt="backgroundGIF">
 	</div>
 	
 	<div class="landing-page">
@@ -51,16 +48,17 @@
 					<div class="tab-content mt-3" id="myTabContent">
 						<!-- Login Form -->
 						<div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
-							<form>
+							<form id="loginForm">
 								<div class="form-group modalText">
-									<label for="inputUsername">Username</label>
-									<input type="text" class="form-control" id="inputUsername" placeholder="Enter Username">
+									<label for="inputLoginUsername">Username</label>
+									<input type="text" class="form-control" id="inputLoginUsername" placeholder="Enter Username">
 								</div>
 								<div class="form-group modalText mt-2">
-									<label for="inputPassword">Password</label>
-									<input type="password" class="form-control" id="inputPassword" placeholder="Password">
+									<label for="inputLoginPassword">Password</label>
+									<input type="password" class="form-control" id="inputLoginPassword" placeholder="Password">
 								</div>
-								<div class="d-flex justify-content-end mt-3">
+								<div class="d-flex justify-content-between align-items-center mt-3">
+									<p class="mb-0" id="loginError"></p>
 									<button type="submit" class="btn btn-primary">Submit</button>
 								</div>
 							</form>
@@ -81,9 +79,10 @@
 									<label>Confirm Password</label>
 									<input type="password" class="form-control" id="inputRegisterConfirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
 								</div>
-								<div class="d-flex justify-content-end mt-3">
+								<div class="d-flex justify-content-between align-items-center mt-3"> <!-- Changed to justify-content-between -->
+									<p class="mb-0" id="registerError"></p> <!-- Removed any margin -->
 									<button type="submit" class="btn btn-primary">Register</button>
-								</div>
+								</div>								
 							</form>
 						</div>
 					</div>
@@ -94,6 +93,8 @@
 
 	<!-- Bootstrap JS and Popper.js -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- CryptoJS for password hashing-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 	<!-- Custom JS -->
 	<script src="{% static 'myapp/js/script.js' %}"></script>
 	
