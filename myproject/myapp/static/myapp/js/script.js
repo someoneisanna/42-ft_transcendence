@@ -1,11 +1,30 @@
 // PAGE ANIMATION -------------------------------------------------------------------------------------------------------------------------
 
 // JavaScript code for handling the login button click event
-document.getElementById('myButton').addEventListener('click', function() {
+document.getElementById('loginButton').addEventListener('click', function() {
 	const titleContainer = document.getElementById('title-container');
 	titleContainer.classList.toggle('shrink');
+	const loginButton = document.getElementById('loginButton');
+	loginButton.classList.toggle('hide');
 	const imgContainer = document.querySelector('.backgroundGIF-container');
 	imgContainer.classList.toggle('blur');
+});
+
+// 2FA CODE INPUT -------------------------------------------------------------------------------------------------------------------------
+const codeInputs = document.querySelectorAll('.code-input');
+
+codeInputs.forEach((input, index) => {
+	input.addEventListener('input', () => {
+		if (input.value.length === 1 && index < codeInputs.length - 1) {
+			codeInputs[index + 1].focus();
+		}
+	});
+
+	input.addEventListener('keydown', (event) => {
+		if (event.key === 'Backspace' && index > 0 && !input.value) {
+			codeInputs[index - 1].focus();
+		}
+	});
 });
 
 // LOGIN FUNCTION -------------------------------------------------------------------------------------------------------------------------
@@ -18,14 +37,20 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 	// Get the values from the input fields
 	const username_input = document.getElementById('inputLoginUsername').value;
 	const password_input = CryptoJS.SHA256(document.getElementById('inputLoginPassword').value).toString();
+	const codeInputs = document.querySelectorAll('.code-input');
+	let totp_2FA_input = '';
+	codeInputs.forEach(input => {
+		totp_2FA_input += input.value; // Concatenate each input's value
+	});
 
 	// Create the data object
 	const user_data = {
 		username: username_input,
-		password: password_input
+		password: password_input,
+		totp_2FA: totp_2FA_input
 	};
 
-	// Send GET request to your API
+	// Send POST request to your API
 	fetch('http://127.0.0.1:8000/login/', {
 		method: 'POST',
 		headers: {
@@ -62,6 +87,12 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	const username_input = document.getElementById('inputRegisterUsername').value;
 	const password_input = CryptoJS.SHA256(document.getElementById('inputRegisterPassword').value).toString();
 	const confirmPassword_input = CryptoJS.SHA256(document.getElementById('inputRegisterConfirmPassword').value).toString();
+	
+	// Validate username length (max 20 characters)
+	if (username_input.length > 20) {
+		document.getElementById('registerError').innerText = 'Username must be 20 characters or less!';
+		return;
+	}
 
 	// Validate passwords match
 	if (password_input !== confirmPassword_input) {
@@ -94,10 +125,12 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	})
 	.then(data => {
 		console.log('Registration Success:', data);
-		alert('Registration successful!');
+		alert('Registration successful! Please scan the QR code for 2FA setup.');
+		qrCodeId = document.getElementById('qrCodeContainer');
+		qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
+		qrCodeId.classList.toggle('mt-5');
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);
 	});
 });
-
