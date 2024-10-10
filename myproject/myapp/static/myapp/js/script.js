@@ -2,12 +2,9 @@
 
 // JavaScript code for handling the login button click event
 document.getElementById('loginButton').addEventListener('click', function() {
-	const titleContainer = document.getElementById('title-container');
-	titleContainer.classList.toggle('shrink');
-	const loginButton = document.getElementById('loginButton');
-	loginButton.classList.toggle('hide');
-	const imgContainer = document.querySelector('.backgroundGIF-container');
-	imgContainer.classList.toggle('blur');
+	document.getElementById('title-container').classList.toggle('shrink');
+	document.getElementById('loginButton').classList.toggle('hide');
+	document.querySelector('.backgroundGIF-container').classList.toggle('blur');
 });
 
 // 2FA CODE INPUT -------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +37,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 	const codeInputs = document.querySelectorAll('.code-input');
 	let totp_2FA_input = '';
 	codeInputs.forEach(input => {
-		totp_2FA_input += input.value; // Concatenate each input's value
+		totp_2FA_input += input.value;
 	});
 
 	// Create the data object
@@ -126,9 +123,10 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	.then(data => {
 		console.log('Registration Success:', data);
 		alert('Registration successful! Please scan the QR code for 2FA setup.');
+		document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
 		qrCodeId = document.getElementById('qrCodeContainer');
 		qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
-		qrCodeId.classList.toggle('mt-5');
+		qrCodeId.classList.toggle('mt-2');
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);

@@ -48,9 +48,14 @@ def users(request):
 		users = User.objects.all().values('id', 'username', 'password', 'skey_2FA')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
-	elif request.method == 'DELETE':
+
+@csrf_exempt
+def delete(request):
+	if request.method == 'GET':
 		User.objects.all().delete()
 		return JsonResponse({'message': 'All users deleted'}, status=204)
+	
+
 
 # LOGIN USERS -----------------------------------------------------------------------------------------------------
 
@@ -70,9 +75,9 @@ def login(request):
 			if user.password != password_input:
 				return JsonResponse({'error': 'Incorrect password. Please try again.'}, status=400)
 			
-			totp = pyotp.TOTP(user.skey_2FA)
-			if not totp.verify(totp_2FA_input):
-				return JsonResponse({'error': 'Invalid 2FA code. Please try again.'}, status=400)
+			# totp = pyotp.TOTP(user.skey_2FA)
+			# if not totp.verify(totp_2FA_input):
+			# 	return JsonResponse({'error': 'Invalid 2FA code. Please try again.'}, status=400)
 
 			token = create_jwt_token(user)
 			response = JsonResponse({'username': user.username, 'token': token}, status=200)
