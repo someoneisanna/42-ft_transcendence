@@ -7,4 +7,5 @@ urlpatterns = [
 	path('login/', views.login, name='login'),				# API for logging in
 	path('register/', views.register, name='register'),		# API for registering
 	path('delete/', views.delete, name='delete'),			# API for deleting all users
+	path('login_modal', views.login, name='login_modal'),
 ]

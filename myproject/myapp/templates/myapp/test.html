@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My SPA</title>
+    <script>
+        // JavaScript for dynamic content loading and managing browser history
+        function loadContent(url, stateData, addToHistory = true) {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('content').innerHTML = html;
+                    if (addToHistory) {
+                        history.pushState(stateData, '', stateData.url);  // Update URL in browser
+                    }
+                })
+                .catch(error => console.error('Error loading content:', error));
+        }
+
+        // Handle browser back/forward button
+        window.onpopstate = function(event) {
+            if (event.state) {
+                loadContent(event.state.url, event.state, false);  // Load content based on state without adding to history
+            }
+        };
+
+        // Load a specific page when clicking a button
+        function navigateTo(page) {
+            let url = '/' + page + '/';
+            loadContent(url, {url: url, page: page});
+        }
+
+        // Load the home page content
+        //function loadHome() {
+        //    loadContent('/', {url: '/', page: 'home'}, true);  // Load home and add to history
+        //}
+
+        // Load home page on initial load
+        //window.onload = loadHome;  // Automatically load the home page when the page first loads
+    </script>
+</head>
+<body>
+
+    <h1>Welcome to My SPA</h1>
+
+    <!-- Navigation buttons -->
+    <button onclick="navigateTo('home')">Home</button>
+    <button onclick="navigateTo('page1')">Page 1</button>
+    <button onclick="navigateTo('page2')">Page 2</button>
+
+    <!-- Content area where the HTML from pages will be dynamically loaded -->
+    <div id="content">
+        <!-- The initial content or dynamically loaded content will go here -->
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

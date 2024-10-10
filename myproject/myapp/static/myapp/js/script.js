@@ -7,6 +7,12 @@ document.getElementById('loginButton').addEventListener('click', function() {
 	document.querySelector('.backgroundGIF-container').classList.toggle('blur');
 });
 
+function navigateTo(page) {
+	alert('Navigating to ' + page + ' page');
+	let url = '/' + page + '/';
+	loadContent(url, {url: url, page: page});
+}
+
 // 2FA CODE INPUT -------------------------------------------------------------------------------------------------------------------------
 const codeInputs = document.querySelectorAll('.code-input');
 

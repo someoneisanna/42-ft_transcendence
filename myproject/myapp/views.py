@@ -16,6 +16,9 @@ import base64
 def index(request):
 	return render(request, 'myapp/index.html')
 
+def login(request):
+	return render(request, 'myapp/login_modal.html')
+
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 
 def generate_2fa_secret_key(user):
@@ -110,33 +113,3 @@ def register(request):
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
-
-
-
-
-
-
-
-
-# from django.shortcuts import get_object_or_404
-# Get, update, or delete a single item
-# @csrf_exempt
-# def user_detail(request, username):
-# 	user = get_object_or_404(User, username=username)
-# 
-# 	if request.method == 'GET':
-# 		return JsonResponse({'id': user.id, 'username': user.username, 'password': user.password})
-# 
-# 	elif request.method == 'PUT':
-# 		try:
-# 			data = json.loads(request.body)
-# 			user.username = data.get('username', user.username)
-# 			user.password = data.get('password', user.password)
-# 			user.save()
-# 			return JsonResponse({'id': user.id, 'username': user.username, 'password': user.password})
-# 		except KeyError:
-# 			return JsonResponse({'error': 'Invalid data'}, status=400)
-# 
-# 	elif request.method == 'DELETE':
-# 		user.delete()
-# 		return JsonResponse({'message': 'Item deleted'}, status=204)
