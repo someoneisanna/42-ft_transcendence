@@ -21,8 +21,16 @@ codeInputs.forEach((input, index) => {
 		if (event.key === 'Backspace' && index > 0 && !input.value) {
 			codeInputs[index - 1].focus();
 		}
+		else if (event.key !== 'Backspace' && event.key.length === 1) {
+			event.preventDefault();
+			input.value = event.key;
+			if (index < codeInputs.length - 1) {
+				codeInputs[index + 1].focus();
+			}
+		}
 	});
 });
+
 
 // LOGIN FUNCTION -------------------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +43,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 	const username_input = document.getElementById('inputLoginUsername').value;
 	const password_input = CryptoJS.SHA256(document.getElementById('inputLoginPassword').value).toString();
 	const codeInputs = document.querySelectorAll('.code-input');
-	let totp_2FA_input = '';
+	let totp_2FA_input = "";
 	codeInputs.forEach(input => {
 		totp_2FA_input += input.value;
 	});

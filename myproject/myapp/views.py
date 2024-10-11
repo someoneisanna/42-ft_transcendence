@@ -45,7 +45,7 @@ def create_jwt_token(user):
 @csrf_exempt
 def users(request):
 	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'checkbox', 'skey_2FA')
+		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
 
@@ -75,7 +75,7 @@ def login(request):
 			if user.password != password_input:
 				return JsonResponse({'error': 'Incorrect password. Please try again.'}, status=400)
 			
-			if user.checkbox == True:
+			if user.check2FA == True:
 				if totp_2FA_input == '':
 					return JsonResponse({'message': '2FA required'}, status=422)
 				totp = pyotp.TOTP(user.skey_2FA)
@@ -83,7 +83,7 @@ def login(request):
 					return JsonResponse({'error': 'Invalid 2FA code. Please try again.'}, status=400)
 
 			token = create_jwt_token(user)
-			response = JsonResponse({'username': user.username, 'checkbox': user.checkbox}, status=200)
+			response = JsonResponse({'username': user.username, 'checkbox': user.check2FA}, status=200)
 			response.set_cookie('jwt', token, httponly=True, max_age=None, expires=None)
 			return response
 
@@ -108,39 +108,9 @@ def register(request):
 			qr_code = generate_2fa_qr_code(secret=secret_key, username=username_input)
 			qr_code64 = base64.b64encode(qr_code).decode('utf-8')
 			
-			user = User.objects.create(username=username_input, password=password_input, checkbox=checkbox_input, skey_2FA=secret_key)
+			user = User.objects.create(username=username_input, password=password_input, check2FA=checkbox_input, skey_2FA=secret_key)
 
 			return JsonResponse({'username': user.username, 'qr_code': qr_code64}, status=200)
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
-
-
-
-
-
-
-
-
-# from django.shortcuts import get_object_or_404
-# Get, update, or delete a single item
-# @csrf_exempt
-# def user_detail(request, username):
-# 	user = get_object_or_404(User, username=username)
-# 
-# 	if request.method == 'GET':
-# 		return JsonResponse({'id': user.id, 'username': user.username, 'password': user.password})
-# 
-# 	elif request.method == 'PUT':
-# 		try:
-# 			data = json.loads(request.body)
-# 			user.username = data.get('username', user.username)
-# 			user.password = data.get('password', user.password)
-# 			user.save()
-# 			return JsonResponse({'id': user.id, 'username': user.username, 'password': user.password})
-# 		except KeyError:
-# 			return JsonResponse({'error': 'Invalid data'}, status=400)
-# 
-# 	elif request.method == 'DELETE':
-# 		user.delete()
-# 		return JsonResponse({'message': 'Item deleted'}, status=204)
