@@ -7,4 +7,9 @@ urlpatterns = [
 	path('login/', views.login, name='login'),				# API for logging in
 	path('register/', views.register, name='register'),		# API for registering
 	path('delete/', views.delete, name='delete'),			# API for deleting all users
+	path('page1/', views.page1, name='page1'),				# Page 1
+	path('page2/', views.page2, name='page2'),				# Page 2
+
+	path('<str:page>/', views.get_page_content, name='get_page_content'),
+
 ]

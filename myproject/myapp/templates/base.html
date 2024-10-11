@@ -1,0 +1,23 @@
+
+<!-- myapp/templates/myapp/base.html -->
+ 
+{% load static %}
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lazy Load Demo</title>
+	<link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+</head>
+<body>
+	<h1>Welcome to My Lazy Loading Example</h1>
+	<button onclick="loadPage('page1')">Go to Page 1</button>
+    <button onclick="loadPage('page2')">Go to Page 2</button>
+	<div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/lazyload.js' %}"></script>
+</body>
+</html>

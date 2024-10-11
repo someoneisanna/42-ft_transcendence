@@ -13,8 +13,30 @@ from qrcode.image.pil import PilImage
 from io import BytesIO
 import base64
 
+##
+from django.shortcuts import render
+
 def index(request):
 	return render(request, 'index.html')
+def page1(request):
+    return render(request, 'page1.html')
+def page2(request):
+    return render(request, 'page2.html')
+
+######
+from django.http import HttpResponse
+import os
+def get_page_content(request, page):
+    file_path = os.path.join('myapp', 'templates', f'{page}.html')
+    print(file_path)
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as file:
+            content = file.read()
+        print(content)
+        return HttpResponse(content)
+    return HttpResponse('Page not found', status=404)
+######
+##
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 

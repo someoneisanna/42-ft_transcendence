@@ -1,4 +1,71 @@
-{% load static %}
+<!-- myapp/templates/myapp/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My SPA</title>
+</head>
+<body>
+    <nav>
+        <a href="#" onclick="loadPage('home'); return false;">Home</a>
+        <a href="#" onclick="loadPage('about'); return false;">About</a>
+        <a href="#" onclick="loadPage('contact'); return false;">Contact</a>
+    </nav>
+    
+    <div id="content"></div>
+
+    <script>
+		let currentPage = '';
+	
+		function loadPage(page) {
+			if (page === currentPage) return false;
+	
+			fetch(`/${page}/`)
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Page not found');
+					}
+					return response.text();
+				})
+				.then(html => {
+					document.getElementById('content').innerHTML = html;
+					currentPage = page;
+					updateURL(page);
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					document.getElementById('content').innerHTML = '<p>Error loading page.</p>';
+				});
+	
+			return false;
+		}
+	
+		function updateURL(page) {
+			history.pushState({ page: page }, '', `#${page}`);
+		}
+	
+		window.onpopstate = function(event) {
+			if (event.state && event.state.page) {
+				loadPage(event.state.page);
+			} else {
+				// Handle the case when there's no state (e.g., initial load)
+				const hash = window.location.hash.slice(1);
+				loadPage(hash || 'home');
+			}
+		};
+	
+		// Initial load
+		document.addEventListener('DOMContentLoaded', (event) => {
+			const initialPage = window.location.hash.slice(1) || 'home';
+			loadPage(initialPage);
+		});
+		</script>
+	</body>
+</html>
+
+{% comment %} {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -124,4 +191,4 @@
 	<script src="{% static 'js/script.js' %}"></script>
 	
 </body>
-</html>
+</html> {% endcomment %}
