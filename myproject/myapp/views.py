@@ -14,7 +14,7 @@ from io import BytesIO
 import base64
 
 def index(request):
-	return render(request, 'myapp/index.html')
+	return render(request, 'index.html')
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 
