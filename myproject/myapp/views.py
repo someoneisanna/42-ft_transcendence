@@ -76,6 +76,8 @@ def login(request):
 				return JsonResponse({'error': 'Incorrect password. Please try again.'}, status=400)
 			
 			if user.checkbox == True:
+				if totp_2FA_input == '':
+					return JsonResponse({'message': '2FA required'}, status=422)
 				totp = pyotp.TOTP(user.skey_2FA)
 				if not totp.verify(totp_2FA_input):
 					return JsonResponse({'error': 'Invalid 2FA code. Please try again.'}, status=400)

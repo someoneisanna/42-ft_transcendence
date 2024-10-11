@@ -56,7 +56,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		body: JSON.stringify(user_data)
 	})
 	.then(response => {
-		if (!response.ok) {
+		if (!response.ok && response.status !== 422) {
 			return response.json().then(err => {
 				document.getElementById('loginError').innerText = err.error;
 				throw new Error(err.error);
@@ -65,8 +65,14 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		return response.json();
 	})
 	.then(data => {
-		console.log('Login Success:', data);
-		alert('Login successful!');
+		document.getElementById('loginError').innerText = '';
+		if (data.message === '2FA required') {
+			document.getElementById('totpContainer').classList.remove('hide');
+		}
+		else {
+			console.log('Login Success:', data);
+			alert('Login successful!');
+		}
 	})
 	.catch((error) => {
 		console.error('Login Error:', error);
@@ -124,13 +130,13 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	})
 	.then(data => {
 		console.log('Registration Success:', data);
+		document.getElementById('registerError').innerText = '';
 		if (checkbox_input === false) {
 			alert('Registration successful!');
 		}
 		else {
 			alert('Registration successful! Please scan the QR code for 2FA setup.');
 			document.getElementById('checkboxContainer').classList.toggle('hide');
-			document.getElementById('registerError').innerText = '';
 			document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
 			qrCodeId = document.getElementById('qrCodeContainer');
 			qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
