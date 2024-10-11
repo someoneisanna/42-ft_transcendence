@@ -84,6 +84,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	const username_input = document.getElementById('inputRegisterUsername').value;
 	const password_input = CryptoJS.SHA256(document.getElementById('inputRegisterPassword').value).toString();
 	const confirmPassword_input = CryptoJS.SHA256(document.getElementById('inputRegisterConfirmPassword').value).toString();
+	const checkbox_input = document.getElementById('inputRegisterCheckbox').checked;
 	
 	// Validate username length (max 20 characters)
 	if (username_input.length > 20) {
@@ -100,7 +101,8 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	// Create the data object
 	const user_data = {
 		username: username_input,
-		password: password_input
+		password: password_input,
+		checkbox: checkbox_input
 	};
 
 	// Send POST request to your API
@@ -122,11 +124,18 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 	})
 	.then(data => {
 		console.log('Registration Success:', data);
-		alert('Registration successful! Please scan the QR code for 2FA setup.');
-		document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
-		qrCodeId = document.getElementById('qrCodeContainer');
-		qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
-		qrCodeId.classList.toggle('mt-2');
+		if (checkbox_input === false) {
+			alert('Registration successful!');
+		}
+		else {
+			alert('Registration successful! Please scan the QR code for 2FA setup.');
+			document.getElementById('checkboxContainer').classList.toggle('hide');
+			document.getElementById('registerError').innerText = '';
+			document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
+			qrCodeId = document.getElementById('qrCodeContainer');
+			qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
+			qrCodeId.classList.toggle('mt-2');
+		}
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);

@@ -141,7 +141,7 @@ animation:	<animation-name>
 
 .modal-content {
     background-color: rgba(0, 0, 0, 0.1); /* Transparent black */
-    backdrop-filter: blur(20px); /* Blurring the background */
+    backdrop-filter: blur(10px); /* Blurring the background */
     border: none; /* Remove default border */
 }
 

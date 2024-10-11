@@ -45,7 +45,7 @@ def create_jwt_token(user):
 @csrf_exempt
 def users(request):
 	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'skey_2FA')
+		users = User.objects.all().values('id', 'username', 'password', 'checkbox', 'skey_2FA')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
 
@@ -75,12 +75,13 @@ def login(request):
 			if user.password != password_input:
 				return JsonResponse({'error': 'Incorrect password. Please try again.'}, status=400)
 			
-			# totp = pyotp.TOTP(user.skey_2FA)
-			# if not totp.verify(totp_2FA_input):
-			# 	return JsonResponse({'error': 'Invalid 2FA code. Please try again.'}, status=400)
+			if user.checkbox == True:
+				totp = pyotp.TOTP(user.skey_2FA)
+				if not totp.verify(totp_2FA_input):
+					return JsonResponse({'error': 'Invalid 2FA code. Please try again.'}, status=400)
 
 			token = create_jwt_token(user)
-			response = JsonResponse({'username': user.username, 'token': token}, status=200)
+			response = JsonResponse({'username': user.username, 'checkbox': user.checkbox}, status=200)
 			response.set_cookie('jwt', token, httponly=True, max_age=None, expires=None)
 			return response
 
@@ -96,6 +97,7 @@ def register(request):
 			data = json.loads(request.body)
 			username_input = data['username']
 			password_input = data['password']
+			checkbox_input = data['checkbox']
 
 			if User.objects.filter(username=username_input).exists():
 				return JsonResponse({'error': 'Username already exists. Please login.'}, status=400)
@@ -104,7 +106,7 @@ def register(request):
 			qr_code = generate_2fa_qr_code(secret=secret_key, username=username_input)
 			qr_code64 = base64.b64encode(qr_code).decode('utf-8')
 			
-			user = User.objects.create(username=username_input, password=password_input, skey_2FA=secret_key)
+			user = User.objects.create(username=username_input, password=password_input, checkbox=checkbox_input, skey_2FA=secret_key)
 
 			return JsonResponse({'username': user.username, 'qr_code': qr_code64}, status=200)
 
