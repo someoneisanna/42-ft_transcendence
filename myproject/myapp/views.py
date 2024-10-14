@@ -14,8 +14,8 @@ import base64
 
 ##
 
-def base(request):
-	return render(request, 'base.html')
+# def base(request):
+# 	return render(request, 'base.html')
 
 def home(request):
 	referer = request.META.get('HTTP_REFERER')
@@ -23,23 +23,27 @@ def home(request):
 		return redirect('/')
 	return render(request, 'home_content.html')
 
-def about(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
-	return render(request, 'about_content.html')
 
-def contact(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
-	return render(request, 'contact_content.html')
+# def about(request):
+# 	referer = request.META.get('HTTP_REFERER')
+# 	if referer is None:
+# 		return redirect('/')
+# 	return render(request, 'about_content.html')
+
+# def contact(request):
+# 	referer = request.META.get('HTTP_REFERER')
+# 	if referer is None:
+# 		return redirect('/')
+# 	return render(request, 'contact_content.html')
 ##
 
 # GO TO THE HOME PAGE ---------------------------------------------------------------------------------------------
 
 def index(request):
 	return render(request, 'index.html')
+
+def landing_page(request):
+	return render(request, 'landing_page.html')
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 
