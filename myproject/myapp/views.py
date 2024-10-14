@@ -12,38 +12,19 @@ from qrcode.image.pil import PilImage
 from io import BytesIO
 import base64
 
-##
-
-# def base(request):
-# 	return render(request, 'base.html')
-
-def home(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
-	return render(request, 'home_content.html')
-
-
-# def about(request):
-# 	referer = request.META.get('HTTP_REFERER')
-# 	if referer is None:
-# 		return redirect('/')
-# 	return render(request, 'about_content.html')
-
-# def contact(request):
-# 	referer = request.META.get('HTTP_REFERER')
-# 	if referer is None:
-# 		return redirect('/')
-# 	return render(request, 'contact_content.html')
-##
-
-# GO TO THE HOME PAGE ---------------------------------------------------------------------------------------------
+# GO TO HTML PAGES ------------------------------------------------------------------------------------------------
 
 def index(request):
 	return render(request, 'index.html')
 
 def landing_page(request):
 	return render(request, 'landing_page.html')
+
+def game_choice(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'game_choice.html')
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 
@@ -68,23 +49,6 @@ def create_jwt_token(user):
 	}
 	token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 	return token
-
-# GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
-
-@csrf_exempt
-def users(request):
-	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA')
-		user_list = list(users)
-		return JsonResponse(user_list, safe=False)
-
-@csrf_exempt
-def delete(request):
-	if request.method == 'GET':
-		User.objects.all().delete()
-		return JsonResponse({'message': 'All users deleted'}, status=204)
-	
-
 
 # LOGIN USERS -----------------------------------------------------------------------------------------------------
 
@@ -145,7 +109,26 @@ def register(request):
 			
 			user = User.objects.create(username=username_input, password=password_input, check2FA=checkbox_input, skey_2FA=secret_key)
 
-			return JsonResponse({'username': user.username, 'qr_code': qr_code64}, status=200)
+			token = create_jwt_token(user)
+			response = JsonResponse({'username': user.username, 'checkbox': user.check2FA, 'qr_code': qr_code64}, status=200)
+			response.set_cookie('jwt', token, httponly=True, max_age=None, expires=None)
+			return response
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
+
+# GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
+
+@csrf_exempt
+def users(request):
+	if request.method == 'GET':
+		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA')
+		user_list = list(users)
+		return JsonResponse(user_list, safe=False)
+
+@csrf_exempt
+def delete(request):
+	if request.method == 'GET':
+		User.objects.all().delete()
+		return JsonResponse({'message': 'All users deleted'}, status=204)
+

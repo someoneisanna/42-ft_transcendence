@@ -1,13 +1,22 @@
+// RUN THE SCRIPT WHEN THE PAGE IS FULLY LOADED --------------------------------------------------------------------------------------------
+
+function initializeJS() {
+
 // PAGE ANIMATION -------------------------------------------------------------------------------------------------------------------------
 
-// JavaScript code for handling the login button click event
-document.getElementById('loginButton').addEventListener('click', function() {
-	document.getElementById('title-container').classList.toggle('shrink');
-	document.getElementById('loginButton').classList.toggle('hide');
-	document.querySelector('.backgroundGIF-container').classList.toggle('blur');
-});
+// Handling the login button click - landing page animation 
+const loginButton = document.getElementById('loginButton');
+if (loginButton) {
+	loginButton.addEventListener('click', function() {
+		document.getElementById('title-container').classList.toggle('shrink');
+		loginButton.classList.toggle('hide');
+		document.querySelector('.backgroundGIF-container').classList.toggle('blur');
+	});
+}
 
 // 2FA CODE INPUT -------------------------------------------------------------------------------------------------------------------------
+
+// Effects for the 2FA code input in the login form
 const codeInputs = document.querySelectorAll('.code-input');
 
 codeInputs.forEach((input, index) => {
@@ -30,7 +39,6 @@ codeInputs.forEach((input, index) => {
 		}
 	});
 });
-
 
 // LOGIN FUNCTION -------------------------------------------------------------------------------------------------------------------------
 
@@ -79,7 +87,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		}
 		else {
 			console.log('Login Success:', data);
-			alert('Login successful!');
+			loadPage('/game_choice', true);
 		}
 	})
 	.catch((error) => {
@@ -137,21 +145,26 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 		return response.json();
 	})
 	.then(data => {
-		console.log('Registration Success:', data);
+		console.log('Registration Success:', data.username);
 		document.getElementById('registerError').innerText = '';
-		if (checkbox_input === false) {
-			alert('Registration successful!');
-		}
-		else {
+		if (checkbox_input === true) {
 			alert('Registration successful! Please scan the QR code for 2FA setup.');
+			document.getElementById('registerButton').innerText = 'Continue';
 			document.getElementById('checkboxContainer').classList.toggle('hide');
 			document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
 			qrCodeId = document.getElementById('qrCodeContainer');
 			qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
 			qrCodeId.classList.toggle('mt-2');
+			document.getElementById('registerForm').addEventListener('submit', function(event) {
+				loadPage('/game_choice', true);
+			});
 		}
+		else
+			loadPage('/game_choice', true);
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);
 	});
 });
+
+}

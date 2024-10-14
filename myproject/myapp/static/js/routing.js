@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const contentDiv = document.getElementById('content');
 
-	const loadPage = (url, addHistory) => {
+	window.loadPage = (url, addHistory) => {
 		fetch(url)
 			.then(response => {
 				if (response.ok) {
@@ -21,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
 			});
 	};
 
+	function loadScript(url) {
+		const script = document.createElement('script');
+		script.src = url;
+		script.onload = () => {
+			initializeJS(); // Call any functions that need to run after the script is loaded
+		};
+		document.body.appendChild(script);
+	}
+
 	const loadLandingPage = () => {
 		fetch('/landing/')
 			.then(response => {
@@ -31,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 			.then(html => {
 				contentDiv.innerHTML = html;
+				loadScript('/static/js/landing_page.js');
 			})
 			.catch(error => {
 				console.error('Error loading landing page:', error);
