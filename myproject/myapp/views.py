@@ -1,5 +1,4 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -14,29 +13,33 @@ from io import BytesIO
 import base64
 
 ##
-from django.shortcuts import render
+
+def base(request):
+	return render(request, 'base.html')
+
+def home(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'home_content.html')
+
+def about(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'about_content.html')
+
+def contact(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'contact_content.html')
+##
+
+# GO TO THE HOME PAGE ---------------------------------------------------------------------------------------------
 
 def index(request):
 	return render(request, 'index.html')
-def page1(request):
-    return render(request, 'page1.html')
-def page2(request):
-    return render(request, 'page2.html')
-
-######
-from django.http import HttpResponse
-import os
-def get_page_content(request, page):
-    file_path = os.path.join('myapp', 'templates', f'{page}.html')
-    print(file_path)
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as file:
-            content = file.read()
-        print(content)
-        return HttpResponse(content)
-    return HttpResponse('Page not found', status=404)
-######
-##
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 
@@ -83,6 +86,9 @@ def delete(request):
 
 @csrf_exempt
 def login(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
 	if request.method == 'POST':
 		try:
 			data = json.loads(request.body)
@@ -116,6 +122,9 @@ def login(request):
 
 @csrf_exempt
 def register(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
 	if request.method == 'POST':
 		try:
 			data = json.loads(request.body)
