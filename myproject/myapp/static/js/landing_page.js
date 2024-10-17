@@ -97,10 +97,18 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
 // REGISTER FUNCTION ----------------------------------------------------------------------------------------------------------------------
 
+let isRegistered = false;
+
 document.getElementById('registerForm').addEventListener('submit', function(event) {
 	
 	// Prevent the default form submission (page refresh)
 	event.preventDefault();
+
+	// Check if the button is the "continue" after 2FA setup
+	if (isRegistered) {
+		loadPage('/game_choice', true);
+		return;
+	}
 
 	// Get the values from the input fields
 	const username_input = document.getElementById('inputRegisterUsername').value;
@@ -155,9 +163,10 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 			qrCodeId = document.getElementById('qrCodeContainer');
 			qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
 			qrCodeId.classList.toggle('mt-2');
-			document.getElementById('registerForm').addEventListener('submit', function(event) {
+			isRegistered = true;
+			/*document.getElementById('registerForm').addEventListener('submit', function(event) {
 				loadPage('/game_choice', true);
-			});
+			});*/
 		}
 		else
 			loadPage('/game_choice', true);
