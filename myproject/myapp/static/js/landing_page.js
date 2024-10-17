@@ -87,7 +87,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		}
 		else {
 			console.log('Login Success:', data);
-			loadPage('/game_choice', true);
+			loadPage('/layout', true);
 		}
 	})
 	.catch((error) => {
@@ -106,7 +106,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 
 	// Check if the button is the "continue" after 2FA setup
 	if (isRegistered) {
-		loadPage('/game_choice', true);
+		loadPage('/layout', true);
 		return;
 	}
 
@@ -164,12 +164,9 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 			qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
 			qrCodeId.classList.toggle('mt-2');
 			isRegistered = true;
-			/*document.getElementById('registerForm').addEventListener('submit', function(event) {
-				loadPage('/game_choice', true);
-			});*/
 		}
 		else
-			loadPage('/game_choice', true);
+			loadPage('/layout', true);
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);

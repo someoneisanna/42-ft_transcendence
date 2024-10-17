@@ -20,11 +20,11 @@ def index(request):
 def landing_page(request):
 	return render(request, 'landing_page.html')
 
-def game_choice(request):
+def layout(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	return render(request, 'game_choice.html')
+	return render(request, 'layout.html')
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 

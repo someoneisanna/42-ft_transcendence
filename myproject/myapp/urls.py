@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
 	path('', views.index, name='index'),
 	path('landing/', views.landing_page, name='landing'),
-	path('game_choice/', views.game_choice, name='game_choice'),
+	path('layout/', views.layout, name='layout'),
 	path('users/', views.users, name='users'),						# API for getting all users
 	path('login/', views.login, name='login'),						# API for logging in
 	path('register/', views.register, name='register'),				# API for registering

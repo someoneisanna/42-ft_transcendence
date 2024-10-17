@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				contentDiv.innerHTML = html;
 				if (url === '/landing/') {
 					loadScript('/static/js/landing_page.js');
-				} 
+				}
 				if (addHistory) {
 					history.pushState({ url: url }, '', url);
 				}
