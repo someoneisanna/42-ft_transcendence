@@ -5,17 +5,40 @@
 	<img src="{% static 'videos/pong.gif' %}" alt="backgroundGIF">
 </div>
 
+{% if isLogged %}
+
+<div class="landing-page">
+
+	<!-- Yes/No Confirmation Modal -->
+	<div class="modal fade show" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" style="display: block;">
+		<div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+			<div class="modal-content neon-border" style="background-color: rgba(0, 0, 0, 0.75);">
+				<div class="modal-body">
+					<h3 class="modal-title text-center" id="confirmModalLabel" style="color: white;">Welcome back to ft_transcendence!</h3>
+					<h5 class="modal-title text-center" id="confirmModalLabel" style="color: white;">Do you want to continue as <strong id="username">{{ username }}</strong>?</h5>
+					<div class="d-flex justify-content-center mt-4">
+						<button type="button" class="btn btn-secondary me-3" id="confirmSignOut" style="font-size: 1.1rem">Sign Out</button>
+						<button type="button" class="btn btn-primary btn-md" id="confirmYes" style="font-size: 1.1rem">Yes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+	
+{% else %}
+
 <!-- Landing Page (title and login button) -->
 <div class="landing-page">
 	<div id="title-container">
 		<div id="title-text">ft_transcendence</div>
 	</div>
-	
+
 	<div class="button-container">
 		<button class="btn btn-gradient btn-custom mt-4" id="loginButton" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
 	</div>
 </div>
-
 <!-- Login Modal -->
 <div class="modal top fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
 	<div class="modal-dialog modal-dialog-centered">
@@ -98,3 +121,5 @@
 		</div>
 	</div>
 </div>
+
+{% endif %}

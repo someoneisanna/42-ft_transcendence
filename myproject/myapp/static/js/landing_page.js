@@ -1,6 +1,48 @@
-// RUN THE SCRIPT WHEN THE PAGE IS FULLY LOADED --------------------------------------------------------------------------------------------
+// RUN THE SCRIPT WHEN THE PAGE IS FULLY LOADED -------------------------------------------------------------------------------------------
 
 function initializeJS() {
+
+// IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
+
+function signOut() {
+	if (confirm("Are you sure you want to quit?") == false) 
+		return;
+	fetch('http://127.0.0.1:8000/logout/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+	})
+	.then(response => {
+		if (!response.ok) {
+			return response.json().then(err => {
+				throw new Error(err.error);
+			});
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('Logout Success:', data);
+		loadPage('/landing/', true);
+	})
+	.catch((error) => {
+		console.error('Logout failed:', error);
+	});
+}
+
+const confirmSignOut = document.getElementById('confirmSignOut');
+if (confirmSignOut) {
+	confirmSignOut.addEventListener('click', function() {
+		signOut();
+	});
+}
+
+const confirmYes = document.getElementById('confirmYes');
+if (confirmYes) {
+	confirmYes.addEventListener('click', function() {
+		loadPage('/layout/', true);
+	});
+}
 
 // PAGE ANIMATION -------------------------------------------------------------------------------------------------------------------------
 
@@ -42,7 +84,10 @@ codeInputs.forEach((input, index) => {
 
 // LOGIN FUNCTION -------------------------------------------------------------------------------------------------------------------------
 
-document.getElementById('loginForm').addEventListener('submit', function(event) {
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+
+loginForm.addEventListener('submit', function(event) {
 	
 	// Prevent the default form submission (page refresh)
 	event.preventDefault();
@@ -95,12 +140,16 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		console.error('Login Error:', error);
 	});
 });
+}
 
 // REGISTER FUNCTION ----------------------------------------------------------------------------------------------------------------------
 
 let isRegistered = false;
 
-document.getElementById('registerForm').addEventListener('submit', function(event) {
+const registerForm = document.getElementById('registerForm');
+if (registerForm) {
+
+registerForm.addEventListener('submit', function(event) {
 	
 	// Prevent the default form submission (page refresh)
 	event.preventDefault();
@@ -177,5 +226,6 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 		console.error('Registration Error:', error);
 	});
 });
+}
 
 }

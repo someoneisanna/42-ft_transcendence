@@ -18,7 +18,19 @@ def index(request):
 	return render(request, 'index.html')
 
 def landing_page(request):
-	return render(request, 'landing_page.html')
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	token = request.COOKIES.get('jwt')
+	if token:
+		try:
+			payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+			user = User.objects.get(id=payload['user_id'])
+			username = user.username
+			return render(request, 'landing_page.html', {'username': username, 'isLogged': True})
+		except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+			return redirect ('/')
+	return render(request, 'landing_page.html', {'isLogged': False})
 
 def layout(request):
 	referer = request.META.get('HTTP_REFERER')
