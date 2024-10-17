@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	// Automatically load the landing page when the site is visited at root
 	if (window.location.pathname === '/' || window.location.pathname === '') {
-		loadPage('/landing/', false);
+		loadPage('/landing/', true);
 	} else {
-		loadPage(window.location.pathname, false);
+		loadPage(window.location.pathname, true);
 	}
 	
 	// Handle back/forward button

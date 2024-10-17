@@ -26,6 +26,12 @@ def layout(request):
 		return redirect('/')
 	return render(request, 'layout.html')
 
+def menu_pong(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'menu_pong.html')
+
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 
 def generate_2fa_secret_key(user):
@@ -54,7 +60,6 @@ def create_jwt_token(user):
 
 @csrf_exempt
 def login(request):
-	return JsonResponse({'username': "a", 'checkbox': 0}, status=200); # REMOVE THIS LINE TO ENABLE LOGIN FUNCTIONALITY
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
@@ -117,6 +122,20 @@ def register(request):
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
+
+# LOGOUT USERS ----------------------------------------------------------------------------------------------------
+
+@csrf_exempt
+def logout(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	if request.method == 'POST':
+		response = JsonResponse({'message': 'Logged out successfully'}, status=200)
+		response.delete_cookie('jwt')
+		return response
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
 
