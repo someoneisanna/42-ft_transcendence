@@ -87,7 +87,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 		}
 		else {
 			console.log('Login Success:', data);
-			loadPage('/layout', true);
+			document.getElementsByClassName("modal-backdrop")[0].remove();
+			loadPage('/layout/', true);
 		}
 	})
 	.catch((error) => {
@@ -106,7 +107,8 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 
 	// Check if the button is the "continue" after 2FA setup
 	if (isRegistered) {
-		loadPage('/layout', true);
+		document.getElementsByClassName("modal-backdrop")[0].remove();
+		loadPage('/layout/', true);
 		return;
 	}
 
@@ -166,7 +168,10 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 			isRegistered = true;
 		}
 		else
-			loadPage('/layout', true);
+		{
+			document.getElementsByClassName("modal-backdrop")[0].remove();
+			loadPage('/layout/', true);
+		}
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);

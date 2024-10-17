@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (url === '/landing/') {
 					loadScript('/static/js/landing_page.js');
 				}
+				else if (url === '/layout/') {
+					loadScript('/static/js/layout.js');
+				}
 				if (addHistory) {
 					history.pushState({ url: url }, '', url);
 				}

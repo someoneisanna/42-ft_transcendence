@@ -54,6 +54,7 @@ def create_jwt_token(user):
 
 @csrf_exempt
 def login(request):
+	return JsonResponse({'username': "a", 'checkbox': 0}, status=200); # REMOVE THIS LINE TO ENABLE LOGIN FUNCTIONALITY
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
