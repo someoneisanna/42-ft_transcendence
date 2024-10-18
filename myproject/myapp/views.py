@@ -21,7 +21,7 @@ def landing_page(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	token = request.COOKIES.get('jwt')
+	token = request.COOKIES.get('jwt_transcendence')
 	if token:
 		try:
 			payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
@@ -98,7 +98,7 @@ def login(request):
 
 			token = create_jwt_token(user)
 			response = JsonResponse({'username': user.username, 'checkbox': user.check2FA}, status=200)
-			response.set_cookie('jwt', token, httponly=True, max_age=None, expires=None)
+			response.set_cookie('jwt_transcendence', token, httponly=True, max_age=None, expires=None)
 			return response
 
 		except KeyError:
@@ -129,7 +129,7 @@ def register(request):
 
 			token = create_jwt_token(user)
 			response = JsonResponse({'username': user.username, 'checkbox': user.check2FA, 'qr_code': qr_code64}, status=200)
-			response.set_cookie('jwt', token, httponly=True, max_age=None, expires=None)
+			response.set_cookie('jwt_transcendence', token, httponly=True, max_age=None, expires=None)
 			return response
 
 		except KeyError:
@@ -144,7 +144,7 @@ def logout(request):
 		return redirect('/')
 	if request.method == 'POST':
 		response = JsonResponse({'message': 'Logged out successfully'}, status=200)
-		response.delete_cookie('jwt')
+		response.delete_cookie('jwt_transcendence')
 		return response
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)

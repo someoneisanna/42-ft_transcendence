@@ -18,6 +18,10 @@
     justify-content: center; /* Center items horizontally */
 }
 
+.gameChoice:hover {
+    transform: scale(1.1); /* Optional: Scale image on hover */
+}
+
 #buttonGame1, #buttonGame2 {
     margin: 0 20px; /* Add horizontal spacing between images */
 }
@@ -32,7 +36,6 @@ footer {
 	height: 30px;
 }
 
-
 .dropdown {
     border : 1px solid #ff0000;
 }
@@ -40,4 +43,3 @@ footer {
 .dropdown-menu {
     z-index: 1; /* higher than the surrounding elements */
 }
-

@@ -146,6 +146,13 @@ loginForm.addEventListener('submit', function(event) {
 
 let isRegistered = false;
 
+function continueToLayout() {
+	document.getElementsByClassName("modal-backdrop")[0].remove();
+	loadPage('/layout/', true);
+	var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
+		cookieConsentModal.show();
+}
+
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
 
@@ -156,8 +163,7 @@ registerForm.addEventListener('submit', function(event) {
 
 	// Check if the button is the "continue" after 2FA setup
 	if (isRegistered) {
-		document.getElementsByClassName("modal-backdrop")[0].remove();
-		loadPage('/layout/', true);
+		continueToLayout();
 		return;
 	}
 
@@ -217,10 +223,7 @@ registerForm.addEventListener('submit', function(event) {
 			isRegistered = true;
 		}
 		else
-		{
-			document.getElementsByClassName("modal-backdrop")[0].remove();
-			loadPage('/layout/', true);
-		}
+			continueToLayout();
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);

@@ -139,7 +139,7 @@ animation:	<animation-name>
     color: white;
 }
 
-.modal-content {
+.loginRegisterContent {
     background-color: rgba(0, 0, 0, 0.1); /* Transparent black */
     backdrop-filter: blur(10px); /* Blurring the background */
     border: none; /* Remove default border */
@@ -151,7 +151,7 @@ animation:	<animation-name>
     border-radius: 10px; /* Optional: Add rounded corners */
 }
 
-.modalText {
+.loginRegisterText {
     color: white;
     font-size: 1rem;
 }
@@ -205,4 +205,17 @@ animation:	<animation-name>
     width: 250px; /* Make the QR code larger */
     height: 250px; /* Maintain square aspect ratio */
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Optional: Add shadow for a nice effect */
+}
+
+#cookieconsent .modal-content {
+    background-color: rgba(43, 43, 43, 0.2);
+}
+
+#cookieconsent .modal-body {
+    color: #ffffff;
+}
+
+#cookieconsent .modal-header {
+    background-color: rgba(56, 139, 233, 0.5);
+    color: #ffffff;
 }

@@ -16,7 +16,7 @@ class JWTMiddleware:
 			return self.get_response(request)
 		
 		# Check if token exists in cookies
-		token = request.COOKIES.get('jwt')
+		token = request.COOKIES.get('jwt_transcendence')
 		if token:
 			try:
 				payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
