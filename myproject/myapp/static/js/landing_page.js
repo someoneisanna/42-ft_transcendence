@@ -19,7 +19,7 @@ function signOut() {
 	})
 	.then(data => {
 		console.log('Logout Success:', data);
-		loadPage('/landing/', true);
+		loadPage('/landing/', true, true);
 	})
 	.catch((error) => {
 		console.error('Logout failed:', error);

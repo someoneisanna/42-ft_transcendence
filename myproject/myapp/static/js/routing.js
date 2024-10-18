@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.body.appendChild(script);
 	}
 
-	window.loadPage = (url, addHistory) => {
+	window.loadPage = (url, addHistory, signOut) => {
 		fetch(url)
 			.then(response => {
 				if (response.ok) {
@@ -27,14 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
 				else
 					contentDiv.innerHTML = html;
 
-				if (url === '/landing/')
+				if (url === '/landing/') {
+					layoutDiv.innerHTML = '';
 					loadScript('/static/js/landing_page.js');
+				}
 				else if (url === '/layout/')
 					loadScript('/static/js/layout.js');
 				else if (url === '/game_choice/')
 					loadScript('/static/js/game_choice.js');
 
-				if (addHistory) {
+				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
 					history.pushState({ url: url }, '', url);
 				}
 			})
@@ -46,10 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	// Automatically load the landing page when the site is visited at root
 	if (window.location.pathname === '/' || window.location.pathname === '') {
-		loadPage('/landing/', true);
-	} else {
-		loadPage(window.location.pathname, true);
+		loadPage('/landing/', false);
+		history.replaceState({ url: '/landing/' }, '', '/landing/');
 	}
+	else
+		loadPage(window.location.pathname, true);
 	
 	// Handle back/forward button
 	window.addEventListener('popstate', (event) => {
