@@ -1,3 +1,14 @@
+#home-text{
+    top: 0;
+    left: 0;
+    position: fixed;
+    font-family: 'Courier New', Courier, monospace;
+    font-style: italic;
+    font-size: 30px;
+    color: white;
+    user-select: none;
+}
+
 #header{
 	background-color: #333;
 	color: #fff;
