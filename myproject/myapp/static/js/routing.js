@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const contentDiv = document.getElementById('content');
+	const layoutDiv = document.getElementById('layout');
 
 	function loadScript(url) {
 		const script = document.createElement('script');
@@ -19,13 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
 				throw new Error('Page not found');
 			})
 			.then(html => {
-				contentDiv.innerHTML = html;
-				if (url === '/landing/') {
+				if (url === '/layout/') {
+					layoutDiv.innerHTML = html;
+					loadPage('/game_choice/', true);
+				}
+				else
+					contentDiv.innerHTML = html;
+
+				if (url === '/landing/')
 					loadScript('/static/js/landing_page.js');
-				}
-				else if (url === '/layout/') {
+				else if (url === '/layout/')
 					loadScript('/static/js/layout.js');
-				}
+				else if (url === '/game_choice/')
+					loadScript('/static/js/game_choice.js');
+
 				if (addHistory) {
 					history.pushState({ url: url }, '', url);
 				}
@@ -50,26 +58,3 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 });
-
-
-
-
-
-
-/*const loadLandingPage = () => {
-	fetch('/landing/')
-		.then(response => {
-			if (response.ok) {
-				return response.text();
-			}
-			throw new Error('Failed to load the landing page.');
-		})
-		.then(html => {
-			contentDiv.innerHTML = html;
-			loadScript('/static/js/landing_page.js');
-		})
-		.catch(error => {
-			console.error('Error loading landing page:', error);
-			contentDiv.innerHTML = '<p>Failed to load the landing page content.</p>';
-		});
-};*/

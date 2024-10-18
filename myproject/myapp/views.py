@@ -38,11 +38,35 @@ def layout(request):
 		return redirect('/')
 	return render(request, 'layout.html')
 
+def game_choice(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'game_choice.html')
+
 def menu_pong(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
 	return render(request, 'menu_pong.html')
+
+def dropdown_profile(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'dropdown_profile.html')
+
+def dropdown_settings(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'dropdown_settings.html')
+
+def dropdown_friends(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'dropdown_friends.html')
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
 

@@ -1,11 +1,7 @@
-// RUN THE SCRIPT WHEN THE PAGE IS FULLY LOADED -------------------------------------------------------------------------------------------
-
-function initializeJS() {
-
-// IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
+// SIGN OUT FUNCTION -----------------------------------------------------------------------------------------------------------------------
 
 function signOut() {
-	if (confirm("Are you sure you want to quit?") == false) 
+	if (confirm("Are you sure you want to quit?") == false)
 		return;
 	fetch('http://127.0.0.1:8000/logout/', {
 		method: 'POST',
@@ -29,6 +25,12 @@ function signOut() {
 		console.error('Logout failed:', error);
 	});
 }
+
+// RUN THE SCRIPT WHEN THE PAGE IS FULLY LOADED -------------------------------------------------------------------------------------------
+
+function initializeJS() {
+
+// IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
 
 const confirmSignOut = document.getElementById('confirmSignOut');
 if (confirmSignOut) {
