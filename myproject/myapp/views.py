@@ -11,6 +11,7 @@ import qrcode
 from qrcode.image.pil import PilImage
 from io import BytesIO
 import base64
+from django.core.files.storage import default_storage
 
 # GO TO HTML PAGES ------------------------------------------------------------------------------------------------
 
@@ -195,6 +196,9 @@ def upload_pic(request):
 					user = User.objects.get(id=payload['user_id'])
 				except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
 					return JsonResponse({'error': 'Invalid token. Please log in again.'}, status=401)
+			if user.profile_pic and user.profile_pic.name != 'profile_pics/default.jpg':
+				if default_storage.exists(user.profile_pic.name):
+					default_storage.delete(user.profile_pic.name)
 			user.profile_pic = profile_picture
 			user.save()
 			return JsonResponse({'message': 'Profile picture uploaded successfully.'}, status=200)
