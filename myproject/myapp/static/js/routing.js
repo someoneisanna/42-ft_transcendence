@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					loadScript('/static/js/layout.js');
 				else if (url === '/game_choice/')
 					loadScript('/static/js/game_choice.js');
+				else if (url === '/dropdown_profile/')
+					loadScript('/static/js/dropdown_profile.js');
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
 					history.pushState({ url: url }, '', url);

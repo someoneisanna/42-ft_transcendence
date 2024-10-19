@@ -36,7 +36,15 @@ def layout(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	return render(request, 'layout.html')
+	token = request.COOKIES.get('jwt_transcendence')
+	if token:
+		try:
+			payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+			user = User.objects.get(id=payload['user_id'])
+			print("layout4:", user.profile_pic.url)
+			return render(request, 'layout.html', {'profile_pic': user.profile_pic.url})
+		except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+			return redirect ('/')
 
 def game_choice(request):
 	referer = request.META.get('HTTP_REFERER')
@@ -172,13 +180,33 @@ def logout(request):
 		return response
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# UPLOAD PROFILE PICTURE -----------------------------------------------------------------------------------------
+
+@csrf_exempt
+def upload_pic(request):
+	if request.method == 'POST':
+		profile_picture = request.FILES.get('profile_pic')
+		if profile_picture:
+			token = request.COOKIES.get('jwt_transcendence')
+			if token:
+				try:
+					payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+					user = User.objects.get(id=payload['user_id'])
+				except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
+					return JsonResponse({'error': 'Invalid token. Please log in again.'}, status=401)
+			user.profile_pic = profile_picture
+			user.save()
+			return JsonResponse({'message': 'Profile picture uploaded successfully.'}, status=200)
+		return JsonResponse({'error': 'No file provided.'}, status=400)
+	return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 # GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
 
 @csrf_exempt
 def users(request):
 	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA')
+		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA', 'profile_pic')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
 

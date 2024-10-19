@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 	path('', views.index, name='index'),
@@ -14,7 +16,11 @@ urlpatterns = [
 	path('login/', views.login, name='login'),												# API for logging in
 	path('register/', views.register, name='register'),										# API for registering
 	path('logout/', views.logout, name='logout'),											# API for logging out
+	path('upload_pic/', views.upload_pic, name='upload_pic'),								# API for uploading a profile picture
 
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('delete/', views.delete, name='delete'),											# API for deleting all users
 ]
+
+if settings.DEBUG:
+	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

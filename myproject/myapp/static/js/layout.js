@@ -12,14 +12,6 @@ function goToFriends() {
 	loadPage('/dropdown_friends/', true);
 }
 
-
 function goHome() {
 	loadPage('/layout/', true);
 }
-
-/*function initializeJS() {
-
-	document.getElementById('home-text').addEventListener('click', function(e) {
-		goHome();
-	});
-}*/
