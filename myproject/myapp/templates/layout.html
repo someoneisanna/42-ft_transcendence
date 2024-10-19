@@ -3,16 +3,19 @@
 		<a href="" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
 		<img src="https://github.com/mdo.png" alt="mdo" width="42" height="42" class="rounded-circle">
 		</a>
-		<ul class="dropdown-menu dropdown-menu-end text-small">
-			<li><a class="dropdown-item" onclick="goToProfile()">Profile</a></li>
-			<li><a class="dropdown-item" onclick="goToFriends()">Friends</a></li>
-			<li><a class="dropdown-item" onclick="goToSettings()">Settings</a></li>
+		<ul class="dropdown-menu dropdown-menu-end">
+			<li><a class="dropdown-item text-white" onclick="goToProfile()">Profile</a></li>
+			<li><a class="dropdown-item text-white" onclick="goToFriends()">Friends</a></li>
+			<li><a class="dropdown-item text-white" onclick="goToSettings()">Settings</a></li>
 		<li><hr class="dropdown-divider"></li>
-		<li><a class="dropdown-item" onclick="signOut()">Sign out</a></li>
+		<li><a class="dropdown-item text-white" onclick="signOut()">Sign out</a></li>
 		</ul>
 	</div>
 </div>
-<div id="home-text"><a onclick="goHome()">ft_transcendence</a></div>
+
+<div id="home-text" onclick="goHome()">
+	<a>ft_transcendence</a>
+</div>
 
 <footer>
 	<div>

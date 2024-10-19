@@ -1,4 +1,36 @@
-#home-text{
+#header{
+	background-color: #333;
+	color: #fff;
+	padding: 1px;
+	text-align: center;
+	padding-left: 85%;
+	padding-bottom: 6px;
+	height: 50px;
+	position: sticky;
+}
+
+.dropdown {
+    border : 1px solid #ff0000;
+}
+
+.dropdown-divider {
+    border-color: #fff;
+}
+
+.dropdown-item:hover {
+    background-color: #226b8d;
+}
+
+.dropdown:hover {
+    transform: translateX(-10px);
+}
+
+.dropdown-menu {
+    z-index: 1; /* higher than the surrounding elements */
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#home-text {
     top: 0;
     left: 0;
     position: fixed;
@@ -6,35 +38,24 @@
     font-style: italic;
     font-size: 30px;
     color: white;
-    user-select: none;
+    cursor: pointer;          /* Make the entire div clickable */
+    padding: 1.7px;            /* Add padding to the div */
+    padding-right: 10px;       /* Add padding to the right */
+    background-color: #7a3636; /* Optional: Add a background for visibility */
+    display: inline-block;    /* Ensure the div is treated as a block element */
+    transition: padding-right 0.1s ease;
 }
 
-#header{
-	background-color: #333;
-	color: #fff;
-	padding: 1px;
-	text-align: center;
-	padding-left: 80%;
-	padding-bottom: 6px;
-	height: 50px;
-	position: sticky;
+#home-text a {
+    display: block;           /* Make the link cover the entire div */
+    height: 100%;             /* Ensure the link covers the full height */
+    width: 100%;              /* Ensure the link covers the full width */
+    text-decoration: none;    /* Optional: Remove underline from the text */
+    transition: transform 0.3s ease;
 }
 
-#layoutContent {
-    background-color: #000e18;
-    height: calc(100vh - 80px); /* Total height: 50px (header) + 30px (footer) = 80px */
-    display: flex; /* Enable Flexbox */
-    flex-direction: row; /* Ensure they are in a row */
-    align-items: center; /* Center items vertically */
-    justify-content: center; /* Center items horizontally */
-}
-
-.gameChoice:hover {
-    transform: scale(1.1); /* Optional: Scale image on hover */
-}
-
-#buttonGame1, #buttonGame2 {
-    margin: 0 20px; /* Add horizontal spacing between images */
+#home-text:hover {
+    transform: translateX(10px);
 }
 
 footer {
@@ -45,12 +66,4 @@ footer {
     position: fixed;
     width: 100%;
 	height: 30px;
-}
-
-.dropdown {
-    border : 1px solid #ff0000;
-}
-
-.dropdown-menu {
-    z-index: 1; /* higher than the surrounding elements */
 }

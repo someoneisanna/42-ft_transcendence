@@ -1,5 +1,5 @@
 import jwt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.conf import settings
 
 import logging
@@ -10,12 +10,12 @@ class JWTMiddleware:
 
 	def __call__(self, request):
 		
-		# Paths that do not require a token
-		untokenized_paths = ['favicon.ico', '/landing/', '/login/', '/register/', '/', '/delete/']
+		# Paths that do not require a jwt token
+		untokenized_paths = ['favicon.ico', '/', '/landing/', '/login/', '/register/', '/delete/']
 		if request.path in untokenized_paths:
 			return self.get_response(request)
 		
-		# Check if token exists in cookies
+		# For all other paths, check if the jwt token is valid
 		token = request.COOKIES.get('jwt_transcendence')
 		if token:
 			try:
@@ -25,8 +25,9 @@ class JWTMiddleware:
 				return JsonResponse({'error': 'Token has expired. Please log in again.'}, status=401)
 			except jwt.InvalidTokenError:
 				return JsonResponse({'error': 'Invalid token. Please log in again.'}, status=401)
-		
-		# If token does not exist in cookies, return error
+
+		# If the request does not have a user_id attribute, redirect to the landing page
 		if not hasattr(request, 'user_id'):
-			return JsonResponse({'error': 'Please log in.'}, status=401)
+			return HttpResponseRedirect('/landing/')
+		
 		return self.get_response(request)
