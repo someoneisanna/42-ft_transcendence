@@ -32,6 +32,7 @@ function initializeJS() {
 
 // IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
 
+// If the user is already logged in, and chooses to sign out
 const confirmSignOut = document.getElementById('confirmSignOut');
 if (confirmSignOut) {
 	confirmSignOut.addEventListener('click', function() {
@@ -39,6 +40,7 @@ if (confirmSignOut) {
 	});
 }
 
+// If the user is already logged in, and chooses to continue as this user
 const confirmYes = document.getElementById('confirmYes');
 if (confirmYes) {
 	confirmYes.addEventListener('click', function() {
@@ -152,7 +154,7 @@ function continueToLayout() {
 	document.getElementsByClassName("modal-backdrop")[0].remove();
 	loadPage('/layout/', true);
 	var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
-		cookieConsentModal.show();
+	cookieConsentModal.show();
 }
 
 const registerForm = document.getElementById('registerForm');

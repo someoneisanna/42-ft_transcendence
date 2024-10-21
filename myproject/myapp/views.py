@@ -49,7 +49,7 @@ def dropdown_profile(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	return render(request, 'dropdown_profile.html', {'profile_pic': request.user.profile_pic.url})
+	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
 def dropdown_settings(request):
 	referer = request.META.get('HTTP_REFERER')
