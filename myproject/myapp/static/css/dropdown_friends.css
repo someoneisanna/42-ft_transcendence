@@ -1,4 +1,4 @@
-.profilePage {
+.friendsPage {
 	border: 2px solid #ccc;
 	padding: 20px;
 	background-color: rgba(0, 0, 0, 0.5);
@@ -12,16 +12,30 @@
 	justify-content: space-between; /* Ensures space between the two columns */
 }
 
-.profileInfo{
+.friendsList{
 	color: white;
 	border-right: 2px solid rgb(255, 255, 255);
 	text-align: center;
 	flex: 1; /* Equal width for both columns */
 	padding: 20px;
+	padding-right: 40px;
 }
 
-.profileStats {
+.friendsList ul{
+	list-style: none;
+	margin-left: 0;         /* Removes the default space (indentation) */
+    padding-left: 0;
+	margin-top: 50px;
+}
+
+.friendsSearch {
 	flex: 2; /* Equal width for both columns */
-	padding: 20px;
+	padding: 20px 50px 20px 50px;
 	color: white;
+}
+
+.friendUser {
+	display: flex;
+	margin-bottom: 2px;
+	border: 2px solid #ccc;
 }
