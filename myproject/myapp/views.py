@@ -22,30 +22,16 @@ def landing_page(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	token = request.COOKIES.get('jwt_transcendence')
-	if token:
-		try:
-			payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-			user = User.objects.get(id=payload['user_id'])
-			username = user.username
-			return render(request, 'landing_page.html', {'username': username, 'isLogged': True})
-		except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
-			return redirect ('/')
+	if request.user:
+		return render(request, 'landing_page.html', {'username': request.user.username, 'isLogged': True})
 	return render(request, 'landing_page.html', {'isLogged': False})
 
 def layout(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	token = request.COOKIES.get('jwt_transcendence')
-	if token:
-		try:
-			payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-			user = User.objects.get(id=payload['user_id'])
-			print("layout4:", user.profile_pic.url)
-			return render(request, 'layout.html', {'profile_pic': user.profile_pic.url})
-		except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
-			return redirect ('/')
+	if request.user:
+		return render(request, 'layout.html', {'profile_pic': request.user.profile_pic.url})
 
 def game_choice(request):
 	referer = request.META.get('HTTP_REFERER')
@@ -63,7 +49,7 @@ def dropdown_profile(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
 		return redirect('/')
-	return render(request, 'dropdown_profile.html')
+	return render(request, 'dropdown_profile.html', {'profile_pic': request.user.profile_pic.url})
 
 def dropdown_settings(request):
 	referer = request.META.get('HTTP_REFERER')
@@ -189,21 +175,15 @@ def upload_pic(request):
 	if request.method == 'POST':
 		profile_picture = request.FILES.get('profile_pic')
 		if profile_picture:
-			token = request.COOKIES.get('jwt_transcendence')
-			if token:
-				try:
-					payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-					user = User.objects.get(id=payload['user_id'])
-				except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
-					return JsonResponse({'error': 'Invalid token. Please log in again.'}, status=401)
-			if user.profile_pic and user.profile_pic.name != 'profile_pics/default.jpg':
-				if default_storage.exists(user.profile_pic.name):
-					default_storage.delete(user.profile_pic.name)
-			user.profile_pic = profile_picture
-			user.save()
-			return JsonResponse({'message': 'Profile picture uploaded successfully.'}, status=200)
+			if not request.user:
+				return JsonResponse({'error': 'User not logged in.'}, status=401)
+			if request.user.profile_pic and request.user.profile_pic.name != 'profile_pics/default.jpg':
+				if default_storage.exists(request.user.profile_pic.name):
+					default_storage.delete(request.user.profile_pic.name)
+			request.user.profile_pic = profile_picture
+			request.user.save()
+			return JsonResponse({'message': 'Profile picture uploaded successfully.', 'path': request.user.profile_pic.url}, status=200)
 		return JsonResponse({'error': 'No file provided.'}, status=400)
-	return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 # GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
 

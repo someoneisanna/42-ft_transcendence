@@ -15,3 +15,10 @@ function goToFriends() {
 function goHome() {
 	loadPage('/layout/', true);
 }
+
+function changeProfilePic(path) {
+	const profilePic = document.getElementById('smallProfilePicture');
+	if (profilePic) {
+		profilePic.src = path;
+	}
+}

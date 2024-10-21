@@ -44,6 +44,8 @@ if (profileForm) {
 				const result = await response.json();
 				console.log('Upload successful:', result);
 				errorMessage.innerHTML = 'Upload successful!';
+				document.getElementById('bigProfilePicture').src = result.path;
+				changeProfilePic(result.path);
 			}
 			else
 				console.error('Upload failed:', response.statusText);
