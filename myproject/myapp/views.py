@@ -45,6 +45,30 @@ def menu_pong(request):
 		return redirect('/')
 	return render(request, 'menu_pong.html')
 
+def pong_quickplay(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'pong_quickplay.html')
+
+def pong_tournament(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'pong_tournament.html')
+
+def pong_customGame(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'pong_customGame.html')
+
+def pong_roomList(request):
+	referer = request.META.get('HTTP_REFERER')
+	if referer is None:
+		return redirect('/')
+	return render(request, 'pong_roomList.html')
+
 def dropdown_profile(request):
 	referer = request.META.get('HTTP_REFERER')
 	if referer is None:
