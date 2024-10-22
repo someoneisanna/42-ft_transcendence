@@ -196,8 +196,13 @@ def logout(request):
 
 @csrf_exempt
 def upload_pic(request):
-	if request.method == 'POST':
-		profile_picture = request.FILES.get('profile_pic')
+	if request.method == 'POST' or request.method == 'DELETE':
+		
+		if request.method == 'DELETE':
+			profile_picture = 'profile_pics/default.jpg'
+		else:
+			profile_picture = request.FILES.get('profile_pic')
+
 		if profile_picture:
 			if not request.user:
 				return JsonResponse({'error': 'User not logged in.'}, status=401)

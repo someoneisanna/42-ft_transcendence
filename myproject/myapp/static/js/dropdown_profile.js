@@ -43,9 +43,9 @@ if (profileForm) {
 			if (response.ok) {
 				const result = await response.json();
 				console.log('Upload successful:', result);
-				errorMessage.innerHTML = 'Upload successful!';
+				errorMessage.innerHTML = 'Upload successful.';
 				document.getElementById('bigProfilePicture').src = result.path;
-				changeProfilePic(result.path);
+				changeSmallProfilePic(result.path);
 			}
 			else
 				console.error('Upload failed:', response.statusText);
@@ -56,4 +56,27 @@ if (profileForm) {
 	});
 }
 
+}
+
+// FUNCTION TO REMOVE THE PROFILE PICTURE -------------------------------------------------------------------------------------------------
+
+function removeProfilePic() {
+	try {
+		fetch('/upload_pic/', {
+			method: 'DELETE',
+		})
+		.then(response => {
+			if (response.ok) {
+				console.log('Profile picture removed.');
+				document.getElementById('bigProfilePicture').src = '/media/profile_pics/default.jpg';
+				changeSmallProfilePic('/media/profile_pics/default.jpg');
+				errorMessage.innerHTML = '';
+			}
+			else
+				console.error('Failed to remove profile picture:', response.statusText);
+		});
+	}
+	catch (error) {
+		console.error('Error removing profile picture:', error);
+	}
 }

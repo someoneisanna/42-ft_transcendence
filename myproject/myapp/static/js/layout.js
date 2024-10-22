@@ -16,7 +16,7 @@ function goHome() {
 	loadPage('/layout/', true);
 }
 
-function changeProfilePic(path) {
+function changeSmallProfilePic(path) {
 	const profilePic = document.getElementById('smallProfilePicture');
 	if (profilePic) {
 		profilePic.src = path;

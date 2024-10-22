@@ -12,6 +12,19 @@
 	justify-content: space-between; /* Ensures space between the two columns */
 }
 
+#profile-form {
+	display: inline-block;
+	margin-top: 25px;
+	width: 500px;
+}
+
+#profile-picture {
+	width: 300px;
+	overflow: hidden;
+	text-overflow: clip;
+	white-space: nowrap;
+}
+
 .profileInfo{
 	color: white;
 	border-right: 2px solid rgb(255, 255, 255);
@@ -24,4 +37,10 @@
 	flex: 2; /* Equal width for both columns */
 	padding: 20px;
 	color: white;
+}
+
+#removeProfilePicture {
+	cursor: pointer;
+	text-decoration: underline; /* Optional, adds underline */
+	color: rgb(114, 165, 241); /* Optional, typical link color */
 }

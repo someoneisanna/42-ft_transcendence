@@ -2,11 +2,14 @@
 	<div class="profileInfo">
 		<h1>Greetings, {{ username }}!</h1>
 		<img id="bigProfilePicture" src="{{ profile_pic }}" width="300" height="300" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
+		<br>
 		<form id="profile-form">
 			<input type="file" id="profile-picture" name="profile_picture" accept="image/*" required>
 			<button type="submit">Upload</button>
 			<p id="uploadError"></p>
 		</form>
+		<br>
+		<a id="removeProfilePicture" onclick="removeProfilePic()">Remove Profile Picture</a>
 	</div>
 	<div class="profileStats">
 		<h1>Stats</h1>
