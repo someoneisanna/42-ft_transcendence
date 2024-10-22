@@ -35,13 +35,21 @@
 	<div class="friendsSearch">
 		<div id="friendsSearchBar">
 			<div class="input-group rounded">
-				<input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+				<input 
+					type="search" 
+					id="searchInput" 
+					class="form-control rounded" 
+					placeholder="Search" 
+					aria-label="Search" 
+					aria-describedby="search-addon" 
+					onkeyup="handleLiveSearch()" 
+				/>
 				<span class="input-group-text border-0" id="search-addon">
-				  <i class="fas fa-search"></i>
+					<i class="fas fa-search"></i>
 				</span>
-			  </div>
+			</div>
 		</div>
-		<div id="friendsSearchResults">
-		</div>
+		<ul id="friendsSearchResults">
+		</ul>
 	</div>
 </div>

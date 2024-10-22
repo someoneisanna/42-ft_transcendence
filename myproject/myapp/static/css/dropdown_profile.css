@@ -10,7 +10,6 @@
 	position: relative;
 	display: flex; /* Makes the content flow in a row (two columns) */
 	justify-content: space-between; /* Ensures space between the two columns */
-	z-index: -1;
 }
 
 #profile-form {

@@ -63,14 +63,13 @@ if (profileForm) {
 function removeProfilePic() {
 	try {
 		fetch('/upload_pic/', {
-			method: 'DELETE',
+			method: 'DELETE', 
 		})
 		.then(response => {
 			if (response.ok) {
 				console.log('Profile picture removed.');
 				document.getElementById('bigProfilePicture').src = '/media/profile_pics/default.jpg';
 				changeSmallProfilePic('/media/profile_pics/default.jpg');
-				errorMessage.innerHTML = '';
 			}
 			else
 				console.error('Failed to remove profile picture:', response.statusText);

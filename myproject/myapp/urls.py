@@ -21,6 +21,7 @@ urlpatterns = [
 	path('register/', views.register, name='register'),										# API for registering
 	path('logout/', views.logout, name='logout'),											# API for logging out
 	path('upload_pic/', views.upload_pic, name='upload_pic'),								# API for uploading a profile picture
+	path('search_friends/', views.search_friends, name='search_friends'),					# API for searching for users
 
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('delete/', views.delete, name='delete'),											# API for deleting all users

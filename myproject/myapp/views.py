@@ -212,6 +212,26 @@ def upload_pic(request):
 			request.user.save()
 			return JsonResponse({'message': 'Profile picture uploaded successfully.', 'path': request.user.profile_pic.url}, status=200)
 		return JsonResponse({'error': 'No file provided.'}, status=400)
+	
+# SEARCH FOR FRIENDS ---------------------------------------------------------------------------------------------
+
+@csrf_exempt
+def search_friends(request):
+	if request.method == 'GET':
+		search_input = request.GET.get('q', '').strip()
+		if search_input == '':
+			return JsonResponse({'error': 'No search input provided'}, status=200)
+		users = User.objects.exclude(id=request.user.id).filter(username__icontains=search_input)
+		if not users.exists():
+			return JsonResponse([], safe=False)
+		user_list = []
+		for user in users:
+			user_list.append({
+				'id': user.id,
+				'username': user.username,
+				'profile_pic': user.profile_pic.url
+			})
+		return JsonResponse(user_list, safe=False)
 
 # GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
 

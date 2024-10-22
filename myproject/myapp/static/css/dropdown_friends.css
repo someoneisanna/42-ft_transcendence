@@ -10,7 +10,6 @@
 	position: relative;
 	display: flex; /* Makes the content flow in a row (two columns) */
 	justify-content: space-between; /* Ensures space between the two columns */
-	z-index: -1;
 }
 
 .friendsList{
@@ -22,10 +21,14 @@
 	padding-right: 40px;
 }
 
-.friendsList ul{
+.friendsList h1 {
+	margin-bottom: 0px;
+}
+
+.friendsPage ul{
 	list-style: none;
 	margin-left: 0;         /* Removes the default space (indentation) */
-    padding-left: 0;
+	padding-left: 0;
 	margin-top: 50px;
 }
 
@@ -39,4 +42,14 @@
 	display: flex;
 	margin-bottom: 2px;
 	border: 2px solid #ccc;
+}
+
+.userResult {
+	display: flex;
+	margin-bottom: 2px;
+	border: 2px solid #ccc;
+}
+
+#friendsSearchBar {
+	height: 48px;
 }
