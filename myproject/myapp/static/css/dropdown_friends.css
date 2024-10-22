@@ -48,8 +48,23 @@
 	display: flex;
 	margin-bottom: 2px;
 	border: 2px solid #ccc;
+
+	justify-content: space-between;
+	align-items: center;
 }
 
 #friendsSearchBar {
 	height: 48px;
+}
+
+.userInfo {
+	display: flex;
+	align-items: center;
+}
+
+.friendsElementButton {
+	margin-left: auto;
+	margin-right: 5px;
+	color: white;
+	border: 2px solid #ccc;
 }
