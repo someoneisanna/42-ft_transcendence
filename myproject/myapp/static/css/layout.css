@@ -26,7 +26,7 @@
 }
 
 .dropdown-menu {
-    z-index: 1; /* higher than the surrounding elements */
+    z-index: 5; /* higher than the surrounding elements */
     background-color: rgba(0, 0, 0, 0.6);
 }
 
@@ -66,4 +66,5 @@ footer {
     position: fixed;
     width: 100%;
 	height: 30px;
+    z-index: 5;
 }
