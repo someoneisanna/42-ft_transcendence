@@ -31,8 +31,4 @@ class JWTMiddleware:
 		else:
 			request.user = None
 
-		# If the request does not have a user_id attribute, redirect to the landing page
-		if request.user is None and not request.path.startswith('/landing/'):
-			return HttpResponseRedirect('/landing/')
-		
 		return self.get_response(request)

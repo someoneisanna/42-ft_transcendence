@@ -5,6 +5,30 @@
 	<img src="{% static 'videos/p.gif' %}" alt="backgroundGIF">
 </div>
 
+<!-- Cookie Consent Modal -->
+<div class="modal fade" id="cookieconsent" tabindex="-1" aria-labelledby="cookieconsentLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header text-white">
+				<h5 class="modal-title" id="cookieconsentLabel">Cookies & Privacy</h5>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-3 d-flex align-items-center justify-content-center">
+						<i class="fas fa-cookie-bite fa-4x text-primary"></i>
+					</div>
+					<div class="col-9">
+						<p>This website uses cookies to ensure you get the best experience on our website.</p>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="acceptCookiesButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% if isLogged %}
 
 <div class="landing-page">
@@ -14,8 +38,8 @@
 		<div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
 			<div class="modal-content neon-border" style="background-color: rgba(0, 0, 0, 0.75);">
 				<div class="modal-body">
-					<h3 class="modal-title text-center" id="confirmModalLabel" style="color: white;">Welcome back to ft_transcendence!</h3>
-					<h5 class="modal-title text-center" id="confirmModalLabel" style="color: white;">Do you want to continue as <strong id="username">{{ username }}</strong>?</h5>
+					<h3 class="modal-title text-center text-white" id="confirmModalLabel">Welcome back to ft_transcendence!</h3>
+					<h5 class="modal-title text-center text-white" id="confirmModalLabel">Do you want to continue as <strong id="username">{{ username }}</strong>?</h5>
 					<div class="d-flex justify-content-center mt-4">
 						<button type="button" class="btn btn-danger me-3" id="confirmSignOut" style="font-size: 1.1rem">Sign Out</button>
 						<button type="button" class="btn btn-primary" id="confirmYes" style="font-size: 1.1rem">Yes</button>
@@ -24,9 +48,8 @@
 			</div>
 		</div>
 	</div>
-
 </div>
-	
+
 {% else %}
 
 <!-- Landing Page (title and login button) -->
@@ -114,30 +137,6 @@
 								<button type="submit" id="registerButton" class="btn btn-primary">Register</button>
 							</div>
 						</form>
-					</div>
-
-					<!-- Cookie Consent Modal -->
-					<div class="modal fade" id="cookieconsent" tabindex="-1" aria-labelledby="cookieconsentLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header text-white">
-									<h5 class="modal-title" id="cookieconsentLabel">Cookies & Privacy</h5>
-								</div>
-								<div class="modal-body">
-									<div class="row">
-										<div class="col-3 d-flex align-items-center justify-content-center">
-											<i class="fas fa-cookie-bite fa-4x text-primary"></i>
-										</div>
-										<div class="col-9">
-											<p>This website uses cookies to ensure you get the best experience on our website.</p>
-										</div>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
-								</div>
-							</div>
-						</div>
 					</div>
 
 					</div>

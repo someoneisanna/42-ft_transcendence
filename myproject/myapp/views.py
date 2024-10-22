@@ -28,62 +28,61 @@ def landing_page(request):
 
 def layout(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
-	if request.user:
-		return render(request, 'layout.html', {'profile_pic': request.user.profile_pic.url})
+	return render(request, 'layout.html', {'profile_pic': request.user.profile_pic.url})
 
 def game_choice(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'game_choice.html')
 
 def menu_pong(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'menu_pong.html')
 
 def pong_quickplay(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'pong_quickplay.html')
 
 def pong_tournament(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'pong_tournament.html')
 
 def pong_customGame(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'pong_customGame.html')
 
 def pong_roomList(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'pong_roomList.html')
 
 def dropdown_profile(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
 def dropdown_settings(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'dropdown_settings.html')
 
 def dropdown_friends(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
+	if referer is None or request.user is None:
 		return redirect('/')
 	return render(request, 'dropdown_friends.html')
 
