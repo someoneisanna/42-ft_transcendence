@@ -19,72 +19,38 @@ def index(request):
 	return render(request, 'index.html')
 
 def landing_page(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	if request.user:
 		return render(request, 'landing_page.html', {'username': request.user.username, 'isLogged': True})
 	return render(request, 'landing_page.html', {'isLogged': False})
 
 def layout(request):
-	print("layout")
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'layout.html', {'profile_pic': request.user.profile_pic.url})
 
 def game_choice(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'game_choice.html')
 
 def menu_pong(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'menu_pong.html')
 
 def pong_quickplay(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'pong_quickplay.html')
 
 def pong_tournament(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'pong_tournament.html')
 
 def pong_customGame(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'pong_customGame.html')
 
 def pong_roomList(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'pong_roomList.html')
 
 def dropdown_profile(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
 def dropdown_settings(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'dropdown_settings.html')
 
 def dropdown_friends(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	return render(request, 'dropdown_friends.html')
 
 # 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
@@ -115,9 +81,6 @@ def create_jwt_token(user):
 
 @csrf_exempt
 def login(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	if request.method == 'POST':
 		try:
 			data = json.loads(request.body)
@@ -146,14 +109,13 @@ def login(request):
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # REGISTER USERS --------------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def register(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	if request.method == 'POST':
 		try:
 			data = json.loads(request.body)
@@ -177,14 +139,13 @@ def register(request):
 
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # LOGOUT USERS ----------------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def logout(request):
-	referer = request.META.get('HTTP_REFERER')
-	if referer is None:
-		return redirect('/')
 	if request.method == 'POST':
 		response = JsonResponse({'message': 'Logged out successfully'}, status=200)
 		response.delete_cookie('jwt_transcendence')
@@ -198,10 +159,10 @@ def logout(request):
 def upload_pic(request):
 	if request.method == 'POST' or request.method == 'DELETE':
 		
-		if request.method == 'DELETE':
-			profile_picture = 'profile_pics/default.jpg'
-		else:
+		if request.method == 'POST':
 			profile_picture = request.FILES.get('profile_pic')
+		else:
+			profile_picture = 'profile_pics/default.jpg'
 
 		if profile_picture:
 			if request.user.profile_pic and request.user.profile_pic.name != 'profile_pics/default.jpg':
@@ -211,6 +172,8 @@ def upload_pic(request):
 			request.user.save()
 			return JsonResponse({'message': 'Profile picture uploaded successfully.', 'path': request.user.profile_pic.url}, status=200)
 		return JsonResponse({'error': 'No file provided.'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 	
 # SEARCH FOR FRIENDS ---------------------------------------------------------------------------------------------
 
@@ -231,6 +194,8 @@ def search_friends(request):
 				'profile_pic': user.profile_pic.url
 			})
 		return JsonResponse(user_list, safe=False)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
 

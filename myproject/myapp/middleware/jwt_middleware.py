@@ -2,6 +2,7 @@ import jwt
 from django.http import JsonResponse, HttpResponseRedirect
 from django.conf import settings
 from myapp.models import User
+from django.shortcuts import redirect
 
 import logging
 
@@ -34,7 +35,11 @@ class JWTMiddleware:
 		else:
 			request.user = None
 
-		if request.user is None and not request.path.startswith('/landing/'):
-			return JsonResponse({'error': 'User not authenticated. Please log in.'}, status=401)
+		referer = request.META.get('HTTP_REFERER')
+		if referer is None:
+			return redirect('/')
+		else:
+			if request.user is None and not request.path.startswith('/landing/'):
+				return JsonResponse({'error': 'User not authenticated. Please log in.'}, status=401)
 
 		return self.get_response(request)
