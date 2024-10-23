@@ -10,7 +10,6 @@ class JWTMiddleware:
 		self.get_response = get_response
 
 	def __call__(self, request):
-		
 		# Paths that do not require a jwt token
 		untokenized_paths = ['favicon.ico', '/', '/login/', '/register/', '/users/' ,'/delete/']
 		if request.path in untokenized_paths:
@@ -23,12 +22,19 @@ class JWTMiddleware:
 				payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
 				request.user = User.objects.get(id=payload['user_id'])
 			except jwt.ExpiredSignatureError:
-				return JsonResponse({'error': 'Token has expired. Please log in again.'}, status=401)
+				response = JsonResponse({'error': 'Token has expired. Please log in again.'}, status=401)
+				response.delete_cookie('jwt_transcendence')
+				return response
 			except jwt.InvalidTokenError:
-				return JsonResponse({'error': 'Invalid token. Please log in again.'}, status=401)
+				response = JsonResponse({'error': 'Invalid token. Please log in again'}, status=401)
+				response.delete_cookie('jwt_transcendence')
+				return response
 			except User.DoesNotExist:
 				return JsonResponse({'error': 'User does not exist. Please log in again.'}, status=401)
 		else:
 			request.user = None
+
+		if request.user is None and not request.path.startswith('/landing/'):
+			return JsonResponse({'error': 'User not authenticated. Please log in.'}, status=401)
 
 		return self.get_response(request)

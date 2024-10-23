@@ -27,62 +27,63 @@ def landing_page(request):
 	return render(request, 'landing_page.html', {'isLogged': False})
 
 def layout(request):
+	print("layout")
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'layout.html', {'profile_pic': request.user.profile_pic.url})
 
 def game_choice(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'game_choice.html')
 
 def menu_pong(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'menu_pong.html')
 
 def pong_quickplay(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'pong_quickplay.html')
 
 def pong_tournament(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'pong_tournament.html')
 
 def pong_customGame(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'pong_customGame.html')
 
 def pong_roomList(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'pong_roomList.html')
 
 def dropdown_profile(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
 def dropdown_settings(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'dropdown_settings.html')
 
 def dropdown_friends(request):
 	referer = request.META.get('HTTP_REFERER')
-	if referer is None or request.user is None:
+	if referer is None:
 		return redirect('/')
 	return render(request, 'dropdown_friends.html')
 
@@ -105,7 +106,7 @@ def generate_2fa_qr_code(secret, username):
 def create_jwt_token(user):
 	payload = {
 		'user_id': user.id,
-		'exp': datetime.datetime.now() + datetime.timedelta(hours=5)
+		'exp': datetime.datetime.now() + datetime.timedelta(days=1)
 	}
 	token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 	return token
@@ -203,8 +204,6 @@ def upload_pic(request):
 			profile_picture = request.FILES.get('profile_pic')
 
 		if profile_picture:
-			if not request.user:
-				return JsonResponse({'error': 'User not logged in.'}, status=401)
 			if request.user.profile_pic and request.user.profile_pic.name != 'profile_pics/default.jpg':
 				if default_storage.exists(request.user.profile_pic.name):
 					default_storage.delete(request.user.profile_pic.name)
