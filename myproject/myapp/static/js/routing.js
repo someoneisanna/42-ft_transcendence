@@ -25,6 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
 				throw new Error('Page not found');
 			})
 			.then(html => {
+				if (localStorage.getItem('cookieConsent_transcendence') !== 'accepted') {
+					var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
+					cookieConsentModal.show();
+					const acceptButton = document.getElementById('acceptCookiesButton');
+					if (acceptButton) {
+						acceptButton.addEventListener('click', function() {
+							localStorage.setItem('cookieConsent_transcendence', 'accepted');
+							cookieConsentModal.hide();
+						});
+					}
+				}
 				if (url === '/layout/') {
 					layoutDiv.innerHTML = html;
 					loadPage('/game_choice/', true);

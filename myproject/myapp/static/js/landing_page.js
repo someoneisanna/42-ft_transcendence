@@ -30,18 +30,6 @@ function signOut() {
 
 function initializeJS() {
 
-	if (localStorage.getItem('cookieConsent_transcendence') !== 'accepted') {
-		var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
-		cookieConsentModal.show();
-		const acceptButton = document.getElementById('acceptCookiesButton');
-		if (acceptButton) {
-			acceptButton.addEventListener('click', function() {
-				localStorage.setItem('cookieConsent_transcendence', 'accepted');
-				cookieConsentModal.hide();
-			});
-		}
-	}
-
 // IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
 
 // If the user is already logged in, and chooses to sign out
