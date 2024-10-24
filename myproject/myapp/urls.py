@@ -22,6 +22,12 @@ urlpatterns = [
 	path('logout/', views.logout, name='logout'),											# API for logging out
 	path('upload_pic/', views.upload_pic, name='upload_pic'),								# API for uploading a profile picture
 	path('search_friends/', views.search_friends, name='search_friends'),					# API for searching for users
+	path('get_relationship/', views.get_relationship, name='get_relationship'),				# API for getting the relationship between two users
+	path('send_friend_request/', views.send_friend_request, name='send_friend_request'),	# API for sending a friend request
+	path('accept_invitation/', views.accept_invitation, name='accept_invitation'),			# API for accepting a friend request
+	path('reject_invitation/', views.reject_invitation, name='reject_invitation'),			# API for rejecting a friend request
+	path('remove_friend/', views.remove_friend, name='remove_friend'),						# API for removing a friend
+	path('cancel_invitation/', views.cancel_invitation, name='cancel_invitation'),			# API for cancelling a friend request
 
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('delete/', views.delete, name='delete'),											# API for deleting all users

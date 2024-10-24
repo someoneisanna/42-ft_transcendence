@@ -10,14 +10,30 @@ class User(models.Model):
 	def __str__(self):
 		return self.username
 
-
-class Friendship(models.Model):
-	from_user = models.ForeignKey(User, related_name='friendships', on_delete=models.CASCADE)
-	to_user = models.ForeignKey(User, related_name='friend_of', on_delete=models.CASCADE)
+class Invitation(models.Model):
+	from_user = models.ForeignKey(User, related_name='invitations_sent', on_delete=models.CASCADE)
+	to_user = models.ForeignKey(User, related_name='invitation_requests', on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	class Meta:
-		unique_together = ('from_user', 'to_user')
+		constraints = [
+			models.UniqueConstraint(fields=['from_user', 'to_user'], name='unique_invitation')
+		]
 
 	def __str__(self):
-		return f"{self.from_user.username} is friends with {self.to_user.username}"
+		return f"{self.from_user.username} sent {self.to_user.username} a friend invitation"
+
+class Friendship(models.Model):
+	user1 = models.ForeignKey(User, related_name='friends_with', on_delete=models.CASCADE)
+	user2 = models.ForeignKey(User, related_name='friends_with_user', on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		constraints = [
+			models.UniqueConstraint(fields=['user1', 'user2'], name='unique_friendship'),
+			models.CheckConstraint(check=~models.Q(user1=models.F('user2')), name='cannot_friend_self')
+		]
+
+	def __str__(self):
+		return f"{self.user1.username} is friends with {self.user2.username}"
+

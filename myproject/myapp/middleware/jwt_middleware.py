@@ -31,7 +31,9 @@ class JWTMiddleware:
 				response.delete_cookie('jwt_transcendence')
 				return response
 			except User.DoesNotExist:
-				return JsonResponse({'error': 'User does not exist. Please log in again.'}, status=401)
+				response = JsonResponse({'error': 'User does not exist. Please log in again.'}, status=401)
+				response.delete_cookie('jwt_transcendence')
+				return response
 		else:
 			request.user = None
 

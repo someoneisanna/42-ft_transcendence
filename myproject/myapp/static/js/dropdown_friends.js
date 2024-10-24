@@ -8,65 +8,193 @@ function handleLiveSearch() {
 	// clearResults();  // Clear results if search is empty
 }
 
+function getRelationship(username) {
+	console.log('Getting relationship with:', username);
+	return fetch(`http://127.0.0.1:8000/get_relationship/?username=${username}`)
+		.then(response => {
+			// console.log('Response:', response);
+			if (!response.ok)
+				throw new Error('Relationship failed:', response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			// console.log('Relationship:', data);
+			return data;
+		})
+		.catch(error => {
+			// console.error('Error during relationship:', error);
+			return null;
+		});
+}
+
+function changeButton(username, relationship) {
+	if (relationship === 'none')
+		newElement = `<button class="btn friendsElementButton" onclick="sendInvitation('${username}')"><i class="fa fa-home"></i> +</button>`;
+	else if (relationship === 'friends')
+		newElement = `<button class="btn friendsElementButton" onclick="removeFriend('${username}')"><i class="fa fa-home"></i> -</button>`;
+	else if (relationship === 'invitation_sent')
+		newElement = `<button class="btn friendsElementButton" onclick="cancelInvitation('${username}')"><i class="fa fa-home"></i> cancel</button>`;
+	else if (relationship === 'invitation_received')
+		newElement = `
+			<div>
+				<button class="btn friendsElementButton" onclick="rejectInvitation('${username}')"><i class="fa fa-home"></i> reject</button>
+				<button class="btn friendsElementButton" onclick="acceptInvitation('${username}')"><i class="fa fa-home"></i> accept</button>
+			</div>`;
+	else
+		console.log('Unknown relationship:', relationship);
+	return newElement;
+}
+
 // Function to actually perform the search (e.g., making an API call)
 function performSearch(query) {
 	console.log('Searching for:', query);
 	fetch(`http://127.0.0.1:8000/search_friends/?q=${query}`)
 		.then(response => {
-			console.log('Response:', response);
+			// console.log('Response:', response);
 			if (!response.ok)
 				throw new Error('Search failed:', response.statusText);
 			return response.json();
 		})
 		.then(data => {
-			console.log('Search results:', data);
+			// console.log('Search results:', data);
 			data.forEach(item => {
-				console.log('User:', item);
-				var newElement = `<li class="userResult">
-					<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
-					<p>${item.username}</p>
-					</li>`;
-				document.getElementById('friendsSearchResults').innerHTML += newElement;
+				// console.log('User:', item);
+				const rl = getRelationship(item.username)
+					.then(rl => {
+						console.log('Relationship:', rl.relationship);
+						var newElement = `
+						<li class="userResult">
+						<div class="userInfo">
+						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
+						<p>${item.username}</p>
+						</div>`;
+						newElement += changeButton(item.username, rl.relationship);
+						newElement += `</li>`;
+						document.getElementById('friendsSearchResults').innerHTML += newElement;
+					});
 			});
 		})
 		.catch(error => {
 			console.error('Error during search:', error);
 		});
-
-	// fetch('http://127.0.0.1:8000/search_friends/', {
-	// 	method: 'GET',
-	// 	headers: {
-	// 		'Content-Type': 'application/json'
-	// 	},
-	// 	body: JSON.stringify({ query: query })
-	// })
-	// .then(response => {
-	// 	if (!response.ok)
-	// 		throw new Error('Search failed:', response.statusText);
-	// })
-	// .then(data => {
-	// 	console.log('Search results:', data);
-	// })
-	// .catch(error => {
-	// 	console.error('Error searching:', error);
-	// });
 }
 
-// Function to display results in the searchResults div
-// function displayResults(data) {
-// 	const resultsDiv = document.getElementById('searchResults');
-// 	resultsDiv.innerHTML = '';  // Clear previous results
+function sendInvitation(username) {
+	console.log('Sending friend request to:', username);
+	fetch('http://127.0.0.1:8000/send_friend_request/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({ username: username })
+	})
+	.then(response => {
+		console.log('Response:', response);
+		if (!response.ok)
+			throw new Error('Friend request failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Friend request sent:', data);
+		// button changes to "Request Sent"
+	})
+	.catch(error => {
+		console.error('Error sending friend request:', error);
+	});
+}
 
-// 	// Iterate over the search results and display them
-// 	data.results.forEach(item => {
-// 		const resultItem = document.createElement('div');
-// 		resultItem.textContent = item.name;  // Example: show the result name
-// 		resultsDiv.appendChild(resultItem);
-// 	});
-// }
+function removeFriend(username) {
+	console.log('Removing friend:', username);
+	fetch('http://127.0.0.1:8000/remove_friend/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({ username: username })
+	})
+	.then(response => {
+		console.log('Response:', response);
+		if (!response.ok)
+			throw new Error('Friend removal failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Friend removed:', data);
+		// button changes to "add friend"
+	})
+	.catch(error => {
+		console.error('Error removing friend:', error);
+	});
+}
 
-// // Optional: Clear search results when the input is empty
-// function clearResults() {
-//     const resultsDiv = document.getElementById('searchResults');
-//     resultsDiv.innerHTML = '';  // Clear results
-// }
+function cancelInvitation(username) {
+	console.log('Cancelling invitation:', username);
+	fetch('http://127.0.0.1:8000/cancel_invitation/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({ username: username })
+	})
+	.then(response => {
+		console.log('Response:', response);
+		if (!response.ok)
+			throw new Error('Invitation cancellation failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Invitation cancelled:', data);
+		// button changes to "add friend"
+	})
+	.catch(error => {
+		console.error('Error cancelling invitation:', error);
+	});
+}
+
+function acceptInvitation(username) {
+	console.log('Accepting invitation:', username);
+	fetch('http://127.0.0.1:8000/accept_invitation/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({ username: username })
+	})
+	.then(response => {
+		console.log('Response:', response);
+		if (!response.ok)
+			throw new Error('Invitation acceptance failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Invitation accepted:', data);
+		// button changes to "add friend"
+	})
+	.catch(error => {
+		console.error('Error accepting invitation:', error);
+	});
+}
+
+function rejectInvitation(username) {
+	console.log('Rejecting invitation:', username);
+	fetch('http://127.0.0.1:8000/reject_invitation/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({ username: username })
+	})
+	.then(response => {
+		console.log('Response:', response);
+		if (!response.ok)
+			throw new Error('Invitation rejectance failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Invitation rejected:', data);
+		// button changes to "add friend"
+	})
+	.catch(error => {
+		console.error('Error rejecting invitation:', error);
+	});
+}
