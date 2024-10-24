@@ -110,7 +110,7 @@ def login(request):
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
-		return JsonResponse({'error': 'Invalid request method'}, status=405)
+		return redirect('/')
 
 # REGISTER USERS --------------------------------------------------------------------------------------------------
 
@@ -140,7 +140,7 @@ def register(request):
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
-		return JsonResponse({'error': 'Invalid request method'}, status=405)
+		return redirect('/')
 
 # LOGOUT USERS ----------------------------------------------------------------------------------------------------
 
