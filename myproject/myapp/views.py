@@ -150,6 +150,7 @@ def logout(request):
 	
 # CHANGE PROFILE PICTURE -----------------------------------------------------------------------------------------
 
+@csrf_exempt
 def change_pic(request):
 	if request.method == 'POST' or request.method == 'DELETE':
 		
@@ -171,6 +172,7 @@ def change_pic(request):
 	
 # SEARCH FOR FRIENDS ---------------------------------------------------------------------------------------------
 
+@csrf_exempt
 def search_friends(request):
 	if request.method == 'GET':
 		search_input = request.GET.get('q', '').strip()
@@ -182,7 +184,6 @@ def search_friends(request):
 		user_list = []
 		for user in users:
 			user_list.append({
-				'id': user.id,
 				'username': user.username,
 				'profile_pic': user.profile_pic.url
 			})
@@ -192,6 +193,7 @@ def search_friends(request):
 	
 # GET RELATIONSHIP BETWEEN TWO USERS -----------------------------------------------------------------------------
 
+@csrf_exempt
 def get_relationship(request):
 	if request.method == 'GET':
 		try:
@@ -215,10 +217,35 @@ def get_relationship(request):
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# GET ALL FRIENDS ------------------------------------------------------------------------------------------------
+
+@csrf_exempt
+def get_friends(request):
+	if request.method == 'GET':
+		friendships = Friendship.objects.filter(user1=request.user) | Friendship.objects.filter(user2=request.user)
+		friend_list = []
+		for friendship in friendships:
+			if friendship.user1 == request.user:
+				friend_list.append({
+					'id': friendship.user2.id,
+					'username': friendship.user2.username,
+					'profile_pic': friendship.user2.profile_pic.url
+				})
+			else:
+				friend_list.append({
+					'id': friendship.user1.id,
+					'username': friendship.user1.username,
+					'profile_pic': friendship.user1.profile_pic.url
+				})
+		return JsonResponse(friend_list, safe=False)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 	
 # SEND FRIEND REQUEST --------------------------------------------------------------------------------------------
 
+@csrf_exempt
 def send_friend_request(request):
 	if request.method == 'POST':
 		try:
@@ -247,6 +274,7 @@ def send_friend_request(request):
 
 # ACCEPT FRIEND REQUEST ------------------------------------------------------------------------------------------
 
+@csrf_exempt
 def accept_invitation(request):
 	if request.method == 'POST':
 		try:
@@ -277,9 +305,12 @@ def accept_invitation(request):
 
 # REJECT FRIEND REQUEST ------------------------------------------------------------------------------------------
 
+@csrf_exempt
 def reject_invitation(request):
 	if request.method == 'POST':
+		print('1')
 		try:
+			print('2')
 			data = json.loads(request.body)
 			username_input = data['username']
 
@@ -305,9 +336,12 @@ def reject_invitation(request):
 
 # REMOVE FRIEND --------------------------------------------------------------------------------------------------
 
+@csrf_exempt
 def remove_friend(request):
 	if request.method == 'POST':
+		print('1')
 		try:
+			print('2')
 			data = json.loads(request.body)
 			username_input = data['username']
 
@@ -334,6 +368,7 @@ def remove_friend(request):
 
 # CANCEL FRIEND REQUEST ------------------------------------------------------------------------------------------
 
+@csrf_exempt
 def cancel_invitation(request):
 	if request.method == 'POST':
 		try:
