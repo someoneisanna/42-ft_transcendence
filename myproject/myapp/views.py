@@ -150,7 +150,6 @@ def logout(request):
 	
 # CHANGE PROFILE PICTURE -----------------------------------------------------------------------------------------
 
-@csrf_exempt
 def change_pic(request):
 	if request.method == 'POST' or request.method == 'DELETE':
 		
@@ -172,7 +171,6 @@ def change_pic(request):
 	
 # SEARCH FOR FRIENDS ---------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def search_friends(request):
 	if request.method == 'GET':
 		search_input = request.GET.get('q', '').strip()
@@ -193,7 +191,6 @@ def search_friends(request):
 	
 # GET RELATIONSHIP BETWEEN TWO USERS -----------------------------------------------------------------------------
 
-@csrf_exempt
 def get_relationship(request):
 	if request.method == 'GET':
 		try:
@@ -220,7 +217,6 @@ def get_relationship(request):
 	
 # GET ALL FRIENDS ------------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def get_friends(request):
 	if request.method == 'GET':
 		friendships = Friendship.objects.filter(user1=request.user) | Friendship.objects.filter(user2=request.user)
@@ -245,7 +241,6 @@ def get_friends(request):
 	
 # SEND FRIEND REQUEST --------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def send_friend_request(request):
 	if request.method == 'POST':
 		try:
@@ -274,7 +269,6 @@ def send_friend_request(request):
 
 # ACCEPT FRIEND REQUEST ------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def accept_invitation(request):
 	if request.method == 'POST':
 		try:
@@ -305,7 +299,6 @@ def accept_invitation(request):
 
 # REJECT FRIEND REQUEST ------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def reject_invitation(request):
 	if request.method == 'POST':
 		print('1')
@@ -336,7 +329,6 @@ def reject_invitation(request):
 
 # REMOVE FRIEND --------------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def remove_friend(request):
 	if request.method == 'POST':
 		print('1')
@@ -368,7 +360,6 @@ def remove_friend(request):
 
 # CANCEL FRIEND REQUEST ------------------------------------------------------------------------------------------
 
-@csrf_exempt
 def cancel_invitation(request):
 	if request.method == 'POST':
 		try:

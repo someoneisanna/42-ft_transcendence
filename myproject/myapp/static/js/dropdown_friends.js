@@ -97,7 +97,7 @@ function sendInvitation(buttonRef, username) {
 	fetch('/api/send_friend_request/', {
 		method: 'POST',
 		headers: {
-			'X-csrftoken_var': csrftoken_var,
+			'X-csrftoken': csrftoken_var,
 			'Content-Type': 'application/json'
 	},
 	body: JSON.stringify({ username: username }),
@@ -121,7 +121,7 @@ function removeFriend(buttonRef, username) {
 	fetch('/api/remove_friend/', {
 		method: 'POST',
 		headers: {
-			'X-csrftoken_var': csrftoken_var,
+			'X-csrftoken': csrftoken_var,
 			'Content-Type': 'application/json'
 	},
 	body: JSON.stringify({ username: username }),
@@ -146,7 +146,7 @@ function cancelInvitation(buttonRef, username) {
 	fetch('/api/cancel_invitation/', {
 		method: 'POST',
 		headers: {
-			'X-csrftoken_var': csrftoken_var,
+			'X-csrftoken': csrftoken_var,
 			'Content-Type': 'application/json'
 	},
 	body: JSON.stringify({ username: username }),
@@ -170,7 +170,7 @@ function acceptInvitation(buttonRef, username) {
 	fetch('/api/accept_invitation/', {
 		method: 'POST',
 		headers: {
-			'X-csrftoken_var': csrftoken_var,
+			'X-csrftoken': csrftoken_var,
 			'Content-Type': 'application/json'
 	},
 	body: JSON.stringify({ username: username }),
@@ -195,7 +195,7 @@ function rejectInvitation(buttonRef, username) {
 	fetch('/api/reject_invitation/', {
 		method: 'POST',
 		headers: {
-			'X-csrftoken_var': csrftoken_var,
+			'X-csrftoken': csrftoken_var,
 			'Content-Type': 'application/json'
 	},
 	body: JSON.stringify({ username: username }),
