@@ -36,7 +36,7 @@ if (profileForm) {
 		const formData = new FormData();
 		formData.append('profile_pic', file);
 		try {
-			const response = await fetch('/upload_pic/', {
+			const response = await fetch('/api/change_pic/', {
 				method: 'POST',
 				body: formData,
 			});
@@ -62,12 +62,13 @@ if (profileForm) {
 
 function removeProfilePic() {
 	try {
-		fetch('/upload_pic/', {
+		fetch('/api/change_pic/', {
 			method: 'DELETE', 
 		})
 		.then(response => {
 			if (response.ok) {
 				console.log('Profile picture removed.');
+				document.getElementById('uploadError').innerHTML = '';
 				document.getElementById('bigProfilePicture').src = '/media/profile_pics/default.jpg';
 				changeSmallProfilePic('/media/profile_pics/default.jpg');
 			}

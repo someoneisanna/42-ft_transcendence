@@ -4,13 +4,11 @@ function handleLiveSearch() {
 	if (searchQuery === '')
 		return;
 	performSearch(searchQuery);
-	// Clear the debounce timeout to avoid multiple requests
-	// clearResults();  // Clear results if search is empty
 }
 
 function getRelationship(username) {
 	console.log('Getting relationship with:', username);
-	return fetch(`/get_relationship/?username=${username}`)
+	return fetch(`/api/get_relationship/?username=${username}`)
 		.then(response => {
 			// console.log('Response:', response);
 			if (!response.ok)
@@ -48,7 +46,7 @@ function changeButton(username, relationship) {
 // Function to actually perform the search (e.g., making an API call)
 function performSearch(query) {
 	console.log('Searching for:', query);
-	fetch(`/search_friends/?q=${query}`)
+	fetch(`/api/search_friends/?q=${query}`)
 		.then(response => {
 			// console.log('Response:', response);
 			if (!response.ok)
@@ -81,7 +79,7 @@ function performSearch(query) {
 
 function sendInvitation(username) {
 	console.log('Sending friend request to:', username);
-	fetch('/send_friend_request/', {
+	fetch('/api/send_friend_request/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -105,7 +103,7 @@ function sendInvitation(username) {
 
 function removeFriend(username) {
 	console.log('Removing friend:', username);
-	fetch('/remove_friend/', {
+	fetch('/api/remove_friend/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -129,7 +127,7 @@ function removeFriend(username) {
 
 function cancelInvitation(username) {
 	console.log('Cancelling invitation:', username);
-	fetch('/cancel_invitation/', {
+	fetch('/api/cancel_invitation/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -153,7 +151,7 @@ function cancelInvitation(username) {
 
 function acceptInvitation(username) {
 	console.log('Accepting invitation:', username);
-	fetch('/accept_invitation/', {
+	fetch('/api/accept_invitation/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -177,7 +175,7 @@ function acceptInvitation(username) {
 
 function rejectInvitation(username) {
 	console.log('Rejecting invitation:', username);
-	fetch('/reject_invitation/', {
+	fetch('/api/reject_invitation/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

@@ -3,7 +3,7 @@
 function signOut() {
 	if (confirm("Are you sure you want to quit?") == false)
 		return;
-	fetch('/logout/', {
+	fetch('/api/logout/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -113,7 +113,7 @@ loginForm.addEventListener('submit', function(event) {
 	};
 
 	// Send POST request to your API
-	fetch('/login/', {
+	fetch('/api/login/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -195,7 +195,7 @@ registerForm.addEventListener('submit', function(event) {
 	};
 
 	// Send POST request to your API
-	fetch('/register/', {
+	fetch('/api/register/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

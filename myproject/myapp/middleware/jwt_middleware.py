@@ -12,7 +12,7 @@ class JWTMiddleware:
 
 	def __call__(self, request):
 		# Paths that do not require a jwt token
-		untokenized_paths = ['favicon.ico', '/', '/login/', '/register/', '/users/' ,'/delete/']
+		untokenized_paths = ['favicon.ico', '/', '/api/login/', '/api/register/', '/users/' ,'/delete/']
 		if request.path in untokenized_paths:
 			return self.get_response(request)
 		

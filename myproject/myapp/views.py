@@ -13,7 +13,7 @@ from io import BytesIO
 import base64
 from django.core.files.storage import default_storage
 
-# GO TO HTML PAGES ------------------------------------------------------------------------------------------------
+# LOAD HTML PAGES ------------------------------------------------------------------------------------------------
 
 def index(request):
 	return render(request, 'index.html')
@@ -53,7 +53,7 @@ def dropdown_settings(request):
 def dropdown_friends(request):
 	return render(request, 'dropdown_friends.html')
 
-# 2FA: GENERATE A SECRET KEY AND QR CODE FOR A USER ---------------------------------------------------------------
+# HELPER FUNCTIONS -----------------------------------------------------------------------------------------------
 
 def generate_2fa_secret_key(user):
 	return pyotp.random_base32()
@@ -67,8 +67,6 @@ def generate_2fa_qr_code(secret, username):
 	img_buffer.seek(0)
 	return img_buffer.getvalue()
 
-# CREATE A JWT TOKEN FOR A USER -----------------------------------------------------------------------------------
-
 def create_jwt_token(user):
 	payload = {
 		'user_id': user.id,
@@ -77,7 +75,7 @@ def create_jwt_token(user):
 	token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 	return token
 
-# LOGIN USERS -----------------------------------------------------------------------------------------------------
+# LOGIN USERS ----------------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def login(request):
@@ -112,7 +110,7 @@ def login(request):
 	else:
 		return redirect('/')
 
-# REGISTER USERS --------------------------------------------------------------------------------------------------
+# REGISTER USERS -------------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def register(request):
@@ -142,7 +140,7 @@ def register(request):
 	else:
 		return redirect('/')
 
-# LOGOUT USERS ----------------------------------------------------------------------------------------------------
+# LOGOUT USERS ---------------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def logout(request):
@@ -153,10 +151,10 @@ def logout(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 	
-# UPLOAD PROFILE PICTURE -----------------------------------------------------------------------------------------
+# CHANGE PROFILE PICTURE -----------------------------------------------------------------------------------------
 
 @csrf_exempt
-def upload_pic(request):
+def change_pic(request):
 	if request.method == 'POST' or request.method == 'DELETE':
 		
 		if request.method == 'POST':
@@ -170,7 +168,7 @@ def upload_pic(request):
 					default_storage.delete(request.user.profile_pic.name)
 			request.user.profile_pic = profile_picture
 			request.user.save()
-			return JsonResponse({'message': 'Profile picture uploaded successfully.', 'path': request.user.profile_pic.url}, status=200)
+			return JsonResponse({'message': 'Profile picture changed successfully.', 'path': request.user.profile_pic.url}, status=200)
 		return JsonResponse({'error': 'No file provided.'}, status=400)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -197,7 +195,7 @@ def search_friends(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 	
-# GET RELATIONSHIP BETWEEN TWO USERS ------------------------------------------------------------------------------
+# GET RELATIONSHIP BETWEEN TWO USERS -----------------------------------------------------------------------------
 
 @csrf_exempt
 def get_relationship(request):
@@ -225,7 +223,7 @@ def get_relationship(request):
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 	
-# SEND FRIEND REQUEST ---------------------------------------------------------------------------------------------
+# SEND FRIEND REQUEST --------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def send_friend_request(request):
@@ -234,21 +232,17 @@ def send_friend_request(request):
 			data = json.loads(request.body)
 			username_input = data['username']
 
-			# Check if the target user exists
 			if not User.objects.filter(username=username_input).exists():
 				return JsonResponse({'error': 'Username doesn\'t exist'}, status=400)
 
 			target_user = User.objects.get(username=username_input)
 
-			# Check if the request user is trying to send a request to themselves
 			if request.user == target_user:
 				return JsonResponse({'error': 'You cannot send a friend request to yourself'}, status=400)
 
-			# Check if an invitation has already been sent
 			if Invitation.objects.filter(from_user=request.user, to_user=target_user).exists():
 				return JsonResponse({'error': 'Friend request already sent'}, status=400)
 
-			# Create a new friend invitation
 			Invitation.objects.create(from_user=request.user, to_user=target_user)
 
 			return JsonResponse({'success': 'Friend request sent successfully'}, status=200)
@@ -258,7 +252,7 @@ def send_friend_request(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# ACCEPT FRIEND REQUEST --------------------------------------------------------------------------------------------
+# ACCEPT FRIEND REQUEST ------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def accept_invitation(request):
@@ -267,24 +261,19 @@ def accept_invitation(request):
 			data = json.loads(request.body)
 			username_input = data['username']
 
-			# Check if the target user exists
 			if not User.objects.filter(username=username_input).exists():
 				return JsonResponse({'error': 'Username doesn\'t exist'}, status=400)
 
 			target_user = User.objects.get(username=username_input)
 
-			# Check if the request user is trying to accept a request from themselves
 			if request.user == target_user:
 				return JsonResponse({'error': 'You cannot accept a friend request from yourself'}, status=400)
 
-			# Check if an invitation has been sent
 			if not Invitation.objects.filter(from_user=target_user, to_user=request.user).exists():
 				return JsonResponse({'error': 'No friend request found'}, status=400)
 
-			# Create a new friendship
 			Friendship.objects.create(user1=request.user, user2=target_user)
 
-			# Delete the invitation
 			Invitation.objects.filter(from_user=target_user, to_user=request.user).delete()
 
 			return JsonResponse({'success': 'Friend request accepted successfully'}, status=200)
@@ -294,7 +283,7 @@ def accept_invitation(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# REJECT FRIEND REQUEST --------------------------------------------------------------------------------------------
+# REJECT FRIEND REQUEST ------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def reject_invitation(request):
@@ -303,21 +292,17 @@ def reject_invitation(request):
 			data = json.loads(request.body)
 			username_input = data['username']
 
-			# Check if the target user exists
 			if not User.objects.filter(username=username_input).exists():
 				return JsonResponse({'error': 'Username doesn\'t exist'}, status=400)
 
 			target_user = User.objects.get(username=username_input)
 
-			# Check if the request user is trying to reject a request from themselves
 			if request.user == target_user:
 				return JsonResponse({'error': 'You cannot reject a friend request from yourself'}, status=400)
 
-			# Check if an invitation has been sent
 			if not Invitation.objects.filter(from_user=target_user, to_user=request.user).exists():
 				return JsonResponse({'error': 'No friend request found'}, status=400)
 
-			# Delete the invitation
 			Invitation.objects.filter(from_user=target_user, to_user=request.user).delete()
 
 			return JsonResponse({'success': 'Friend request rejected successfully'}, status=200)
@@ -327,7 +312,7 @@ def reject_invitation(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# REMOVE FRIEND ---------------------------------------------------------------------------------------------------
+# REMOVE FRIEND --------------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def remove_friend(request):
@@ -336,21 +321,17 @@ def remove_friend(request):
 			data = json.loads(request.body)
 			username_input = data['username']
 
-			# Check if the target user exists
 			if not User.objects.filter(username=username_input).exists():
 				return JsonResponse({'error': 'Username doesn\'t exist'}, status=400)
 
 			target_user = User.objects.get(username=username_input)
 
-			# Check if the request user is trying to remove themselves
 			if request.user == target_user:
 				return JsonResponse({'error': 'You cannot remove yourself'}, status=400)
 
-			# Check if the users are friends
 			if not Friendship.objects.filter(user1=request.user, user2=target_user).exists() and not Friendship.objects.filter(user1=target_user, user2=request.user).exists():
 				return JsonResponse({'error': 'You are not friends with this user'}, status=400)
 
-			# Delete the friendship
 			Friendship.objects.filter(user1=request.user, user2=target_user).delete()
 			Friendship.objects.filter(user1=target_user, user2=request.user).delete()
 
@@ -361,7 +342,7 @@ def remove_friend(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# CANCEL FRIEND REQUEST -------------------------------------------------------------------------------------------
+# CANCEL FRIEND REQUEST ------------------------------------------------------------------------------------------
 
 @csrf_exempt
 def cancel_invitation(request):
@@ -370,21 +351,17 @@ def cancel_invitation(request):
 			data = json.loads(request.body)
 			username_input = data['username']
 
-			# Check if the target user exists
 			if not User.objects.filter(username=username_input).exists():
 				return JsonResponse({'error': 'Username doesn\'t exist'}, status=400)
 
 			target_user = User.objects.get(username=username_input)
 
-			# Check if the request user is trying to cancel a request to themselves
 			if request.user == target_user:
 				return JsonResponse({'error': 'You cannot cancel a friend request to yourself'}, status=400)
 
-			# Check if an invitation has been sent
 			if not Invitation.objects.filter(from_user=request.user, to_user=target_user).exists():
 				return JsonResponse({'error': 'No friend request found'}, status=400)
 
-			# Delete the invitation
 			Invitation.objects.filter(from_user=request.user, to_user=target_user).delete()
 
 			return JsonResponse({'success': 'Friend request cancelled successfully'}, status=200)
