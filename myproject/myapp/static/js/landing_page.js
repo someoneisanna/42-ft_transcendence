@@ -6,8 +6,10 @@ function signOut() {
 	fetch('/api/logout/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken_var,
 			'Content-Type': 'application/json'
 		},
+		credentials: 'same-origin'
 	})
 	.then(response => {
 		if (!response.ok) {
@@ -116,9 +118,11 @@ loginForm.addEventListener('submit', function(event) {
 	fetch('/api/login/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken_var,
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(user_data)
+		body: JSON.stringify(user_data),
+		credentials: 'same-origin'
 	})
 	.then(response => {
 		if (!response.ok && response.status !== 422) {
@@ -198,9 +202,11 @@ registerForm.addEventListener('submit', function(event) {
 	fetch('/api/register/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken_var,
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(user_data)
+		body: JSON.stringify(user_data),
+		credentials: 'same-origin'
 	})
 	.then(response => {
 		if (!response.ok) {

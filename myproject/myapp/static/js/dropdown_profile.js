@@ -38,7 +38,12 @@ if (profileForm) {
 		try {
 			const response = await fetch('/api/change_pic/', {
 				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrftoken,
+					'Content-Type': 'application/json',
+				},
 				body: formData,
+				credentials: 'same-origin',
 			});
 			if (response.ok) {
 				const result = await response.json();

@@ -82,9 +82,11 @@ function sendInvitation(username) {
 	fetch('/api/send_friend_request/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken,
 			'Content-Type': 'application/json'
 	},
-	body: JSON.stringify({ username: username })
+	body: JSON.stringify({ username: username }),
+	credentials: 'same-origin'
 	})
 	.then(response => {
 		console.log('Response:', response);
@@ -106,9 +108,11 @@ function removeFriend(username) {
 	fetch('/api/remove_friend/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken,
 			'Content-Type': 'application/json'
 	},
-	body: JSON.stringify({ username: username })
+	body: JSON.stringify({ username: username }),
+	credentials: 'same-origin'
 	})
 	.then(response => {
 		console.log('Response:', response);
@@ -130,9 +134,11 @@ function cancelInvitation(username) {
 	fetch('/api/cancel_invitation/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken,
 			'Content-Type': 'application/json'
 	},
-	body: JSON.stringify({ username: username })
+	body: JSON.stringify({ username: username }),
+	credentials: 'same-origin'
 	})
 	.then(response => {
 		console.log('Response:', response);
@@ -154,9 +160,11 @@ function acceptInvitation(username) {
 	fetch('/api/accept_invitation/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken,
 			'Content-Type': 'application/json'
 	},
-	body: JSON.stringify({ username: username })
+	body: JSON.stringify({ username: username }),
+	credentials: 'same-origin'
 	})
 	.then(response => {
 		console.log('Response:', response);
@@ -178,9 +186,11 @@ function rejectInvitation(username) {
 	fetch('/api/reject_invitation/', {
 		method: 'POST',
 		headers: {
+			'X-CSRFToken': csrftoken,
 			'Content-Type': 'application/json'
 	},
-	body: JSON.stringify({ username: username })
+	body: JSON.stringify({ username: username }),
+	credentials: 'same-origin'
 	})
 	.then(response => {
 		console.log('Response:', response);
