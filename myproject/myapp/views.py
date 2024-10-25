@@ -24,7 +24,7 @@ def landing_page(request):
 	return render(request, 'landing_page.html', {'isLogged': False})
 
 def layout(request):
-	return render(request, 'layout.html', {'profile_pic': request.user.profile_pic.url})
+	return render(request, 'layout.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
 def game_choice(request):
 	return render(request, 'game_choice.html')

@@ -1,7 +1,12 @@
 <div id="header">
 	<div class="dropdown text-end">
-		<a href="" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-			<img id="smallProfilePicture" src="{{ profile_pic }}" width="42" height="42" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
+		<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" id="dropdownClicker" data-bs-toggle="dropdown" aria-expanded="false">
+			<div class="d-inline-block me-2">
+				<p id="username" class="m-0">aaaaaaaa</p>
+			</div>
+			<div class="d-inline-block">
+				<img id="smallProfilePicture" src="{{ profile_pic }}" width="42" height="42" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
+			</div>
 		</a>
 		<ul class="dropdown-menu dropdown-menu-end">
 			<li><a class="dropdown-item text-white" onclick="goToProfile()">Profile</a></li>
