@@ -12,6 +12,8 @@ function signOut() {
 		credentials: 'same-origin'
 	})
 	.then(response => {
+		if (response.status === 403)
+			return loadPage('/landing/', false, false);
 		if (!response.ok) {
 			return response.json().then(err => {
 				throw new Error(err.error);
@@ -125,6 +127,8 @@ loginForm.addEventListener('submit', function(event) {
 		credentials: 'same-origin'
 	})
 	.then(response => {
+		if (response.status === 403)
+			return loadPage('/landing/', false, false);
 		if (!response.ok && response.status !== 422) {
 			return response.json().then(err => {
 				document.getElementById('loginError').innerText = err.error;
@@ -209,6 +213,8 @@ registerForm.addEventListener('submit', function(event) {
 		credentials: 'same-origin'
 	})
 	.then(response => {
+		if (response.status === 403)
+			return loadPage('/landing/', false, false);
 		if (!response.ok) {
 			return response.json().then(err => {
 				document.getElementById('registerError').innerText = err.error;

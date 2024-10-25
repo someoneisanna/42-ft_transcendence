@@ -12,16 +12,22 @@ class customMiddleware:
 		self.get_response = get_response
 
 	def __call__(self, request):
+		# Check if the csrf token is present in the POST requests
+		# if request.method == "POST" or request.method == "PUT" or request.method == "DELETE":
+		# 	csrf_token = request.COOKIES.get("csrftoken")
+		# 	if not csrf_token:
+		# 		return JsonResponse({'error': 'CSRF token is missing. Please refresh the page and try again.'}, status=403)
+	
 		# Paths that do not require a jwt token
 		untokenized_paths = ['favicon.ico', '/', '/api/login/', '/api/register/', '/users/' ,'/delete/']
 		if request.path in untokenized_paths:
 			return self.get_response(request)
 		
 		# For all other paths, check if the jwt token is valid
-		token = request.COOKIES.get('jwt_transcendence')
-		if token:
+		jwt_token = request.COOKIES.get('jwt_transcendence')
+		if jwt_token:
 			try:
-				payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+				payload = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms=['HS256'])
 				request.user = User.objects.get(id=payload['user_id'])
 			except jwt.ExpiredSignatureError:
 				response = JsonResponse({'error': 'Token has expired. Please log in again.'}, status=401)

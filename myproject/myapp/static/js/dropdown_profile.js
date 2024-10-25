@@ -45,6 +45,8 @@ if (profileForm) {
 				body: formData,
 				credentials: 'same-origin',
 			});
+			if (response.status === 403)
+				return loadPage('/landing/', false, false);
 			if (response.ok) {
 				const result = await response.json();
 				console.log('Upload successful:', result);
