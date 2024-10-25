@@ -10,7 +10,7 @@ function handleLiveSearch() {
 
 function getRelationship(username) {
 	console.log('Getting relationship with:', username);
-	return fetch(`http://127.0.0.1:8000/get_relationship/?username=${username}`)
+	return fetch(`/get_relationship/?username=${username}`)
 		.then(response => {
 			// console.log('Response:', response);
 			if (!response.ok)
@@ -48,7 +48,7 @@ function changeButton(username, relationship) {
 // Function to actually perform the search (e.g., making an API call)
 function performSearch(query) {
 	console.log('Searching for:', query);
-	fetch(`http://127.0.0.1:8000/search_friends/?q=${query}`)
+	fetch(`/search_friends/?q=${query}`)
 		.then(response => {
 			// console.log('Response:', response);
 			if (!response.ok)
@@ -81,7 +81,7 @@ function performSearch(query) {
 
 function sendInvitation(username) {
 	console.log('Sending friend request to:', username);
-	fetch('http://127.0.0.1:8000/send_friend_request/', {
+	fetch('/send_friend_request/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -105,7 +105,7 @@ function sendInvitation(username) {
 
 function removeFriend(username) {
 	console.log('Removing friend:', username);
-	fetch('http://127.0.0.1:8000/remove_friend/', {
+	fetch('/remove_friend/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -129,7 +129,7 @@ function removeFriend(username) {
 
 function cancelInvitation(username) {
 	console.log('Cancelling invitation:', username);
-	fetch('http://127.0.0.1:8000/cancel_invitation/', {
+	fetch('/cancel_invitation/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -153,7 +153,7 @@ function cancelInvitation(username) {
 
 function acceptInvitation(username) {
 	console.log('Accepting invitation:', username);
-	fetch('http://127.0.0.1:8000/accept_invitation/', {
+	fetch('/accept_invitation/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -177,7 +177,7 @@ function acceptInvitation(username) {
 
 function rejectInvitation(username) {
 	console.log('Rejecting invitation:', username);
-	fetch('http://127.0.0.1:8000/reject_invitation/', {
+	fetch('/reject_invitation/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
