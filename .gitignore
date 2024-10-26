@@ -1,2 +1,3 @@
 backend/media/*
 frontend/static
+nginx/ssl_certs/*
