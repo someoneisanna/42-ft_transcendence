@@ -12,13 +12,10 @@ function signOut() {
 		credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok) {
-			return response.json().then(err => {
-				throw new Error(err.error);
-			});
-		}
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
+			throw new Error("Failed to post content.");
 		return response.json();
 	})
 	.then(data => {
@@ -127,9 +124,9 @@ loginForm.addEventListener('submit', function(event) {
 		credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok && response.status !== 422) {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok && response.status !== 422) {
 			return response.json().then(err => {
 				document.getElementById('loginError').innerText = err.error;
 				throw new Error(err.error);
@@ -213,9 +210,9 @@ registerForm.addEventListener('submit', function(event) {
 		credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok) {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok) {
 			return response.json().then(err => {
 				document.getElementById('registerError').innerText = err.error;
 				throw new Error(err.error);

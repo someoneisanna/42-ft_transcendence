@@ -13,10 +13,10 @@ class customMiddleware:
 
 	def __call__(self, request):
 		# Check if the csrf token is present in the POST requests
-		# if request.method == "POST" or request.method == "PUT" or request.method == "DELETE":
-		# 	csrf_token = request.COOKIES.get("csrftoken")
-		# 	if not csrf_token:
-		# 		return JsonResponse({'error': 'CSRF token is missing. Please refresh the page and try again.'}, status=403)
+		if request.method == "POST" or request.method == "PUT" or request.method == "DELETE":
+			csrf_token = request.COOKIES.get("csrftoken")
+			if not csrf_token:
+				return JsonResponse({'error': 'CSRF token is missing. Please refresh the page and try again.'}, status=403)
 	
 		# Paths that do not require a jwt token
 		untokenized_paths = ['favicon.ico', '/', '/api/login/', '/api/register/', '/users/' ,'/delete/']

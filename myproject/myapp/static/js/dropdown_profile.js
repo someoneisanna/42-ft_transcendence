@@ -40,13 +40,12 @@ if (profileForm) {
 				method: 'POST',
 				headers: {
 					'X-csrftoken': csrftoken_var,
-					'Content-Type': 'application/json',
 				},
 				body: formData,
 				credentials: 'same-origin',
 			});
-			if (response.status === 403)
-				return loadPage('/landing/', false, false);
+			if (response.status === 401 || response.status === 403)
+				window.location.href = '/';
 			if (response.ok) {
 				const result = await response.json();
 				console.log('Upload successful:', result);
@@ -70,9 +69,16 @@ if (profileForm) {
 function removeProfilePic() {
 	try {
 		fetch('/api/change_pic/', {
-			method: 'DELETE', 
+			method: 'DELETE',
+			headers: {
+				'X-csrftoken': csrftoken_var,
+				'Content-Type': 'application/json',
+			},
+			credentials: 'same-origin',
 		})
 		.then(response => {
+			if (response.status === 401 || response.status === 403)
+				window.location.href = '/';
 			if (response.ok) {
 				console.log('Profile picture removed.');
 				document.getElementById('uploadError').innerHTML = '';

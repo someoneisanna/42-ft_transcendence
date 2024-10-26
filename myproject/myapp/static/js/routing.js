@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	window.loadPage = (url, addHistory, signOut) => {
 		fetch(url)
 			.then(response => {
-				if (response.status === 401 && url !== '/landing/') {
+				if (!response.ok && url !== '/landing/') {
 					loadPage('/landing/', false);
 					history.replaceState({ url: '/landing/' }, '', '/landing/');
 					return Promise.reject('Unauthorized');

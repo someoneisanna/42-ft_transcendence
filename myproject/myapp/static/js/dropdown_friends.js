@@ -109,9 +109,9 @@ function sendInvitation(buttonRef, username) {
 	credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok)
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
 			throw new Error('Friend request failed:', response.statusText);
 		return response.json();
 	})
@@ -135,9 +135,9 @@ function removeFriend(buttonRef, username) {
 	credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok)
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
 			throw new Error('Friend removal failed:', response.statusText);
 		return response.json();
 	})
@@ -162,9 +162,9 @@ function cancelInvitation(buttonRef, username) {
 	credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok)
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
 			throw new Error('Invitation cancellation failed:', response.statusText);
 		return response.json();
 	})
@@ -188,9 +188,9 @@ function acceptInvitation(buttonRef, username) {
 	credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok)
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
 			throw new Error('Invitation acceptance failed:', response.statusText);
 		return response.json();
 	})
@@ -215,9 +215,9 @@ function rejectInvitation(buttonRef, username) {
 	credentials: 'same-origin'
 	})
 	.then(response => {
-		if (response.status === 403)
-			return loadPage('/landing/', false, false);
-		if (!response.ok)
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok)
 			throw new Error('Invitation rejectance failed:', response.statusText);
 		return response.json();
 	})
