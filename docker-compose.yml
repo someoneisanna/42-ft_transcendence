@@ -15,7 +15,7 @@ services:
   django:
     image: django
     container_name: transcendence_django
-    build: ./myproject
+    build: ./backend
     ports:
       - "8000:8000"
     volumes:
