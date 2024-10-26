@@ -1,0 +1,45 @@
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: transcendence_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: transcendence_db
+      POSTGRES_USER: transcendent
+      POSTGRES_PASSWORD: '123'
+    networks:
+      - network
+
+  django:
+    image: django
+    container_name: transcendence_django
+    build: ./myproject
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./frontend/static:/app/frontend/static
+    networks:
+      - network
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx
+    container_name: transcendence_nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "443:443"
+    volumes:
+      - ./frontend/static:/usr/share/nginx/html/static
+    networks:
+      - network
+    depends_on:
+      - django
+
+networks:
+  network:
+    driver: bridge
