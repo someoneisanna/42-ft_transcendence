@@ -61,3 +61,4 @@ nginx:
 
 mkdirs:
 	@mkdir -p frontend/static
+	@mkdir -p database
