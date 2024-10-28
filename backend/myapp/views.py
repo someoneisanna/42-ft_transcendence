@@ -156,10 +156,10 @@ def change_pic(request):
 		if request.method == 'POST':
 			profile_picture = request.FILES.get('profile_pic')
 		else:
-			profile_picture = 'profile_pics/default.jpg'
+			profile_picture = 'default.jpg'
 
 		if profile_picture:
-			if request.user.profile_pic and request.user.profile_pic.name != 'profile_pics/default.jpg':
+			if request.user.profile_pic and request.user.profile_pic.name != 'default.jpg':
 				if default_storage.exists(request.user.profile_pic.name):
 					default_storage.delete(request.user.profile_pic.name)
 			request.user.profile_pic = profile_picture

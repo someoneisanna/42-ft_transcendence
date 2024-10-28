@@ -82,8 +82,8 @@ function removeProfilePic() {
 			if (response.ok) {
 				console.log('Profile picture removed.');
 				document.getElementById('uploadError').innerHTML = '';
-				document.getElementById('bigProfilePicture').src = '/media/profile_pics/default.jpg';
-				changeSmallProfilePic('/media/profile_pics/default.jpg');
+				document.getElementById('bigProfilePicture').src = '/media/default.jpg';
+				changeSmallProfilePic('/media/default.jpg');
 			}
 			else
 				console.error('Failed to remove profile picture:', response.statusText);

@@ -1,4 +1,4 @@
-backend/media/*
-frontend/static/*
+backend/media/profile_pics/*
+frontend/*
 nginx/ssl_certs/*
 database/*

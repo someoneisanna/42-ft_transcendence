@@ -21,7 +21,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./frontend/static:/app/frontend/static
+      - ./frontend:/app/frontend
+      - ./backend/media:/app/backend/media
     networks:
       - network
     depends_on:
@@ -36,7 +37,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./frontend/static:/usr/share/nginx/html/static
+      - ./frontend:/usr/share/nginx/html/static
     networks:
       - network
     depends_on:

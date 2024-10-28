@@ -1,5 +1,7 @@
 NAME = ft_transcendence
 
+CERTS_DIR = ~/Desktop/42-ft_transcendence/nginx/ssl_certs
+
 .PHONY: help up down status clean prune
 
 all: help
@@ -14,9 +16,8 @@ help:
 	@echo "  status     Show the status of the containers, images, volumes and networks"
 	@echo "  clean      Remove all the containers, images and volumes"
 	@echo "  prune      Cleans up the docker system"
-	@echo "  postgres   Access the postgres container"
 	@echo "  django     Access the django container"
-	@echo "  nginx      Access the nginx container"
+	@echo "  certs      Generate self-signed certificates"
 
 up: mkdirs
 	@docker-compose -p $(NAME) up --build
@@ -50,15 +51,13 @@ clean:
 prune:
 	@sudo docker system prune -a --volumes
 
-postgres:
-	docker-compose exec postgres bash
-
 django:
-	docker-compose exec django bash
-
-nginx:
-	docker-compose exec nginx bash
+	docker exec -it transcendence_django bash
 
 mkdirs:
-	@mkdir -p frontend/static
+	@mkdir -p frontend
 	@mkdir -p database
+
+certs:
+	@openssl genpkey -algorithm RSA -out $(CERTS_DIR)/selfsigned.key
+	@openssl req -new -x509 -key $(CERTS_DIR)/selfsigned.key -out $(CERTS_DIR)/selfsigned.crt -days 365 -subj "/CN=localhost"

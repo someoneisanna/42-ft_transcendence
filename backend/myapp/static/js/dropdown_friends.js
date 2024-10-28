@@ -39,7 +39,7 @@ function buildFriendsList() {
 			console.log('Search results:', data);
 			data.forEach(item => {
 				var newElement = `<li class="friendUser">
-						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
+						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
 						<p>${item.username}</p>
 					</li>`;
 				listContainer.innerHTML += newElement;
@@ -84,7 +84,7 @@ function performSearch(query) {
 						var newElement = `
 						<li class="userResult">
 						<div class="userInfo">
-						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/profile_pics/default.jpg';">
+						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
 						<p>${item.username}</p>
 						</div>`;
 						newElement += changeButton(item.username, rl.relationship);
