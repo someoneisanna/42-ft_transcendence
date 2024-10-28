@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					loadScript('/static/js/menu_pong.js');
 				else if (url === '/dropdown_friends/')
 					buildFriendsList();
+				else if (url === '/game/')
+					loadScript('/static/js/game.js');
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
 					history.pushState({ url: url }, '', url);

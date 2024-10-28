@@ -16,6 +16,7 @@ urlpatterns = [
 	path('dropdown_profile/', views.dropdown_profile, name='dropdown_profile'),				# HTML for profile page
 	path('dropdown_settings/', views.dropdown_settings, name='dropdown_settings'),			# HTML for settings page
 	path('dropdown_friends/', views.dropdown_friends, name='dropdown_friends'),				# HTML for friends page
+	path('game/', views.game, name='game'),													# HTML for game
 	
 	path('api/login/', views.login, name='login'),												# API for logging in
 	path('api/register/', views.register, name='register'),										# API for registering

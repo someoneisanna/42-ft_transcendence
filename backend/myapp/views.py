@@ -53,6 +53,9 @@ def dropdown_settings(request):
 def dropdown_friends(request):
 	return render(request, 'dropdown_friends.html')
 
+def game(request):
+	return render(request, 'game.html')
+
 # HELPER FUNCTIONS -----------------------------------------------------------------------------------------------
 
 def generate_2fa_secret_key(user):

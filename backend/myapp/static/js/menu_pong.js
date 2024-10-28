@@ -1,5 +1,6 @@
 function loadQuickplay() {
-	loadPage('/pong_quickplay/', true);
+	loadPage('/game/', true);
+	// loadPage('/pong_quickplay/', true);
 }
 
 function loadTournament() {
