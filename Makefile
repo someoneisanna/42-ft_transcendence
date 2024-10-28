@@ -4,8 +4,6 @@ CERTS_DIR = ~/Desktop/42-ft_transcendence/nginx/ssl_certs
 
 .PHONY: help up down status clean prune
 
-all: help
-
 help:
 	@echo "Usage: make [target]"
 	@echo ""
