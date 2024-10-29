@@ -16,3 +16,4 @@ function getCookie(name) {
 const csrftoken_var = getCookie('csrftoken');
 
 const chatSocket = new WebSocket("wss://" + window.location.host + "/ws/chat/");
+const pongSocket = new WebSocket("wss://" + window.location.host + "/ws/pong/");
