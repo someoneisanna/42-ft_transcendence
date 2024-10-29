@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Pong</title>
+	<link rel="stylesheet" href="./game.css">
+</head>
+<body>
+
+
+	<div id="tally">0 - 0</div>
+	<div id="canvasContainer">
+		<canvas id="gameCanvas"></canvas>
+	</div>
+
+	<div id="debug">
+		<strong>debug stuff</strong><br>
+		<button id="gameResetButton">reset</button>
+
+		player1 AI:<select id="player1AI">
+			<option value="human">Human</option>
+			<option value="cpu">CPU</option>
+		</select>
+		player2 AI:<select id="player2AI">
+			<option value="human">Human</option>
+			<option value="cpu">CPU</option>
+		</select>
+		<input id="colorPickerBackground" type="color">
+		<input id="colorPickerPlayer1" type="color">
+		<input id="colorPickerPlayer2" type="color">
+		<input id="colorPickerBall" type="color">
+		
+		target score:<input id="targetScore" type="number">
+		initial speed:<input id="initialSpeed" type="number">
+		speed increase:<input id="speedIncrease" type="number">
+	</div>
+
+
+	<script src="game.js"></script>
+</body>
+</html>
