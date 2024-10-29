@@ -37,7 +37,7 @@ function buildFriendsList() {
 		})
 		.then(data => {
 			console.log('Search results:', data);
-			data.forEach(item => {
+			data.friends.forEach(item => {
 				var newElement = `<li class="friendUser">
 						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
 						<p>${item.username}</p>
@@ -48,7 +48,6 @@ function buildFriendsList() {
 		.catch(error => {
 			console.error('Error during search:', error);
 		});
-
 }
 
 function changeButton(username, relationship) {

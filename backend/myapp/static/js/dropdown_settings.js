@@ -1,12 +1,34 @@
+function createChat(friend, current_user) {
+	alert('Chat between ' + friend + ' and ' + current_user);
+}
+
+function buildChatFriendsList() {
+	var listContainer = document.getElementById('friendsListContent');
+	listContainer.innerHTML = '';
+	fetch('/api/get_friends/')
+		.then(response => {
+			if (!response.ok)
+				throw new Error('Friend list request failed:', response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			console.log('Search results:', data);
+			data.friends.forEach(item => {
+				var newElement = `<li class="friendUser">
+						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+						<p>${item.username}</p>
+						<button class="btn btn-primary" onclick="createChat('${item.username}', '${data.current_user}')">Chat</button>
+					</li>`;
+				listContainer.innerHTML += newElement;
+			});
+		})
+		.catch(error => {
+			console.error('Error during search:', error);
+		});
+}
+
 function initializeJS() {
 
-chatSocket.onopen = function (e) {
-	console.log("The connection was setup successfully !");
-};
-
-chatSocket.onclose = function (e) {
-	console.log("Something unexpected happened !");
-};
 
 document.querySelector("#id_message_send_input").focus();
 

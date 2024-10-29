@@ -237,7 +237,7 @@ def get_friends(request):
 					'username': friendship.user1.username,
 					'profile_pic': friendship.user1.profile_pic.url
 				})
-		return JsonResponse(friend_list, safe=False)
+		return JsonResponse({'friends': friend_list, 'current_user': request.user.username}, safe=False)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
