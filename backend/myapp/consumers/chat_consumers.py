@@ -1,4 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async
+from myapp.models import Message, User
 import json
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -8,7 +10,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 
 	# Triggered when a websocket connection is closed. Here we remove the user from any chat room they joined.
-	async def disconnect(self):
+	async def disconnect(self, close_code):
 		if hasattr(self, 'room_group_name'):
 			await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
@@ -17,30 +19,47 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		data = json.loads(text_data)
 		type = data['type']
 		room_name = data['room_name']
-		user = data['user']
+		username = data['username']
 
 		if type == 'join_room':
 			self.room_group_name = room_name
 			await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+			messages = await self.get_messages(room_name)
+			for message in messages:
+				await self.send(text_data=json.dumps({
+					'room_name': message.room_name,
+					'username': message.sender,
+					'message': message.message
+				}))
 		
 		elif type == 'chat_message':
 			message = data['message']
+			await self.store_message(room_name, username, message)
 			await self.channel_layer.group_send(
 				self.room_group_name,
 				{
 					'type': 'chat_message',
 					'room_name': room_name,
-					'message': message,
-					'user': user
+					'username': username,
+					'message': message
 				}
 			)
+
+	@sync_to_async
+	def store_message(self, room_name, username, message):
+		Message.objects.create(room_name=room_name, sender=username, message=message)
+
+	@sync_to_async
+	def get_messages(self, room_name):
+		messages = Message.objects.filter(room_name=room_name).order_by('sent_at').all()
+		return list(messages)
 
 	# Triggered when the group_send message of type chat_message is received. Here we send the message to the websocket connection.
 	async def chat_message(self, event):
 		await self.send(text_data=json.dumps({
 			'room_name': event['room_name'],
-			'message': event['message'],
-			'user': event['user']
+			'username': event['username'],
+			'message': event['message']
 		}
 		))
 

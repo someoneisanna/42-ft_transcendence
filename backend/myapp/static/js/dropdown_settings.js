@@ -9,8 +9,10 @@ function createChat(friend, current_user) {
 	chatSocket.send(JSON.stringify({
 		'type': 'join_room',
 		'room_name': roomName,
-		'user': current_user
+		'username': current_user
 	}));
+
+	//console.log('Chat room created:', roomName);
 
 	// Set up message sending
 	document.querySelector("#id_message_send_button").onclick = function() {
@@ -20,8 +22,8 @@ function createChat(friend, current_user) {
 		chatSocket.send(JSON.stringify({ 
 			'type': 'chat_message',
 			'room_name': roomName,
-			'message': messageInput,
-			'user': current_user
+			'username': current_user,
+			'message': messageInput
 		}));
 		document.querySelector("#id_message_send_input").value = '';
 	};
@@ -55,8 +57,8 @@ function buildChatFriendsList() {
 function initializeJS() {
 
 	chatSocket.onmessage = function (e) {
-		const data = JSON.parse(e.data);
 		
+		const data = JSON.parse(e.data);
 		var div = document.createElement("div");
 		div.innerHTML = data.user + " : " + data.message;
 		document.querySelector("#id_message_send_input").value = "";

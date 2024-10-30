@@ -37,3 +37,11 @@ class Friendship(models.Model):
 	def __str__(self):
 		return f"{self.user1.username} is friends with {self.user2.username}"
 
+class Message(models.Model):
+	room_name = models.CharField(max_length=255)
+	sender = models.CharField(max_length=20)
+	message = models.TextField()
+	sent_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.sender.username} sent a message in room {self.room_name}"
