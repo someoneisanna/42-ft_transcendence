@@ -8,7 +8,7 @@ function handleLiveSearch() {
 		if (searchQuery === '')
 			return;
 		performSearch(searchQuery);
-	}, 50);
+	}, 200);
 }
 
 function getRelationship(username) {

@@ -12,8 +12,8 @@ until pg_isready -h "$HOST"; do
 	sleep 1
 done
 
->&2 echo "Postgres is up - collecting static files"
-python manage.py collectstatic --noinput
+# >&2 echo "Postgres is up - collecting static files"
+# python manage.py collectstatic --noinput
 
 >&2 echo "Postgres is up - applying migrations"
 python manage.py makemigrations

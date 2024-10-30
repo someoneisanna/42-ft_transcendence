@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .models import User, Invitation, Friendship
+from .models import User, Invitation, Friendship, Message
 import json
 import jwt
 import datetime
@@ -402,4 +402,5 @@ def delete(request):
 		User.objects.all().delete()
 		Friendship.objects.all().delete()
 		Invitation.objects.all().delete()
+		Message.objects.all().delete()
 		return JsonResponse({'message': 'All users deleted'}, status=204)

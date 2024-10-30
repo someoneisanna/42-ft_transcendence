@@ -22,8 +22,8 @@ services:
       - "8000:8000"
     volumes:
       # - ./frontend:/app/frontend
-      - ./backend/myapp/static:/app/backend/myapp/static
-      - ./backend/media:/app/backend/media
+      - ./backend:/app/
+      # - ./backend/media:/app/backend/media
     networks:
       - network
     depends_on:
