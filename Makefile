@@ -1,6 +1,6 @@
 NAME = ft_transcendence
 
-CERTS_DIR = ~/Desktop/42-ft_transcendence/nginx/ssl_certs
+CERTS_DIR = $(CURDIR)/nginx/ssl_certs
 
 .PHONY: help up down status clean prune
 
@@ -57,5 +57,6 @@ mkdirs:
 	@mkdir -p database
 
 certs:
+	@mkdir -p nginx/ssl_certs
 	@openssl genpkey -algorithm RSA -out $(CERTS_DIR)/selfsigned.key
 	@openssl req -new -x509 -key $(CERTS_DIR)/selfsigned.key -out $(CERTS_DIR)/selfsigned.crt -days 365 -subj "/CN=localhost"
