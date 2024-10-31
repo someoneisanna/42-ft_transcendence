@@ -49,7 +49,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'message': ''
 				})
 			)
-		
+
 		elif type == 'chat_message':
 			message = data['message']
 			sent_at = data['sent_at']
@@ -64,6 +64,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'sent_at': sent_at
 				}
 			)
+
+		elif type == 'unfriend_user':
+			await self.channel_layer.group_send(
+				self.room_group_name,
+			{
+				'type': 'unfriend_user',
+				'room_name': room_name,
+				'username': username,
+				'message': 'delete chat',
+				'sent_at': ''
+			})
 
 	@sync_to_async
 	def store_message(self, room_name, username, message):
@@ -82,10 +93,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	# Triggered when the group_send message of type chat_message is received. Here we send the message to the websocket connection.
 	async def chat_message(self, event):
 		await self.send(text_data=json.dumps({
+			'type': 'chat_message',
 			'room_name': event['room_name'],
 			'username': event['username'],
 			'message': event['message'],
 			'sent_at': event['sent_at']
+		}
+		))
+
+	async def unfriend_user(self, event):
+		await self.send(text_data=json.dumps({
+			'type': 'unfriend_user',
+			'room_name': event['room_name'],
+			'username': event['username'],
+			'message': event['message']
 		}
 		))
 

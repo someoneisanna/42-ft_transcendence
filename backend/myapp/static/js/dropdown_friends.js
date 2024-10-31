@@ -63,6 +63,8 @@ function changeButton(username, relationship) {
 				<button class="btn friendsElementButton" onclick="rejectInvitation(this, '${username}')"><i class="fa fa-home"></i> Reject</button>
 				<button class="btn friendsElementButton" onclick="acceptInvitation(this, '${username}')"><i class="fa fa-home"></i> Accept</button>
 			</div>`;
+	else if (relationship === 'blocked')
+		newElement = `<button class="btn friendsElementButton" onclick="unblockUser(this, '${username}')"><i class="fa fa-home"></i> Unblock User</button>`;
 	else
 		console.log('Unknown relationship:', relationship);
 	return newElement;
@@ -142,6 +144,7 @@ function removeFriend(buttonRef, username) {
 	})
 	.then(data => {
 		console.log('Friend removed:', data);
+		removeChatRoom(username);
 		buttonRef.outerHTML = changeButton(username, 'none');
 		buildFriendsList();
 	})
@@ -226,5 +229,31 @@ function rejectInvitation(buttonRef, username) {
 	})
 	.catch(error => {
 		console.error('Error rejecting invitation:', error);
+	});
+}
+
+function unblockUser(buttonRef, username) {
+	fetch('/api/unblock_user/', {
+		method: 'POST',
+		headers: {
+			'X-csrftoken': csrftoken_var,
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({ username: username }),
+	credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
+			throw new Error('User unblocking failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('User unblocked:', data);
+		buttonRef.outerHTML = changeButton(username, 'none');
+	})
+	.catch(error => {
+		console.error('Error unblocking user:', error);
 	});
 }

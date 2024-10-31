@@ -22,8 +22,6 @@ function changeSmallProfilePic(path) {
 		profilePic.src = path;
 }
 
-
-var current_user = '';
 var lastActiveButton = null;
 
 function openChat(roomName, buttonRef) {
@@ -62,6 +60,7 @@ function openChat(roomName, buttonRef) {
 		const messageInput = document.querySelector("#sendMessageInput").value;
 		if (messageInput == '')
 			return;
+		console.log('roomName:', roomName);
 		console.log('Sending message:', messageInput);
 		chatSocket.send(JSON.stringify({
 			'type': 'chat_message',
@@ -79,6 +78,16 @@ function openChat(roomName, buttonRef) {
 			document.querySelector(".sendMessageButton").click();
 		}
 	});
+}
+
+function removeChatRoom(username) {
+	const users = [username, current_user].sort();
+	const roomName = 'chatRoom_' + users[0] + '-' + users[1];
+	chatSocket.send(JSON.stringify({
+		'type': 'unfriend_user',
+		'room_name': roomName,
+		'username': username
+	}));
 }
 
 function buildChatFriendsList() {
@@ -122,10 +131,12 @@ function buildChatFriendsList() {
 					</li>`;
 				newElement.onclick = (function() {
 					openChat(roomName, newElement);
+					document.querySelector('.blockButtonClass').onclick = function() {
+						blockUser(item.username, data.current_user);
+					}
 				});
 				listContainer.appendChild(newElement);
 			});
-			current_user = data.current_user;
 		})
 		.catch(error => {
 			console.error('Error during search:', error);
@@ -161,10 +172,19 @@ function initializeJS() {
 		var textsContainer = document.getElementById('textsContainer');
 
 		const data = JSON.parse(e.data);
+		const type = data.type;
 		const room_name = data.room_name;
 		const username = data.username;
 		const message = data.message;
 		const timestamp = formatDate(data.sent_at, 'date');
+
+		if (type === 'unfriend_user') {
+			lastActiveButton = null;
+			document.querySelector('.chatContent').classList.add('showFriendsOnly');
+			document.querySelector('.chatWindow').classList.add('noChatClicked');
+			buildChatFriendsList();
+			return;
+		}
 		
 		if (username === current_user)
 			var newElement = `
@@ -188,4 +208,35 @@ function initializeJS() {
 			document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at, 'time');
 		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
 	};
+}
+
+function blockUser(friend, current_user) {
+	fetch('/api/block_user/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': csrftoken_var
+		},
+		body: JSON.stringify({'target': friend, 'current_user': current_user})
+		})
+		.then(response => {
+			console.log('current user:', current_user);
+			console.log('Block user:', friend);
+			console.log('Block user response:', response);
+
+			if (!response.ok)
+				throw new Error('Block user request failed:' + response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			console.log('Block user response:' + data);
+			lastActiveButton = null;
+			document.querySelector('.chatContent').classList.add('showFriendsOnly');
+			document.querySelector('.chatWindow').classList.add('noChatClicked');
+			removeChatRoom(friend);
+			buildChatFriendsList();
+		})
+		.catch(error => {
+			console.error('Error during block user:' + error);
+		});
 }

@@ -141,6 +141,7 @@ loginForm.addEventListener('submit', function(event) {
 		}
 		else {
 			console.log('Login Success:', data);
+			current_user = data.username;
 			document.getElementsByClassName("modal-backdrop")[0].remove();
 			loadPage('/layout/', true);
 		}
@@ -222,6 +223,7 @@ registerForm.addEventListener('submit', function(event) {
 	})
 	.then(data => {
 		console.log('Registration Success:', data.username);
+		current_user = data.username;
 		document.getElementById('registerError').innerText = '';
 		if (checkbox_input === true) {
 			alert('Registration successful! Please scan the QR code for 2FA setup.');

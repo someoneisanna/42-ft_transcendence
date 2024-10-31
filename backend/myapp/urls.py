@@ -30,6 +30,8 @@ urlpatterns = [
 	path('api/reject_invitation/', views.reject_invitation, name='reject_invitation'),			# API for rejecting a friend request
 	path('api/remove_friend/', views.remove_friend, name='remove_friend'),						# API for removing a friend
 	path('api/cancel_invitation/', views.cancel_invitation, name='cancel_invitation'),			# API for cancelling a friend request
+	path('api/block_user/', views.block_user, name='block_user'),								# API for blocking a user
+	path('api/unblock_user/', views.unblock_user, name='unblock_user'),							# API for unblocking a user
 
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('delete/', views.delete, name='delete'),											# API for deleting all users

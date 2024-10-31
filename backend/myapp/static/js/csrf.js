@@ -13,6 +13,8 @@ function getCookie(name) {
 	return cookieValue;
 }
 
+var current_user = '';
+
 const csrftoken_var = getCookie('csrftoken');
 
 const chatSocket = new WebSocket("wss://" + window.location.host + "/ws/chat/");

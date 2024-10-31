@@ -199,14 +199,14 @@ def get_relationship(request):
 		try:
 			username_input = request.GET.get('username', '')
 			if username_input == '':
-				print('No username provided')
 				return JsonResponse({'error': 'No username provided'}, status=400)
 			if not User.objects.filter(username=username_input).exists():
-				print('Username doesn\'t exist')
 				return JsonResponse({'error': 'Username doesn\'t exist'}, status=400)
 			target_user = User.objects.get(username=username_input)
 			relationship = 'none'
-			if Friendship.objects.filter(user1=request.user, user2=target_user).exists() or Friendship.objects.filter(user1=target_user, user2=request.user).exists():
+			if request.user.blocked_users.filter(username=target_user.username).exists():
+				relationship = 'blocked'
+			elif Friendship.objects.filter(user1=request.user, user2=target_user).exists() or Friendship.objects.filter(user1=target_user, user2=request.user).exists():
 				relationship = 'friends'
 			elif Invitation.objects.filter(from_user=request.user, to_user=target_user).exists():
 				relationship = 'invitation_sent'
@@ -384,6 +384,74 @@ def cancel_invitation(request):
 
 			return JsonResponse({'success': 'Friend request cancelled successfully'}, status=200)
 
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# BLOCK USER -----------------------------------------------------------------------------------------------------
+
+def block_user(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			currentUser_input = data['current_user']
+			targetUser_input = data['target']
+
+			if not User.objects.filter(username=currentUser_input).exists():
+				return JsonResponse({'error': 'Current user doesn\'t exist'}, status=400)
+			
+			if not User.objects.filter(username=targetUser_input).exists():
+				return JsonResponse({'error': 'Target user doesn\'t exist'}, status=400)
+			
+			current_user = User.objects.get(username=currentUser_input)
+			target_user = User.objects.get(username=targetUser_input)
+
+			if current_user == target_user:
+				return JsonResponse({'error': 'You cannot block yourself'}, status=400)
+			
+			if Friendship.objects.filter(user1=current_user, user2=target_user).exists():
+				Friendship.objects.filter(user1=current_user, user2=target_user).delete()
+			
+			if Friendship.objects.filter(user1=target_user, user2=current_user).exists():
+				Friendship.objects.filter(user1=target_user, user2=current_user).delete()
+
+			current_user.blocked_users.add(target_user)
+			current_user.save()
+
+			return JsonResponse({'success': 'User blocked successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# UNBLOCK USER ---------------------------------------------------------------------------------------------------
+
+def unblock_user(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			targetUser_input = data['username']
+
+			if not User.objects.filter(username=request.user.username).exists():
+				return JsonResponse({'error': 'Current user doesn\'t exist'}, status=400)
+			
+			if not User.objects.filter(username=targetUser_input).exists():
+				return JsonResponse({'error': 'Target user doesn\'t exist'}, status=400)
+			
+			current_user = User.objects.get(username=request.user.username)
+			target_user = User.objects.get(username=targetUser_input)
+
+			if current_user == target_user:
+				return JsonResponse({'error': 'You cannot unblock yourself'}, status=400)
+			
+			if not current_user.blocked_users.filter(username=target_user.username).exists():
+				return JsonResponse({'error': 'User not blocked'}, status=400)
+
+			current_user.blocked_users.remove(target_user)
+			current_user.save()
+
+			return JsonResponse({'success': 'User unblocked successfully'}, status=200)
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
