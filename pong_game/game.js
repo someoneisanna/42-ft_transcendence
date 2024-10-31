@@ -108,7 +108,7 @@ class Pad
 			}
 
 			// Try to align paddle center with the predicted ball position
-			if (Math.abs(padCenterPos - this.cpuPredictedBallPosY) < 50)
+			if (Math.abs(padCenterPos - this.cpuPredictedBallPosY) < 100)
 				return;
 			
 			if (padCenterPos < this.cpuPredictedBallPosY)

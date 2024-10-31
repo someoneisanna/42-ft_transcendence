@@ -168,7 +168,7 @@ function initializeJS() {
 		
 		if (username === current_user)
 			var newElement = `
-				<div class="d-flex flex-row justify-content-end">
+				<div class="d-flex flex-row justify-content-end pt-1">
 					<div>
 						<p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message}</p>
 						<p class="small me-3 mb-1 rounded-3 text-muted smallerText">${timestamp}</p>

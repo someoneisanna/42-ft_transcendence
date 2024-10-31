@@ -6,6 +6,7 @@ class User(models.Model):
 	check2FA = models.BooleanField(default=False)
 	skey_2FA = models.CharField(max_length=32)
 	profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg')
+	# blocked_users = models.ManyToManyField("self", symmetrical=False, related_name="blocked_by")
 
 	def __str__(self):
 		return self.username
