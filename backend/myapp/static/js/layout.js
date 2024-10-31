@@ -22,15 +22,34 @@ function changeSmallProfilePic(path) {
 		profilePic.src = path;
 }
 
-function openChat(friend, current_user, buttonRef) {
-	
-	document.querySelector('.chatContent').classList.toggle('showFriendsOnly');
-	document.querySelector('.chatWindow').classList.toggle('noChatClicked');
-	document.querySelector('.chatFriendListContent').classList.toggle('setDarkerBackground');
 
-	// Create a chat room name
-	const users = [friend, current_user].sort();
-	const roomName = 'chatRoom_' + users[0] + '-' + users[1];
+var current_user = '';
+var lastActiveButton = null;
+
+function openChat(roomName, buttonRef) {
+	
+	const chatContent = document.querySelector('.chatContent');
+	const chatWindow = document.querySelector('.chatWindow');
+	const textsContainer = document.getElementById('textsContainer');
+
+	if (lastActiveButton && lastActiveButton !== buttonRef) {
+		lastActiveButton.classList.remove('setDarkerBackground');
+		chatContent.classList.remove('showFriendsOnly');
+		chatWindow.classList.remove('noChatClicked');
+	}
+	if (lastActiveButton && lastActiveButton === buttonRef) {
+		buttonRef.classList.toggle('setDarkerBackground');
+		chatContent.classList.toggle('showFriendsOnly');
+		chatWindow.classList.toggle('noChatClicked');
+	}
+	else {
+		buttonRef.classList.add('setDarkerBackground');
+		chatContent.classList.remove('showFriendsOnly');
+		chatWindow.classList.remove('noChatClicked');
+	}
+
+	textsContainer.innerHTML = '';
+	lastActiveButton = buttonRef;
 	
 	// Connect to the chat room
 	chatSocket.send(JSON.stringify({
@@ -38,8 +57,6 @@ function openChat(friend, current_user, buttonRef) {
 		'room_name': roomName,
 		'username': current_user
 	}));
-
-	console.log('Chat room' + roomName + ' created');
 
 	document.querySelector(".sendMessageButton").onclick = function() {
 		const messageInput = document.querySelector("#sendMessageInput").value;
@@ -64,8 +81,6 @@ function openChat(friend, current_user, buttonRef) {
 	});
 }
 
-var current_user = '';
-
 function buildChatFriendsList() {
 	var listContainer = document.getElementById('chatFriendsListContent');
 	listContainer.innerHTML = '';
@@ -78,23 +93,37 @@ function buildChatFriendsList() {
 		.then(data => {
 			console.log('Search results:', data);
 			data.friends.forEach(item => {
-				var newElement = `
-					<li class="chatFriendListContent p-2 border-bottom">
-						<a href="#" class="d-flex justify-content-between" onclick="openChat('${item.username}', '${data.current_user}');">
+				
+				const users = [item.username, data.current_user].sort();
+				const roomName = 'chatRoom_' + users[0] + '-' + users[1];
+
+				chatSocket.send(JSON.stringify({
+					'type': 'get_last_messages',
+					'room_name': roomName,
+					'username': current_user
+				}));
+
+				var newElement = document.createElement('li');
+				newElement.className = 'chatFriendListContent p-2 border-bottom';
+				newElement.innerHTML = `
+						<a href="#" class="d-flex justify-content-between">
 							<div class="d-flex flex-row">
 								<img src="${item.profile_pic}" width="50" height="50" class="d-flex align-self-center me-3 rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
 								<div class="pt-1">
 									<p class="fw-bold mb-0">${item.username}</p>
-									<p class="small text-muted">Hello, Are you there?</p> <!-- Last message -->
+									<p id="lastMsg_${roomName}" class="small text-muted"></p>
 								</div>
 							</div>
 							<div class="pt-1">
-								<p class="small text-muted mb-1">21:30</p> <!-- Time -->
-								<span class="badge bg-danger rounded-pill float-end">3</span> <!-- Unread messages -->
+								<p id="timeLastMsg_${roomName}" class="small text-muted mb-1">-</p>
+								<span class="badge bg-danger rounded-pill float-end">3</span> 
 							</div>
 						</a>
 					</li>`;
-				listContainer.innerHTML += newElement;
+				newElement.onclick = (function() {
+					openChat(roomName, newElement);
+				});
+				listContainer.appendChild(newElement);
 			});
 			current_user = data.current_user;
 		})
@@ -104,11 +133,14 @@ function buildChatFriendsList() {
 }
 
 function toggleChatWindow() {
+	lastActiveButton = null;
 	document.querySelector('.chatContent').classList.toggle('showChat');
+	document.querySelector('.chatContent').classList.add('showFriendsOnly');
+	document.querySelector('.chatWindow').classList.add('noChatClicked');
 	buildChatFriendsList();
 }
 
-function formatDate(isoDate) {
+function formatDate(isoDate, type) {
 	
 	const date = new Date(isoDate);
 
@@ -118,7 +150,10 @@ function formatDate(isoDate) {
 	const options2 = { hour: '2-digit', minute: '2-digit'};
 	const formattedTime = date.toLocaleTimeString('en-US', options2);
 
-	return formattedTime + ' | ' + formattedDate;
+	if (type === 'time')
+		return formattedTime;
+	else if (type === 'date')
+		return formattedDate + ' ' + formattedTime;
 }
 
 function initializeJS() {
@@ -126,9 +161,10 @@ function initializeJS() {
 		var textsContainer = document.getElementById('textsContainer');
 
 		const data = JSON.parse(e.data);
-		const message = data.message;
+		const room_name = data.room_name;
 		const username = data.username;
-		const timestamp = formatDate(data.sent_at);
+		const message = data.message;
+		const timestamp = formatDate(data.sent_at, 'date');
 		
 		if (username === current_user)
 			var newElement = `
@@ -143,9 +179,13 @@ function initializeJS() {
 				<div class="d-flex flex-row justify-content-start">
 					<div>
 						<p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">${message}</p>
-						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">12:00 PM | Aug 13</p>
+						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
 					</div>
 				</div>`;
 		textsContainer.innerHTML += newElement;
+
+		if (data.sent_at)
+			document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at, 'time');
+		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
 	};
 }

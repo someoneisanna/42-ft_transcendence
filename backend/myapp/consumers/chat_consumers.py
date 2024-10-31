@@ -32,6 +32,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'message': message.message,
 					'sent_at': message.sent_at.isoformat()
 				}))
+
+		elif type == 'get_last_messages':
+			last_message = await self.get_last_message(room_name)
+			if last_message is not None:
+				await self.send(text_data=json.dumps({
+					'room_name': last_message.room_name,
+					'username': last_message.sender,
+					'message': last_message.message,
+					'sent_at': last_message.sent_at.isoformat()
+				})
+				)
+			else:
+				await self.send(text_data=json.dumps({
+					'room_name': room_name,
+					'message': ''
+				})
+			)
 		
 		elif type == 'chat_message':
 			message = data['message']
@@ -56,6 +73,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	def get_messages(self, room_name):
 		messages = Message.objects.filter(room_name=room_name).order_by('sent_at').all()
 		return list(messages)
+	
+	@sync_to_async
+	def get_last_message(self, room_name):
+		last_message = Message.objects.filter(room_name=room_name).order_by('-sent_at').first()
+		return last_message
 
 	# Triggered when the group_send message of type chat_message is received. Here we send the message to the websocket connection.
 	async def chat_message(self, event):
