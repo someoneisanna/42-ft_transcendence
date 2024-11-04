@@ -13,10 +13,10 @@ urlpatterns = [
 	path('pong_customGame/', views.pong_customGame, name='pong_customGame'),				# HTML for custom game
 	path('pong_roomList/', views.pong_roomList, name='pong_roomList'),						# HTML for room list
 	path('pong_menu/', views.pong_menu, name='pong_menu'),									# HTML for pong menu
+	path('pong_game/', views.pong_game, name='pong_game'),									# HTML for game
 	path('dropdown_profile/', views.dropdown_profile, name='dropdown_profile'),				# HTML for profile page
 	path('dropdown_settings/', views.dropdown_settings, name='dropdown_settings'),			# HTML for settings page
 	path('dropdown_friends/', views.dropdown_friends, name='dropdown_friends'),				# HTML for friends page
-	path('game/', views.game, name='game'),													# HTML for game
 	
 	path('api/login/', views.login, name='login'),												# API for logging in
 	path('api/register/', views.register, name='register'),										# API for registering

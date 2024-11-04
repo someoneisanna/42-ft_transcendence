@@ -1,1 +1,24 @@
-<h1> This is the quickplay page </h1>
+{% comment %} <h1> This is the quickplay page </h1>
+<button id="localPong" onclick="loadLocalPong()">Local Pong</button> {% endcomment %}
+<div class="buttonGroup btn-group-vertical">
+	<div class="pongMenuButton neon-border btn" onclick="loadLocalPong()">
+		<h1>LOCAL DUEL</h1>
+		<p>PLAY LOCALLY WITH A FRIEND</p>
+	</div>
+	<div class="pongMenuButton neon-border btn" onclick="loadRemotePong()">
+		<h1>ONLINE DUEL</h1>
+		<p>PLAY ONLINE AGAINST ANOTHER PLAYER</p>
+	</div>
+	<div class="pongMenuButton neon-border btn" onclick="loadLocalPongAI()">
+		<h1>AI MATCH</h1>
+		<p>PLAY AGAINST AN AI OPPONENT</p>
+	</div>
+	<div class="pongMenuButton neon-border btn" onclick="loadCustomPong()">
+		<h1>CREATE CUSTOM GAME</h1>
+		<p>CREATE A GAME WITH CUSTOM RULES</p>
+	</div>
+	<div class="pongMenuButton neon-border btn" onclick="loadRoomListPong()">
+		<h1>BROWSE CUSTOM GAMES</h1>
+		<p>BROWSE AND JOIN EXISTING CUSTOM GAMES</p>
+	</div>
+</div>

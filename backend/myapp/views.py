@@ -53,8 +53,8 @@ def dropdown_settings(request):
 def dropdown_friends(request):
 	return render(request, 'dropdown_friends.html')
 
-def game(request):
-	return render(request, 'game.html')
+def pong_game(request):
+	return render(request, 'pong/pong_game.html')
 
 # HELPER FUNCTIONS -----------------------------------------------------------------------------------------------
 
