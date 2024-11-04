@@ -30,19 +30,19 @@ def game_choice(request):
 	return render(request, 'game_choice.html')
 
 def pong_menu(request):
-	return render(request, 'pong_menu.html')
+	return render(request, 'pong/pong_menu.html')
 
 def pong_quickplay(request):
-	return render(request, 'pong_quickplay.html')
+	return render(request, 'pong/pong_quickplay.html')
 
 def pong_tournament(request):
-	return render(request, 'pong_tournament.html')
+	return render(request, 'pong/pong_tournament.html')
 
 def pong_customGame(request):
-	return render(request, 'pong_customGame.html')
+	return render(request, 'pong/pong_customGame.html')
 
 def pong_roomList(request):
-	return render(request, 'pong_roomList.html')
+	return render(request, 'pong/pong_roomList.html')
 
 def dropdown_profile(request):
 	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
