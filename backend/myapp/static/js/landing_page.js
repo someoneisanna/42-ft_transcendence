@@ -47,6 +47,19 @@ if (confirmYes) {
 	confirmYes.addEventListener('click', function() {
 		loadPage('/layout/', true);
 	});
+	if (!current_user)
+		fetch('/api/get_current_user/')
+		.then(response => {
+			if (!response.ok)
+				throw new Error('Friend list request failed:', response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			current_user = data.username;
+		})
+		.catch(error => {
+			console.error('Error during search:', error);
+		});
 }
 
 // PAGE ANIMATION -------------------------------------------------------------------------------------------------------------------------

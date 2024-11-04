@@ -140,6 +140,16 @@ def register(request):
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
 		return redirect('/')
+	
+# GET CURRENT USER -----------------------------------------------------------------------------------------------
+
+def get_current_user(request):
+	if request.method == 'GET':
+		if request.user:
+			return JsonResponse({'username': request.user.username}, status=200)
+		return JsonResponse({'error': 'No user logged in'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # LOGOUT USERS ---------------------------------------------------------------------------------------------------
 

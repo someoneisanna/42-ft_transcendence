@@ -20,6 +20,7 @@ urlpatterns = [
 	
 	path('api/login/', views.login, name='login'),												# API for logging in
 	path('api/register/', views.register, name='register'),										# API for registering
+	path('api/get_current_user/', views.get_current_user, name='get_current_user'),				# API for getting the current user
 	path('api/logout/', views.logout, name='logout'),											# API for logging out
 	path('api/change_pic/', views.change_pic, name='change_pic'),								# API for changing a profile picture
 	path('api/search_friends/', views.search_friends, name='search_friends'),					# API for searching for users

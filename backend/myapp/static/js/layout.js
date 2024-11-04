@@ -83,6 +83,7 @@ function openChat(roomName, buttonRef) {
 function removeChatRoom(username) {
 	const users = [username, current_user].sort();
 	const roomName = 'chatRoom_' + users[0] + '-' + users[1];
+	alert('Removing chat room ' + username + current_user + roomName);
 	chatSocket.send(JSON.stringify({
 		'type': 'unfriend_user',
 		'room_name': roomName,
