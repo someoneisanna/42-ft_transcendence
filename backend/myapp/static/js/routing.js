@@ -53,8 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					loadScript('/static/js/game_choice.js');
 				else if (url === '/dropdown_profile/')
 					loadScript('/static/js/dropdown_profile.js');
-				else if (url === '/menu_pong/')
-					loadScript('/static/js/menu_pong.js');
+				else if (url === '/pong_menu/')
+					loadScript('/static/js/pong_menu.js');
 				else if (url === '/dropdown_friends/')
 					buildFriendsList();
 				else if (url === '/game/')

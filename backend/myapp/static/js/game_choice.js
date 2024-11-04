@@ -7,7 +7,7 @@ function initializeJS() {
 const game1 = document.getElementById('buttonGame1');
 if (game1) {
 	game1.addEventListener('click', function() {
-	loadPage('/menu_pong/', true);
+	loadPage('/pong_menu/', true);
 });
 
 }

@@ -29,8 +29,8 @@ def layout(request):
 def game_choice(request):
 	return render(request, 'game_choice.html')
 
-def menu_pong(request):
-	return render(request, 'menu_pong.html')
+def pong_menu(request):
+	return render(request, 'pong_menu.html')
 
 def pong_quickplay(request):
 	return render(request, 'pong_quickplay.html')
