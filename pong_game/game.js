@@ -26,12 +26,46 @@ class Pad
 
 		this.requestUp = false;
 		this.requestDown = false;
+
+		this.modifierList = [];
+	}
+
+	getEffectiveHeight()
+	{
+		var effectiveHeight = this.height;
+
+		this.modifierList.forEach(mod => {
+			if (mod.type === "height")
+				effectiveHeight += this.height * mod.strength;
+		});
+		return effectiveHeight;
+	}
+
+	getEffectiveMaxSpeed()
+	{
+		var effectiveMaxSpeed = this.maxSpeed;
+
+		this.modifierList.forEach(mod => {
+			if (mod.type === "speed")
+				effectiveMaxSpeed += this.maxSpeed * mod.strength;
+		});
+		return effectiveMaxSpeed;
+	}
+
+	updateModifiers()
+	{
+		for (let i = 0; i < this.modifierList.length; i++)
+		{
+			this.modifierList[i].duration -= (timeCurrent - timePrevious) / 1000;
+			if (duration <= 0)
+				this.modifierList.splice(i, 1);
+		}
 	}
 
 	draw()
 	{
 		ctx.fillStyle = this.color;
-		ctx.fillRect(this.posX * scaleFactor, this.posY * scaleFactor, this.width * scaleFactor, this.height * scaleFactor);
+		ctx.fillRect(this.posX * scaleFactor, this.posY * scaleFactor, this.width * scaleFactor, this.getEffectiveHeight() * scaleFactor);
 	}
 
 	move()
@@ -41,9 +75,9 @@ class Pad
 
 		this.targetSpeed = 0;
 		if (this.requestUp)
-			this.targetSpeed = -this.maxSpeed;
+			this.targetSpeed = -this.getEffectiveMaxSpeed();
 		if (this.requestDown)
-			this.targetSpeed = this.maxSpeed;
+			this.targetSpeed = this.getEffectiveMaxSpeed();
 		
 		if (this.currentSpeed > 0 && this.requestUp || this.currentSpeed < 0 && this.requestDown)	// have more acceleration if changing directions
 			this.currentSpeed = MoveTowards(this.currentSpeed, this.targetSpeed, this.acceleration * 2);
@@ -56,9 +90,9 @@ class Pad
 			this.posY = 0;
 			this.currentSpeed = 0;
 		}
-		else if (this.posY + this.height > fieldHeight)
+		else if (this.posY + this.getEffectiveHeight() > fieldHeight)
 		{
-			this.posY = fieldHeight - this.height;
+			this.posY = fieldHeight - this.getEffectiveHeight();
 			this.currentSpeed = 0;
 		}
 	}
@@ -66,7 +100,7 @@ class Pad
 	decideMovement()
 	{
 		var side = (this.posX < fieldWidth / 2) ? "left" : "right";
-		var padCenterPos = this.posY + padHeight / 2;
+		var padCenterPos = this.posY + this.getEffectiveHeight() / 2;
 		
 		// the ai can only see the ball once every second
 		if (this.cpuBlindnessCooldown > 0)
@@ -115,20 +149,6 @@ class Pad
 				this.requestDown = true;
 			else if (padCenterPos > this.cpuPredictedBallPosY)
 				this.requestUp = true;
-	
-		
-
-			// if (Math.abs(padCenterPos - this.cpuPerceivedBallPosY) < 50)
-			// 	return;
-			// // try to line up with the ball
-			// if (padCenterPos < this.cpuPerceivedBallPosY)
-			// {
-			// 	this.requestDown = true;
-			// }
-			// else if (padCenterPos > this.cpuPerceivedBallPosY)
-			// {
-			// 	this.requestUp = true;
-			// }
 		}
 	}
 }
@@ -168,10 +188,10 @@ class Ball
 		new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius / 2, 0.3);
 
 		// check collision with paddles
-		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY, pad1.posX + pad1.width, pad1.posY + pad1.height))
+		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY, pad1.posX + pad1.width, pad1.posY + pad1.getEffectiveHeight()))
 		{
 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-			var relativeImpactPoint = (this.posY - pad1.posY) / pad1.height;
+			var relativeImpactPoint = (this.posY - pad1.posY) / pad1.getEffectiveHeight();
 			var newDirX, newDirY;
 
 			if (relativeImpactPoint <= 0.5)
@@ -196,10 +216,10 @@ class Ball
 
 			return;
 		}
-		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY, pad2.posX + pad2.width, pad2.posY + pad2.height))
+		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY, pad2.posX + pad2.width, pad2.posY + pad2.getEffectiveHeight()))
 		{
 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-			var relativeImpactPoint = (this.posY - pad2.posY) / pad2.height;
+			var relativeImpactPoint = (this.posY - pad2.posY) / pad2.getEffectiveHeight();
 			var newDirX, newDirY;
 
 			if (relativeImpactPoint <= 0.5)
@@ -258,7 +278,6 @@ class CollisionEffect
 {
 	constructor(x, y, color, opacityStart, opacityEnd, radiusStart, radiusEnd, duration)
 	{
-		// console.log("effect create");
 		this.posX = x;
 		this.posY = y;
 		this.color = color;
@@ -295,10 +314,69 @@ class CollisionEffect
 		this.durationCurrent += (timeCurrent - timePrevious) / 1000;
 		if (this.durationCurrent > this.duration)
 		{
-			// console.log("effect delete");
 			const index = listTemps.findIndex(obj => obj === this)
 			listTemps.splice(index, 1);
 		}
+	}
+}
+
+class Modifier
+{
+	constructor(x, y, radius, type, strength, color, duration)
+	{
+		this.posX = x;
+		this.posY = y;
+		this.radius = radius;
+		this.type = type;
+		this.strength = strength;
+		this.color = color;
+		this.duration = duration;
+		this.durationCurrent = 0;
+
+		listMods.push(this);
+		listTemps.push(this);
+	}
+
+	draw()
+	{
+		if (countdown >= 1)
+			return;
+
+		ctx.beginPath();
+		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, this.radius * scaleFactor, 0, Math.PI * 2, false);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+		ctx.closePath();
+	}
+
+	tickTime()
+	{
+		this.durationCurrent += (timeCurrent - timePrevious) / 1000;
+		if (this.durationCurrent > this.duration)
+		{
+			let index = listMods.findIndex(obj => obj === this)
+			listMods.splice(index, 1);
+
+			index = listTemps.findIndex(obj => obj === this)
+			listTemps.splice(index, 1);
+		}
+	}
+
+	checkCollision()
+	{
+		if (!isCircleCircleOverlap(this.posX, this.posY, this.radius, ball.posX, ball.posY, ball.radius))
+			return;
+
+		let affectedPlayer = ball.moveDirX > 0 ? pad1 : pad2;
+		affectedPlayer.modifierList.push({
+			type: this.type,
+			strength: this.strength,
+			duration: this.duration
+		})
+		let index = listMods.findIndex(obj => obj === this)
+		listMods.splice(index, 1);
+		index = listTemps.findIndex(obj => obj === this)
+		listTemps.splice(index, 1);
 	}
 }
 
@@ -315,6 +393,8 @@ var debugColorPickerBackground = document.getElementById("colorPickerBackground"
 var debugColorPickerPlayer1 = document.getElementById("colorPickerPlayer1");
 var debugColorPickerPlayer2 = document.getElementById("colorPickerPlayer2");
 var debugColorPickerBall = document.getElementById("colorPickerBall");
+var debugSpeedModButton = document.getElementById("speedModButton");
+var debugHeightModButton = document.getElementById("heightModButton");
 var debugTargetScore = document.getElementById("targetScore");
 var debugInitialSpeed = document.getElementById("initialSpeed");
 var debugSpeedIncrease = document.getElementById("speedIncrease");
@@ -346,6 +426,18 @@ debugColorPickerPlayer2.addEventListener('input', function() {
 });
 debugColorPickerBall.addEventListener('input', function() {
 	ball.color = debugColorPickerBall.value;
+});
+debugSpeedModButton.addEventListener('click', function() {
+	var posX = Math.random() * fieldWidth;
+	var posY = Math.random() * fieldHeight;
+	new Modifier(posX, posY, 100, "speed", 1, "#0000ff", 5);
+	// new Modifier(fieldWidth / 2, fieldHeight / 2, 100, "speed", 1, "#0000ff", 5);
+});
+debugHeightModButton.addEventListener('click', function() {
+	var posX = Math.random() * fieldWidth;
+	var posY = Math.random() * fieldHeight;
+	new Modifier(posX, posY, 100, "height", 1, "#555555", 5);
+	// new Modifier(fieldWidth / 2, fieldHeight / 2, 100, "height", 1, "#555555", 5);
 });
 debugTargetScore.addEventListener('input', function() {
 	targetScore = debugTargetScore.value;
@@ -449,6 +541,24 @@ function isCircleAABBOverlap(cx, cy, radius, xMin, yMin, xMax, yMax)
 	return distanceSquared <= (radius * radius);
 }
 
+// Function to check if circle and circle overlap
+function isCircleCircleOverlap(x1, y1, r1, x2, y2, r2)
+{
+	// Calculate the distance between the centers of the two circles
+	let distanceX = x2 - x1;
+	let distanceY = y2 - y1;
+
+	// Calculate squared distance (to avoid sqrt for performance reasons)
+	let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+
+	// Calculate the sum of the radii squared
+	let radiiSum = r1 + r2;
+	let radiiSumSquared = radiiSum * radiiSum;
+
+	// Check if the distance is less than or equal to the sum of the radii squared
+	return distanceSquared <= radiiSumSquared;
+}
+
 function score(scorer)
 {
 	scorer.score++;
@@ -474,8 +584,11 @@ function endGame()
 
 function newPlay()
 {
-	pad1.posY = fieldHeight / 2 - pad1.height / 2;
-	pad2.posY = fieldHeight / 2 - pad2.height / 2;
+	pad1.modifierList = [];
+	pad2.modifierList = [];
+
+	pad1.posY = fieldHeight / 2 - pad1.getEffectiveHeight() / 2;
+	pad2.posY = fieldHeight / 2 - pad2.getEffectiveHeight() / 2;
 
 	ball.moveDirX *= -1;
 	
@@ -500,6 +613,7 @@ var ball = new Ball(fieldWidth / 2, fieldHeight / 2, "#00ff00", ballRadius);
 var listDrawables = [];
 var listMovables = [];
 var listTemps = [];
+var listMods = [];
 
 listDrawables.push(pad1);
 listDrawables.push(pad2);
@@ -567,6 +681,10 @@ function moveObjects()
 	listMovables.forEach(obj => {
 		obj.move();
 	});
+	listMods.forEach(obj => {
+		obj.checkCollision();
+	});
+	
 }
 
 function drawObjects()
