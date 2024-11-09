@@ -57,7 +57,7 @@ class Pad
 		for (let i = 0; i < this.modifierList.length; i++)
 		{
 			this.modifierList[i].duration -= (timeCurrent - timePrevious) / 1000;
-			if (duration <= 0)
+			if (this.modifierList[i].duration <= 0)
 				this.modifierList.splice(i, 1);
 		}
 	}
@@ -731,6 +731,8 @@ function gameUpdate()
 	handleInputs();
 	updateCountdown();
 	moveObjects();
+	pad1.updateModifiers();
+	pad2.updateModifiers();
 	tickTemps();
 	drawObjects();
 }

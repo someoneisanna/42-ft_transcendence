@@ -1,21 +1,43 @@
 <!-- Header -->
 <div id="header">
-	<div class="dropdown text-end">
-		<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" id="dropdownClicker" data-bs-toggle="dropdown" aria-expanded="false">
-			<div class="d-inline-block me-2">
-				<p id="username" class="m-0">{{ username }}</p>
-			</div>
-			<div class="d-inline-block">
-				<img id="smallProfilePicture" src="{{ profile_pic }}" width="42" height="42" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
-			</div>
-		</a>
-		<ul class="dropdown-menu dropdown-menu-end">
-			<li><a class="dropdown-item text-white" onclick="goToProfile()">Profile</a></li>
-			<li><a class="dropdown-item text-white" onclick="goToFriends()">Friends</a></li>
-			<li><a class="dropdown-item text-white" onclick="goToSettings()">Settings</a></li>
-		<li><hr class="dropdown-divider"></li>
-		<li><a class="dropdown-item text-white" onclick="signOut()">Sign out</a></li>
-		</ul>
+	<div class="d-flex justify-content-end align-items-center">
+		<div id="notificationButton" class="me-3">
+			<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				<div class="d-inline-block ">
+					<i class="fa fa-bell" style="color:black"></i>
+				</div>
+				
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" id="notificationList" style="display:flex;">
+				<li>
+					<div class="noticationInfo">
+						<p>sdjkfsifbis</p>
+						<button class="btn notificationButton" onclick="">
+							<i class="fa fa-home"></i>Add Friend
+						</button>
+					</div>
+				</li>
+				{% comment %} <li><a class="dropdown-item text-white" onclick="goToFriends()">Friends</a></li>
+				<li><a class="dropdown-item text-white" onclick="goToSettings()">Settings</a></li> {% endcomment %}
+			</ul>
+		</div>
+		<div class="dropdown">
+			<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" id="dropdownClicker" data-bs-toggle="dropdown" aria-expanded="false">
+				<div class="d-inline-block me-2">
+					<p id="username" class="m-0">{{ username }}</p>
+				</div>
+				<div class="d-inline-block">
+					<img id="smallProfilePicture" src="{{ profile_pic }}" width="42" height="42" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+				</div>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end">
+				<li><a class="dropdown-item text-white" onclick="goToProfile()">Profile</a></li>
+				<li><a class="dropdown-item text-white" onclick="goToFriends()">Friends</a></li>
+				<li><a class="dropdown-item text-white" onclick="goToSettings()">Settings</a></li>
+				<li><hr class="dropdown-divider"></li>
+				<li><a class="dropdown-item text-white" onclick="signOut()">Sign out</a></li>
+			</ul>
+		</div>
 	</div>
 </div>
 
