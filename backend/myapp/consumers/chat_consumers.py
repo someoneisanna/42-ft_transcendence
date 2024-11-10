@@ -24,9 +24,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		if type == 'join_room':
 			self.room_group_name = room_name
 			await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+			
+		if type == 'get_stored_messages':
 			messages = await self.get_messages(room_name)
 			for message in messages:
 				await self.send(text_data=json.dumps({
+					'type': 'add_stored_message',
 					'room_name': message.room_name,
 					'username': message.sender,
 					'message': message.message,
@@ -57,7 +60,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			await self.channel_layer.group_send(
 				self.room_group_name,
 				{
-					'type': 'chat_message',
+					'type': 'send_message',
 					'room_name': room_name,
 					'username': username,
 					'message': message,
@@ -65,15 +68,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				}
 			)
 
-		elif type == 'unfriend_user':
+		elif type == 'update_html':
+			action = data['action']
 			await self.channel_layer.group_send(
 				self.room_group_name,
 			{
-				'type': 'unfriend_user',
+				'type': 'update_html',
 				'room_name': room_name,
-				'username': username,
-				'message': 'delete chat',
-				'sent_at': ''
+				'action': action
 			})
 
 	@sync_to_async
@@ -82,7 +84,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	@sync_to_async
 	def get_messages(self, room_name):
-		messages = Message.objects.filter(room_name=room_name).order_by('sent_at').all()
+		messages = Message.objects.filter(room_name=room_name).order_by('-sent_at')[:100]
+		messages = reversed(messages)
 		return list(messages)
 	
 	@sync_to_async
@@ -91,7 +94,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		return last_message
 
 	# Triggered when the group_send message of type chat_message is received. Here we send the message to the websocket connection.
-	async def chat_message(self, event):
+	async def send_message(self, event):
 		await self.send(text_data=json.dumps({
 			'type': 'chat_message',
 			'room_name': event['room_name'],
@@ -101,12 +104,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		}
 		))
 
-	async def unfriend_user(self, event):
+	async def update_html(self, event):
 		await self.send(text_data=json.dumps({
-			'type': 'unfriend_user',
+			'type': 'update_html',
 			'room_name': event['room_name'],
-			'username': event['username'],
-			'message': event['message']
+			'action': event['action']
 		}
 		))
 

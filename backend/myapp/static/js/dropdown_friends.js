@@ -36,7 +36,7 @@ function buildFriendsList() {
 			return response.json();
 		})
 		.then(data => {
-			console.log('Search results:', data);
+			// console.log('Search results:', data);
 			data.friends.forEach(item => {
 				var newElement = `<li class="friendUser">
 						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">

@@ -39,6 +39,7 @@ function openChat(roomName, buttonRef) {
 		buttonRef.classList.toggle('setDarkerBackground');
 		chatContent.classList.toggle('showFriendsOnly');
 		chatWindow.classList.toggle('noChatClicked');
+		return;
 	}
 	else {
 		buttonRef.classList.add('setDarkerBackground');
@@ -46,12 +47,12 @@ function openChat(roomName, buttonRef) {
 		chatWindow.classList.remove('noChatClicked');
 	}
 
-	textsContainer.innerHTML = '';
 	lastActiveButton = buttonRef;
-	
-	// Connect to the chat room
+	textsContainer.innerHTML = '';
+
+	console.log('WS: get stored messages:', roomName);
 	chatSocket.send(JSON.stringify({
-		'type': 'join_room',
+		'type': 'get_stored_messages',
 		'room_name': roomName,
 		'username': current_user
 	}));
@@ -60,8 +61,7 @@ function openChat(roomName, buttonRef) {
 		const messageInput = document.querySelector("#sendMessageInput").value;
 		if (messageInput == '')
 			return;
-		console.log('roomName:', roomName);
-		console.log('Sending message:', messageInput);
+		console.log('WS: sending message from ' + current_user + ' to ' + roomName + ': ' + messageInput);
 		chatSocket.send(JSON.stringify({
 			'type': 'chat_message',
 			'room_name': roomName,
@@ -83,11 +83,12 @@ function openChat(roomName, buttonRef) {
 function removeChatRoom(username) {
 	const users = [username, current_user].sort();
 	const roomName = 'chatRoom_' + users[0] + '-' + users[1];
-	alert('Removing chat room ' + username + current_user + roomName);
+	console.log('WS: removing chat room: ' + roomName);
 	chatSocket.send(JSON.stringify({
-		'type': 'unfriend_user',
+		'type': 'update_html',
 		'room_name': roomName,
-		'username': username
+		'username': current_user,
+		'action': 'remove_chat_room',
 	}));
 }
 
@@ -101,14 +102,22 @@ function buildChatFriendsList() {
 			return response.json();
 		})
 		.then(data => {
-			console.log('Search results:', data);
+			// console.log('Search results:', data);
 			data.friends.forEach(item => {
 				
 				const users = [item.username, data.current_user].sort();
 				const roomName = 'chatRoom_' + users[0] + '-' + users[1];
-
+				
+				console.log('WS: getting last message for room:', roomName);
 				chatSocket.send(JSON.stringify({
 					'type': 'get_last_messages',
+					'room_name': roomName,
+					'username': current_user
+				}));
+
+				console.log('WS: opening chat room:', roomName);
+				chatSocket.send(JSON.stringify({
+					'type': 'join_room',
 					'room_name': roomName,
 					'username': current_user
 				}));
@@ -149,7 +158,8 @@ function toggleChatWindow() {
 	document.querySelector('.chatContent').classList.toggle('showChat');
 	document.querySelector('.chatContent').classList.add('showFriendsOnly');
 	document.querySelector('.chatWindow').classList.add('noChatClicked');
-	buildChatFriendsList();
+	if (document.querySelector('.chatContent').classList.contains('showChat'))
+		buildChatFriendsList();
 }
 
 function formatDate(isoDate, type) {
@@ -161,54 +171,11 @@ function formatDate(isoDate, type) {
 
 	const options2 = { hour: '2-digit', minute: '2-digit'};
 	const formattedTime = date.toLocaleTimeString('en-US', options2);
-
+	
 	if (type === 'time')
 		return formattedTime;
 	else if (type === 'date')
-		return formattedDate + ' ' + formattedTime;
-}
-
-function initializeJS() {
-	chatSocket.onmessage = function (e) {
-		var textsContainer = document.getElementById('textsContainer');
-
-		const data = JSON.parse(e.data);
-		const type = data.type;
-		const room_name = data.room_name;
-		const username = data.username;
-		const message = data.message;
-		const timestamp = formatDate(data.sent_at, 'date');
-
-		if (type === 'unfriend_user') {
-			lastActiveButton = null;
-			document.querySelector('.chatContent').classList.add('showFriendsOnly');
-			document.querySelector('.chatWindow').classList.add('noChatClicked');
-			buildChatFriendsList();
-			return;
-		}
-		
-		if (username === current_user)
-			var newElement = `
-				<div class="d-flex flex-row justify-content-end pt-1">
-					<div>
-						<p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message}</p>
-						<p class="small me-3 mb-1 rounded-3 text-muted smallerText">${timestamp}</p>
-					</div>
-				</div>`;
-		else
-			var newElement = `
-				<div class="d-flex flex-row justify-content-start">
-					<div>
-						<p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">${message}</p>
-						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
-					</div>
-				</div>`;
-		textsContainer.innerHTML += newElement;
-
-		if (data.sent_at)
-			document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at, 'time');
-		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
-	};
+		return formattedDate + ' | ' + formattedTime;
 }
 
 function blockUser(friend, current_user) {
@@ -235,9 +202,57 @@ function blockUser(friend, current_user) {
 			document.querySelector('.chatContent').classList.add('showFriendsOnly');
 			document.querySelector('.chatWindow').classList.add('noChatClicked');
 			removeChatRoom(friend);
-			buildChatFriendsList();
 		})
 		.catch(error => {
 			console.error('Error during block user:' + error);
 		});
+}
+
+function initializeJS() {
+
+	chatSocket.onmessage = function (e) {
+		var textsContainer = document.getElementById('textsContainer');
+
+		const data = JSON.parse(e.data);
+		const type = data.type;
+		const action = data.action;
+		const room_name = data.room_name;
+		const username = data.username;
+		const message = data.message;
+		const timestamp = formatDate(data.sent_at, 'date');
+
+		if (action === 'remove_chat_room') {
+			lastActiveButton = null;
+			document.querySelector('.chatContent').classList.add('showFriendsOnly');
+			document.querySelector('.chatWindow').classList.add('noChatClicked');
+			buildChatFriendsList();
+			if (document.querySelector('.friendsList'))
+				buildFriendsList();
+			return;
+		}
+		
+		if (username === current_user)
+			var newElement = `
+				<div class="d-flex flex-row justify-content-end pt-1">
+					<div>
+						<p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message}</p>
+						<p class="small me-3 mb-1 rounded-3 text-muted smallerText">${timestamp}</p>
+					</div>
+				</div>`;
+		else
+			var newElement = `
+				<div class="d-flex flex-row justify-content-start">
+					<div>
+						<p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">${message}</p>
+						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
+					</div>
+				</div>`;
+		textsContainer.innerHTML += newElement;
+
+		if (type !== 'add_stored_message') {
+			if (data.sent_at)
+				document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at, 'time');
+			document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
+		}
+	};
 }
