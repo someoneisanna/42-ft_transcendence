@@ -6,3 +6,4 @@ backend/backend/__pycache__/*
 backend/myapp/__pycache__/*
 backend/myapp/middleware/__pycache__/*
 backend/myapp/migrations/
+__pycache__/
