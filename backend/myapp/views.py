@@ -189,7 +189,12 @@ def search_friends(request):
 		search_input = request.GET.get('q', '').strip()
 		if search_input == '':
 			return JsonResponse({'error': 'No search input provided'}, status=200)
-		users = User.objects.exclude(id=request.user.id).filter(username__icontains=search_input)
+		
+		blocked_by_users = request.user.blocked_by.all()
+		users = User.objects.exclude(id=request.user.id)
+		users = users.exclude(id__in=blocked_by_users)
+		users = users.filter(username__icontains=search_input)
+		# users = User.objects.exclude(id=request.user.id).filter(username__icontains=search_input)
 		if not users.exists():
 			return JsonResponse([], safe=False)
 		user_list = []
