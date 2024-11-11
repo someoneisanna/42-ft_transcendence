@@ -207,6 +207,21 @@ def search_friends(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 	
+# SEARCH FOR PENDING FRIEND REQUESTS ------------------------------------------------------------------------------
+
+def search_pending(request):
+	if request.method == 'GET':
+		pending_list = []
+		pending_invitations = Invitation.objects.filter(to_user=request.user)
+		for invitation in pending_invitations:
+			pending_list.append({
+				'username': invitation.from_user.username,
+				'profile_pic': invitation.from_user.profile_pic.url
+			})
+		return JsonResponse(pending_list, safe=False)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 # GET RELATIONSHIP BETWEEN TWO USERS -----------------------------------------------------------------------------
 
 def get_relationship(request):

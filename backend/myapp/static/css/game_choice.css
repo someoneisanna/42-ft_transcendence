@@ -1,7 +1,7 @@
 
 #layoutContent {
     background-color: #000e18;
-    height: calc(100vh - 80px); /* Total height: 50px (header) + 30px (footer) = 80px */
+    height: calc(100vh - 50px); /* Total height: 50px (header) + 30px (footer) = 80px */
     display: flex; /* Enable Flexbox */
     flex-direction: row; /* Ensure they are in a row */
     align-items: center; /* Center items vertically */

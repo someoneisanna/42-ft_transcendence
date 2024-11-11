@@ -6,17 +6,32 @@
 				<div class="d-inline-block ">
 					<i class="fa fa-bell" style="color:black"></i>
 				</div>
-				
 			</a>
-			<ul class="dropdown-menu dropdown-menu-end" id="notificationList" style="display:flex;">
-				<li>
-					<div class="noticationInfo">
-						<p>sdjkfsifbis</p>
-						<button class="btn notificationButton" onclick="">
-							<i class="fa fa-home"></i>Add Friend
-						</button>
+			<ul class="dropdown-menu dropdown-menu-end" id="notificationList">
+				<h6 class="text-white ms-3">Pending Invitations</h6>
+				<li><hr class="dropdown-divider"></li>
+				{% comment %} <li class="dropdown-item text-white d-flex justify-content-between align-items-center">
+					<p class="m-0 me-2">user1</p>
+					<div class="d-flex justify-content-end">
+						<p class="btn notificationButton m-0 me-1" onclick="goToProfile()" style="padding: 0px;">
+							<i class="fa fa-check-square icon-confirm" style="font-size:25px;"></i>
+						</p>
+						<p class="btn notificationButton m-0" onclick="goToProfile()" style="padding: 0px;">
+							<i class="fa fa-window-close icon-deny" style="font-size:25px;"></i>
+						</p>
 					</div>
 				</li>
+				<li class="dropdown-item text-white d-flex justify-content-between align-items-center">
+					<p class="m-0 me-2">user1</p>
+					<div class="d-flex justify-content-end">
+						<p class="btn notificationButton m-0 me-1" onclick="goToProfile()" style="padding: 0px;">
+							<i class="fa fa-check-square icon-confirm" style="font-size:25px;"></i>
+						</p>
+						<p class="btn notificationButton m-0" onclick="goToProfile()" style="padding: 0px;">
+							<i class="fa fa-window-close icon-deny" style="font-size:25px;"></i>
+						</p>
+					</div>
+				</li> {% endcomment %}
 			</ul>
 		</div>
 		<div class="dropdown">
@@ -44,10 +59,3 @@
 <div id="home-text" onclick="goHome()">
 	<a>ft_transcendence</a>
 </div>
-
-<!-- Footer -->
-<footer>
-	<div>
-		© 2024 ft_transcendence
-	</div>
-</footer>

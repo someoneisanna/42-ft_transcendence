@@ -24,6 +24,7 @@ urlpatterns = [
 	path('api/logout/', views.logout, name='logout'),											# API for logging out
 	path('api/change_pic/', views.change_pic, name='change_pic'),								# API for changing a profile picture
 	path('api/search_friends/', views.search_friends, name='search_friends'),					# API for searching for users
+	path('api/search_pending/', views.search_pending, name='search_pending'),					# API for searching for pending friend requests
 	path('api/get_relationship/', views.get_relationship, name='get_relationship'),				# API for getting the relationship between two users
 	path('api/get_friends/', views.get_friends, name='get_friends'),							# API for getting all friends
 	path('api/send_friend_request/', views.send_friend_request, name='send_friend_request'),	# API for sending a friend request

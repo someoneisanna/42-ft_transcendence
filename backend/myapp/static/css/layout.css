@@ -35,9 +35,9 @@
     background-color: #226b8d;
 }
 
-.dropdown:hover {
+/* .dropdown:hover {
     transform: translateX(-10px);
-}
+} */
 
 .dropdown-menu {
     background-color: rgba(0, 0, 0, 0.6);
@@ -74,13 +74,14 @@
     transform: translateX(10px);
 }
 
-footer {
-    background-color: #4e0000; /* Optional: Keep or remove */
-    color: #fff;
-    text-align: center;
-    bottom: 0;
-    position: fixed;
-    width: 100%;
-    height: 30px;
-    z-index: 5;
+.icon-confirm, .icon-deny {
+    color: rgb(165, 165, 165)
+}
+
+.icon-confirm:hover {
+    color: rgb(85, 224, 85);
+}
+
+.icon-deny:hover {
+    color: rgb(224, 85, 85);
 }
