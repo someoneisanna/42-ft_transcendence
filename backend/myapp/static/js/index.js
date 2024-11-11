@@ -268,6 +268,8 @@ function blockUser(friend, current_user) {
 var chatBuilt = false;
 
 function buildChat() {
+	if (document.querySelector('.showChat') !== null)
+		document.querySelector('.chatContent').classList.remove('showChat');
 	buildChatFriendsList();
 	chatBuilt = true;
 }

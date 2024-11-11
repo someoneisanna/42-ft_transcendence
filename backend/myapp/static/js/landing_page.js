@@ -20,6 +20,7 @@ function signOut() {
 	})
 	.then(data => {
 		console.log('Logout Success:', data);
+		chatBuilt = false;
 		loadPage('/landing/', true, true);
 	})
 	.catch((error) => {
