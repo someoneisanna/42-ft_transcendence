@@ -206,16 +206,3 @@ animation:	<animation-name>
     height: 250px; /* Maintain square aspect ratio */
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Optional: Add shadow for a nice effect */
 }
-
-#cookieconsent .modal-content {
-    background-color: rgb(43, 43, 43);
-}
-
-#cookieconsent .modal-body {
-    color: #ffffff;
-}
-
-#cookieconsent .modal-header {
-    background-color: rgba(56, 139, 233, 0.5);
-    color: #ffffff;
-}

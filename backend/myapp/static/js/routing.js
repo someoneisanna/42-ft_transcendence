@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+	
 	const contentDiv = document.getElementById('content');
 	const layoutDiv = document.getElementById('layout');
+	const chatDiv = document.getElementById('chat');
 
 	function loadScript(url) {
 		const script = document.createElement('script');
@@ -11,6 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.body.appendChild(script);
 	}
 
+	function showCookieConsent() {
+		var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
+		cookieConsentModal.show();
+		const acceptButton = document.getElementById('acceptCookiesButton');
+		if (acceptButton) {
+			acceptButton.addEventListener('click', function() {
+				localStorage.setItem('cookieConsent_transcendence', 'accepted');
+				cookieConsentModal.hide();
+			});
+		}
+	}
+
 	window.loadPage = (url, addHistory, signOut) => {
 		fetch(url)
 			.then(response => {
@@ -19,46 +33,43 @@ document.addEventListener('DOMContentLoaded', () => {
 					history.replaceState({ url: '/landing/' }, '', '/landing/');
 					return Promise.reject('Unauthorized');
 				}
-				if (response.ok) {
+				if (response.ok)
 					return response.text();
-				}
 				throw new Error('Page not found');
 			})
 			.then(html => {
-				if (localStorage.getItem('cookieConsent_transcendence') !== 'accepted') {
-					var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
-					cookieConsentModal.show();
-					const acceptButton = document.getElementById('acceptCookiesButton');
-					if (acceptButton) {
-						acceptButton.addEventListener('click', function() {
-							localStorage.setItem('cookieConsent_transcendence', 'accepted');
-							cookieConsentModal.hide();
-						});
-					}
-				}
+				
+				if (localStorage.getItem('cookieConsent_transcendence') !== 'accepted')
+					showCookieConsent();
+
 				if (url === '/layout/') {
 					layoutDiv.innerHTML = html;
 					loadPage('/game_choice/', true);
+					loadScript('/static/js/layout.js');
+					if (chatBuilt === false)
+						buildChat();
 				}
 				else
 					contentDiv.innerHTML = html;
 
 				if (url === '/landing/') {
 					layoutDiv.innerHTML = '';
+					chatDiv.classList.add('hiddenChat');
 					loadScript('/static/js/landing_page.js');
 				}
-				else if (url === '/layout/')
-					loadScript('/static/js/layout.js');
-				else if (url === '/game_choice/')
-					loadScript('/static/js/game_choice.js');
-				else if (url === '/dropdown_profile/')
-					loadScript('/static/js/dropdown_profile.js');
-				else if (url === '/pong_menu/')
-					loadScript('/static/js/pong/pong_menu.js');
-				else if (url === '/dropdown_friends/')
-					buildFriendsList();
-				else if (url === '/pong_game/')
-					loadScript('/static/js/pong/pong_game.js');
+				else {
+					chatDiv.classList.remove('hiddenChat');
+					if (url === '/game_choice/')
+						loadScript('/static/js/game_choice.js');
+					else if (url === '/dropdown_profile/')
+						loadScript('/static/js/dropdown_profile.js');
+					else if (url === '/pong_menu/')
+						loadScript('/static/js/pong/pong_menu.js');
+					else if (url === '/dropdown_friends/')
+						buildFriendsList();
+					else if (url === '/pong_game/')
+						loadScript('/static/js/pong/pong_game.js');
+				}
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
 					history.pushState({ url: url }, '', url);

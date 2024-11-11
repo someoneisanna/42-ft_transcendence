@@ -17,8 +17,6 @@
 						</button>
 					</div>
 				</li>
-				{% comment %} <li><a class="dropdown-item text-white" onclick="goToFriends()">Friends</a></li>
-				<li><a class="dropdown-item text-white" onclick="goToSettings()">Settings</a></li> {% endcomment %}
 			</ul>
 		</div>
 		<div class="dropdown">
@@ -45,45 +43,6 @@
 
 <div id="home-text" onclick="goHome()">
 	<a>ft_transcendence</a>
-</div>
-
-<!-- Collapsible button -->
-<button id="chatButton" onclick="toggleChatWindow()"> Toggle Window <i class="fas fa-chevron-up"></i></button>
-<div class="chatContent showFriendsOnly">
-	<div id="chatHeader"></div>
-	<div id="chatFriendsList">
-		<h5>Friends</h5>
-		<div class="input-group rounded mb-3">
-			<input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon"></input>
-			<span class="input-group-text border-0" id="search-addon">
-				<i class="fas fa-search"></i>
-			</span>
-		</div>
-		<div class="scrollableFriends">
-			<div data-mdb-perfect-scrollbar-init style="position: relative; height: 350px">
-				<ul id="chatFriendsListContent" class="list-unstyled mb-0">
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div id="chatWindow" class="chatWindow noChatClicked">
-		<div class="card-header d-flex justify-content-between align-items-center p-2">
-			<h5 class="mb-0">Chat</h5>
-			<div id="chatUpperCornerButtons">
-				<button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-sm" data-mdb-ripple-color="dark">Go to Profile</button>
-				<button type="button" class="blockButtonClass btn btn-sm btn-outline-danger"> <i class="fa fa-ban"></i></button>
-			</div>
-		</div>
-		<div class="scrollableTexts">
-			<div id="textsContainer" class="pt-2" data-mdb-perfect-scrollbar-init style="position: relative; height: 360px">
-			</div>
-		</div>
-		<div class="text-muted d-flex justify-content-start align-items-center pt-3">
-			<input type="text" class="form-control form-control-md" id="sendMessageInput" placeholder="Type message"></input>
-			<a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a>
-			<a class="sendMessageButton ms-3" href="#"><i class="fas fa-paper-plane"></i></a>
-		</div>
-	</div>
 </div>
 
 <!-- Footer -->

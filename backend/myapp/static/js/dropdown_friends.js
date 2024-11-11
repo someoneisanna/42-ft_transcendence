@@ -36,7 +36,6 @@ function buildFriendsList() {
 			return response.json();
 		})
 		.then(data => {
-			// console.log('Search results:', data);
 			data.friends.forEach(item => {
 				var newElement = `<li class="friendUser">
 						<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
@@ -199,7 +198,7 @@ function acceptInvitation(buttonRef, username) {
 	.then(data => {
 		console.log('Invitation accepted:', data);
 		buttonRef.parentElement.innerHTML = changeButton(username, 'friends');
-		buildFriendsList();
+		addFriendToLists(username);
 	})
 	.catch(error => {
 		console.error('Error accepting invitation:', error);

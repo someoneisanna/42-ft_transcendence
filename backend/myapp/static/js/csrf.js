@@ -13,25 +13,4 @@ function getCookie(name) {
 	return cookieValue;
 }
 
-var current_user = '';
-
 const csrftoken_var = getCookie('csrftoken');
-
-const chatSocket = new WebSocket("wss://" + window.location.host + "/ws/chat/");
-const pongSocket = new WebSocket("wss://" + window.location.host + "/ws/pong/");
-
-chatSocket.onopen = function (e){
-	console.log("The connection to the chatSocket was setup successfully!");
-};
-
-chatSocket.onclose = function (e) {
-	console.log("The connection to the chatSocket was closed unexpectedly!");
-};
-
-chatSocket.onerror = function (error) {
-	console.error("chatSocket error:", error);
-};
-
-window.onbeforeunload = function () {
-	chatSocket.close();
-};
