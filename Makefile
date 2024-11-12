@@ -27,7 +27,7 @@ down_c:
 	@docker-compose -p $(NAME) down
 	@docker rmi -f $$(docker images -q) || true
 	@docker volume rm $$(docker volume ls -q) || true
-	@docker network rm 42-ft_transcendence_network || true
+	@docker network rm ft_transcendence_network || true
 
 status:
 	@echo "\n--------------------------------------- CONTAINERS -------------------------------------\n"
@@ -44,7 +44,7 @@ clean:
 	@docker rm -f $$(docker ps -a -q) || true
 	@docker rmi -f $$(docker images -q) || true
 	@docker volume rm $$(docker volume ls -q) || true
-	@docker network rm 42-ft_transcendence_network || true
+	@docker network rm ft_transcendence_network || true
 
 prune:
 	@sudo docker system prune -a --volumes

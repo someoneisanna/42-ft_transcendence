@@ -84,7 +84,6 @@ DATABASES = {
         'USER': 'transcendent', 
         'PASSWORD': '123',
         'HOST': 'postgres',
-		# 'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -148,13 +147,12 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# SECURE_SSL_REDIRECT = False
-# SESSION_COOKIE_SECURE = False
-# CSRF_COOKIE_SECURE = False
-
 # Channels settings
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
     }
 }
