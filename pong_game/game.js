@@ -1,3 +1,13 @@
+var gameSettings = {
+	initialSpeed: 10.0,
+	speedIncrease: 1,
+	targetScore: 20,
+	typePlayer1: "human",
+	typePlayer2: "cpu",
+	modifiers: true,
+	modifierCooldown: 3
+};
+
 class Pad
 {
 	constructor(x, y, color, width, height, playerType)
@@ -115,7 +125,7 @@ class Pad
 		// if the ball is moving away
 		if ((side === "left" && this.cpuPerceivedBallMoveDirX > 0) || (side === "right" && this.cpuPerceivedBallMoveDirX < 0))
 		{
-			if (Math.abs(padCenterPos - fieldHeight / 2) < 50)
+			if (Math.abs(padCenterPos - fieldHeight / 2) < this.getEffectiveHeight() / 2)
 				return;
 			// move to middle of the field
 			if (padCenterPos < fieldHeight / 2)
