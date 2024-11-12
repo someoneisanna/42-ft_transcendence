@@ -154,16 +154,13 @@ function toggleChatWindow() {
 	document.querySelector('.chatWindow').classList.add('noChatClicked');
 }
 
-function formatDate(isoDate, type) {
+function formatDate(isoDate) {
 	const date = new Date(isoDate);
 	const options1 = { month: 'short', day: 'numeric' };
 	const formattedDate = date.toLocaleDateString('en-US', options1);
 	const options2 = { hour: '2-digit', minute: '2-digit'};
 	const formattedTime = date.toLocaleTimeString('en-US', options2);
-	if (type === 'time')
-		return formattedTime;
-	else if (type === 'date')
-		return formattedDate + ' | ' + formattedTime;
+	return formattedDate + ', ' + formattedTime;
 }
 
 function blockUser(friend, current_user) {

@@ -30,9 +30,8 @@
 .chatContent {
     display: none;
     position: absolute;
-    bottom: 80px;
+    bottom: 55px;
     left: 10px;
-    margin-bottom: 5px;
     width: 775px;
     background-color: rgb(155, 210, 214);
     border-radius: 5px;
@@ -69,7 +68,7 @@
 }
 
 .scrollableFriends {
-    height: 340px;
+    height: 440px;
     overflow-y: scroll;
 }
 

@@ -90,6 +90,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	@sync_to_async
 	def store_message(self, room_name, username, message):
+		if Message.objects.filter(room_name=room_name).count() >= 100:
+			oldest_message = Message.objects.filter(room_name=room_name).order_by('sent_at').first()
+			if oldest_message:
+				oldest_message.delete()
 		Message.objects.create(room_name=room_name, sender=username, message=message)
 
 	@sync_to_async

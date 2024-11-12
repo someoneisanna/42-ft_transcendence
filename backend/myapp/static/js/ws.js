@@ -6,7 +6,7 @@ chatSocket.onopen = function (e){
 };
 
 chatSocket.onclose = function (e) {
-	console.log("The connection to the chatSocket was closed unexpectedly!");
+	console.log("The connection to the chatSocket was closed!");
 };
 
 chatSocket.onerror = function (error) {
@@ -26,7 +26,7 @@ chatSocket.onmessage = function (e) {
 	const room_name = data.room_name;
 	const username = data.username;
 	const message = data.message;
-	const timestamp = formatDate(data.sent_at, 'date');
+	const timestamp = formatDate(data.sent_at);
 
 	if (type === 'authenticated')
 		console.log(username + ' is now connected to the ws.');
@@ -68,7 +68,7 @@ chatSocket.onmessage = function (e) {
 
 	if (type === 'chat_message') {
 		if (data.sent_at)
-			document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at, 'time');
+			document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at);
 		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
 	}
 };

@@ -267,6 +267,7 @@ def get_friends(request):
 					'username': friendship.user1.username,
 					'profile_pic': friendship.user1.profile_pic.url
 				})
+		friend_list = sorted(friend_list, key=lambda friend: friend['username'].lower())
 		return JsonResponse({'friends': friend_list, 'current_user': request.user.username}, safe=False)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
