@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
 	zlib1g-dev \
 	libjpeg-dev \
 	postgresql-client \
+	redis-tools \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -21,6 +22,6 @@ COPY docker_entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh", "postgres"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

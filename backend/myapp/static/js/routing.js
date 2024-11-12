@@ -1,17 +1,18 @@
+function loadScript(url) {
+	const script = document.createElement('script');
+	script.src = url;
+	script.onload = () => {
+		initializeJS();
+	};
+	document.body.appendChild(script);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	
 	const contentDiv = document.getElementById('content');
 	const layoutDiv = document.getElementById('layout');
 	const chatDiv = document.getElementById('chat');
 
-	function loadScript(url) {
-		const script = document.createElement('script');
-		script.src = url;
-		script.onload = () => {
-			initializeJS();
-		};
-		document.body.appendChild(script);
-	}
 
 	function showCookieConsent() {
 		var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));

@@ -1,13 +1,22 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async
-from myapp.models import Message, User
 import json
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.layers import get_channel_layer
+from myapp.models import Message, User
+from asgiref.sync import sync_to_async
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
 	# Triggered when a new websocket connection is established. 
 	async def connect(self):
-		await self.accept()
+		user = self.scope.get('user')
+		if user is not None:
+			await self.accept()
+			await self.send(text_data=json.dumps({
+				"type": "authenticated",
+				"username": user.username,
+			}))
+		else:
+			await self.close()
 
 	# Triggered when a websocket connection is closed. Here we remove the user from any chat room they joined.
 	async def disconnect(self, close_code):
@@ -40,6 +49,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			last_message = await self.get_last_message(room_name)
 			if last_message is not None:
 				await self.send(text_data=json.dumps({
+					'type': 'chat_message',
 					'room_name': last_message.room_name,
 					'username': last_message.sender,
 					'message': last_message.message,

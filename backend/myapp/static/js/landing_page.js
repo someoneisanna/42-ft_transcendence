@@ -22,6 +22,8 @@ function signOut() {
 		console.log('Logout Success:', data);
 		chatBuilt = false;
 		loadPage('/landing/', true, true);
+		if (chatSocket && chatSocket.readyState === WebSocket.OPEN)
+			chatSocket.close();
 	})
 	.catch((error) => {
 		console.error('Logout failed:', error);
@@ -33,6 +35,14 @@ function signOut() {
 function initializeJS() {
 
 // IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
+
+function userLoggedIn() {
+	const modalBackdrop = document.querySelector('.modal-backdrop');
+	if (modalBackdrop)
+		modalBackdrop.remove();
+	loadPage('/layout/', true);
+	loadScript('/static/js/ws.js');
+}
 
 // If the user is already logged in, and chooses to sign out
 const confirmSignOut = document.getElementById('confirmSignOut');
@@ -47,6 +57,7 @@ const confirmYes = document.getElementById('confirmYes');
 if (confirmYes) {
 	confirmYes.addEventListener('click', function() {
 		loadPage('/layout/', true);
+		loadScript('/static/js/ws.js');
 	});
 	if (!current_user)
 		fetch('/api/get_current_user/')
@@ -156,8 +167,7 @@ loginForm.addEventListener('submit', function(event) {
 		else {
 			console.log('Login Success:', data);
 			current_user = data.username;
-			document.getElementsByClassName("modal-backdrop")[0].remove();
-			loadPage('/layout/', true);
+			userLoggedIn();
 		}
 	})
 	.catch((error) => {
@@ -170,11 +180,6 @@ loginForm.addEventListener('submit', function(event) {
 
 let isRegistered = false;
 
-function continueToLayout() {
-	document.getElementsByClassName("modal-backdrop")[0].remove();
-	loadPage('/layout/', true);
-}
-
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
 
@@ -185,7 +190,7 @@ registerForm.addEventListener('submit', function(event) {
 
 	// Check if the button is the "continue" after 2FA setup
 	if (isRegistered) {
-		continueToLayout();
+		userLoggedIn();
 		return;
 	}
 
@@ -250,7 +255,7 @@ registerForm.addEventListener('submit', function(event) {
 			isRegistered = true;
 		}
 		else
-			continueToLayout();
+			userLoggedIn();
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);
