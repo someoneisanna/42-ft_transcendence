@@ -1,1 +1,73 @@
-<h1> This is the settings page </h1>
+<div class="settingsPage neon-border">
+	<div class="profileInfo">
+		<img id="bigProfilePicture" src="{{ profile_pic }}" width="300" height="300" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+		<br>
+		<form id="profile-form">
+			<input type="file" id="profile-picture" name="profile_picture" accept="image/*" required>
+			<button type="submit">Upload</button>
+			<p id="uploadError"></p>
+		</form>
+		<br>
+		<a id="removeProfilePicture" onclick="removeProfilePic()">Remove Profile Picture</a>
+	</div>
+	<div class="profileStats">
+		<div class="settingBlock">
+			<h3>Your Motto</h3>
+			<input type="text" id="motto" name="motto" placeholder="Your motto" value="{{ motto }}" required>
+			<br><button class="settingsUpdateButton" onclick="update()">Update</button>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3>Change password</h3>
+			<form id="change-password-form">
+				<input type="password" id="old-password" name="old_password" placeholder="Old password" required>
+				<input type="password" id="new-password" name="new_password" placeholder="New password" required>
+				<input type="password" id="new-password-confirmation" name="new_password_confirmation" placeholder="Confirm new password" required>
+				<button type="submit">Change</button>
+				<p id="changePasswordError"></p>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3>Two-factor authentication</h3>
+			<button id="2fa" onclick="2fa()">Enable/Disable</button>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3>Reset stats</h3>
+			<button id="resetStats" onclick="resetStats()">Reset</button>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3>Allow comments on your profile</h3>
+			<form>
+				<input type="radio" id="from_anyone" name="comment_preference" value="anyone">
+				<label for="from_anyone">From anyone</label><br>
+				<input type="radio" id="from_friends" name="comment_preference" value="friends">
+				<label for="from_friends">From friends only</label><br>
+				<input type="radio" id="no_comment" name="comment_preference" value="none">
+				<label for="no_comment">Don't allow</label>
+			</form>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3>Allow people to invite you to a tournament</h3>
+			<form>
+				<input type="radio" id="allow_invite" name="invite_preference" value="allow">
+				<label for="allow_invite">Allow</label><br>
+				<input type="radio" id="deny_invite" name="invite_preference" value="deny">
+				<label for="deny_invite">Deny</label>
+			</form>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3>Delete account</h3>
+			<button id="deleteAccount" onclick="deleteAccount()">Delete</button>
+		</div>
+	</div>
+</div>
+
+{% comment %}
+profile picture 
+change password
+2fa
+reset stats
+user motto
+allow/deny comments on profile + allow/deny from unfriended users
+delete account
+maybe associated 42?
+allow/deny people to invite them to a tournament
+{% endcomment %}

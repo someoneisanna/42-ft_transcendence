@@ -1,0 +1,38 @@
+.settingsPage {
+	border: 2px solid #ccc;
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 1500px;
+	margin: 0 auto;
+	text-align: left;
+	border-radius: 10px;
+	top: 50px;
+	position: relative;
+	display: flex; /* Makes the content flow in a row (two columns) */
+	justify-content: space-between; /* Ensures space between the two columns */
+}
+
+.settingBlock {
+	border: 1px solid #2b2b2b;
+	border-radius: 8px;
+	padding: 20px;
+	background-color: #111;
+}
+
+.settingBlock input {
+	background-color: #000; /* Background color */
+    color: #fff; /* Text color */
+    border: 1px solid #404040; /* Border color */
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 16px;
+
+}
+
+.settingsPage button {
+	background-color: #0b2a53;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	padding: 6px 12px;
+	font-size: 16px;
+}
