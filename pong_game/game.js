@@ -65,7 +65,7 @@ class Pad
 	draw()
 	{
 		ctx.fillStyle = this.color;
-		ctx.fillRect(this.posX * scaleFactor, this.posY * scaleFactor, this.width * scaleFactor, this.getEffectiveHeight() * scaleFactor);
+		ctx.fillRect(this.posX * scaleFactor, (this.posY - this.getEffectiveHeight() / 2) * scaleFactor, this.width * scaleFactor, this.getEffectiveHeight() * scaleFactor);
 	}
 
 	move()
@@ -85,14 +85,14 @@ class Pad
 			this.currentSpeed = MoveTowards(this.currentSpeed, this.targetSpeed, this.acceleration);
 		this.posY += this.currentSpeed;
 
-		if (this.posY < 0)
+		if (this.posY - this.getEffectiveHeight() / 2 < 0)
 		{
-			this.posY = 0;
+			this.posY = this.getEffectiveHeight() / 2;
 			this.currentSpeed = 0;
 		}
-		else if (this.posY + this.getEffectiveHeight() > fieldHeight)
+		else if (this.posY + this.getEffectiveHeight() / 2 > fieldHeight)
 		{
-			this.posY = fieldHeight - this.getEffectiveHeight();
+			this.posY = fieldHeight - this.getEffectiveHeight() / 2;
 			this.currentSpeed = 0;
 		}
 	}
@@ -100,7 +100,7 @@ class Pad
 	decideMovement()
 	{
 		var side = (this.posX < fieldWidth / 2) ? "left" : "right";
-		var padCenterPos = this.posY + this.getEffectiveHeight() / 2;
+		var padCenterPos = this.posY;
 		
 		// the ai can only see the ball once every second
 		if (this.cpuBlindnessCooldown > 0)
@@ -188,10 +188,10 @@ class Ball
 		new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius / 2, 0.3);
 
 		// check collision with paddles
-		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY, pad1.posX + pad1.width, pad1.posY + pad1.getEffectiveHeight()))
+		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY - pad1.getEffectiveHeight() / 2, pad1.posX + pad1.width, pad1.posY + pad1.getEffectiveHeight() / 2))
 		{
 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-			var relativeImpactPoint = (this.posY - pad1.posY) / pad1.getEffectiveHeight();
+			var relativeImpactPoint = (this.posY - (pad1.posY - pad1.getEffectiveHeight() / 2)) / pad1.getEffectiveHeight();
 			var newDirX, newDirY;
 
 			if (relativeImpactPoint <= 0.5)
@@ -216,10 +216,10 @@ class Ball
 
 			return;
 		}
-		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY, pad2.posX + pad2.width, pad2.posY + pad2.getEffectiveHeight()))
+		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY - pad2.getEffectiveHeight() / 2, pad2.posX + pad2.width, pad2.posY + pad2.getEffectiveHeight() / 2))
 		{
 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-			var relativeImpactPoint = (this.posY - pad2.posY) / pad2.getEffectiveHeight();
+			var relativeImpactPoint = (this.posY - (pad2.posY - pad2.getEffectiveHeight() / 2)) / pad2.getEffectiveHeight();
 			var newDirX, newDirY;
 
 			if (relativeImpactPoint <= 0.5)
@@ -587,8 +587,8 @@ function newPlay()
 	pad1.modifierList = [];
 	pad2.modifierList = [];
 
-	pad1.posY = fieldHeight / 2 - pad1.getEffectiveHeight() / 2;
-	pad2.posY = fieldHeight / 2 - pad2.getEffectiveHeight() / 2;
+	pad1.posY = fieldHeight / 2;
+	pad2.posY = fieldHeight / 2;
 
 	ball.moveDirX *= -1;
 	
@@ -605,8 +605,8 @@ var ballRadius = 35;
 var backgroundColor = "#f7ffbd"
 
 // objects
-var pad1 = new Pad(10, fieldHeight / 2 - padHeight / 2, "#ff0000", padWidth, padHeight, debugPlayer1AI.value);
-var pad2 = new Pad(fieldWidth - padWidth - 10, fieldHeight / 2 - padHeight / 2, "#0000ff", padWidth, padHeight, debugPlayer2AI.value);
+var pad1 = new Pad(10, fieldHeight / 2, "#ff0000", padWidth, padHeight, debugPlayer1AI.value);
+var pad2 = new Pad(fieldWidth - padWidth - 10, fieldHeight / 2, "#0000ff", padWidth, padHeight, debugPlayer2AI.value);
 var ball = new Ball(fieldWidth / 2, fieldHeight / 2, "#00ff00", ballRadius);
 
 // lists
