@@ -143,9 +143,9 @@ function removeFriend(buttonRef, username) {
 	})
 	.then(data => {
 		console.log('Friend removed:', data);
-		removeChatRoom(username);
 		buttonRef.outerHTML = changeButton(username, 'none');
-		buildFriendsList();
+		notifyUser(username, 'friendship_changed', 'none');
+		updateListsandChat('none');
 	})
 	.catch(error => {
 		console.error('Error removing friend:', error);
@@ -198,7 +198,8 @@ function acceptInvitation(buttonRef, username) {
 	.then(data => {
 		console.log('Invitation accepted:', data);
 		buttonRef.parentElement.innerHTML = changeButton(username, 'friends');
-		addFriendToLists(username);
+		notifyUser(username, 'friendship_changed', 'friends');
+		updateListsandChat('none');
 	})
 	.catch(error => {
 		console.error('Error accepting invitation:', error);
@@ -255,4 +256,37 @@ function unblockUser(buttonRef, username) {
 	.catch(error => {
 		console.error('Error unblocking user:', error);
 	});
+}
+
+function updateListsandChat(relationship) {
+	if (relationship === 'none') {
+		lastActiveButton = null;
+		document.querySelector('.chatContent').classList.add('showFriendsOnly');
+		document.querySelector('.chatWindow').classList.add('noChatClicked');
+	}
+	buildChatFriendsList();
+	if (document.querySelector('.friendsList'))
+		buildFriendsList();
+}
+
+function notifyUser(username, notification, new_relationship) {
+	console.debug('TESTS: sending notification to ' + username + ': ' + notification);
+	chatSocket.send(JSON.stringify({
+		'type': 'send_notification',
+		'room_name': username,
+		'username': current_user,
+		'notification': notification,
+		'new_relationship': new_relationship
+	}));
+}
+
+function notifyUsers(username, action) {
+	const roomName = getChannelRoomName(username);
+	console.debug('WS: updating message for room:', roomName);
+	chatSocket.send(JSON.stringify({
+		'type': 'update_html',
+		'room_name': roomName,
+		'username': current_user,
+		'action': action,
+	}));
 }

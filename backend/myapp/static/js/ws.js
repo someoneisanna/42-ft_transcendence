@@ -6,7 +6,7 @@ chatSocket.onopen = function (e){
 };
 
 chatSocket.onclose = function (e) {
-	console.log("The connection to the chatSocket was closed!");
+	console.log("The connection to the chatSocket was closed unexpectedly!");
 };
 
 chatSocket.onerror = function (error) {
@@ -23,6 +23,7 @@ chatSocket.onmessage = function (e) {
 	const data = JSON.parse(e.data);
 	const type = data.type;
 	const action = data.action;
+	const notification = data.notification;
 	const room_name = data.room_name;
 	const username = data.username;
 	const message = data.message;
@@ -30,41 +31,33 @@ chatSocket.onmessage = function (e) {
 
 	if (type === 'authenticated')
 		console.log(username + ' is now connected to the ws.');
-
-	if (action === 'remove_chat_room') {
-		lastActiveButton = null;
-		document.querySelector('.chatContent').classList.add('showFriendsOnly');
-		document.querySelector('.chatWindow').classList.add('noChatClicked');
-		buildChatFriendsList();
-		if (document.querySelector('.friendsList'))
-			buildFriendsList();
-		return;
+	
+	if (type === 'receive_notification') {
+		console.debug('TEST: receive_notification:', data);
+		if (notification === 'friendship_changed')
+			updateListsandChat(message);
 	}
 
-	if (action === 'add_chat_room') {
-		buildChatFriendsList();
-		if (document.querySelector('.friendsList'))
-			buildFriendsList();
-		return;
+	if (type === 'chat_message' || type === 'add_stored_message')
+	{
+		if (username === current_user)
+			var newElement = `
+				<div class="d-flex flex-row justify-content-end pt-1">
+					<div>
+						<p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message}</p>
+						<p class="small me-3 mb-1 rounded-3 text-muted smallerText">${timestamp}</p>
+					</div>
+				</div>`;
+		else
+			var newElement = `
+				<div class="d-flex flex-row justify-content-start">
+					<div>
+						<p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">${message}</p>
+						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
+					</div>
+				</div>`;
+		textsContainer.innerHTML += newElement;
 	}
-
-	if (username === current_user)
-		var newElement = `
-			<div class="d-flex flex-row justify-content-end pt-1">
-				<div>
-					<p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message}</p>
-					<p class="small me-3 mb-1 rounded-3 text-muted smallerText">${timestamp}</p>
-				</div>
-			</div>`;
-	else
-		var newElement = `
-			<div class="d-flex flex-row justify-content-start">
-				<div>
-					<p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">${message}</p>
-					<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
-				</div>
-			</div>`;
-	textsContainer.innerHTML += newElement;
 
 	if (type === 'chat_message') {
 		if (data.sent_at)

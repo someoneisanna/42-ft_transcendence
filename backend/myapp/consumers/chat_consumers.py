@@ -15,6 +15,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				"type": "authenticated",
 				"username": user.username,
 			}))
+			self.user_group_name = f"wsUser_{user.username}"
+			await self.channel_layer.group_add(self.user_group_name, self.channel_name)
 		else:
 			await self.close()
 
@@ -33,17 +35,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		if type == 'join_room':
 			self.room_group_name = room_name
 			await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-			
-		if type == 'get_stored_messages':
-			messages = await self.get_messages(room_name)
-			for message in messages:
-				await self.send(text_data=json.dumps({
-					'type': 'add_stored_message',
-					'room_name': message.room_name,
-					'username': message.sender,
-					'message': message.message,
-					'sent_at': message.sent_at.isoformat()
-				}))
 
 		elif type == 'get_last_messages':
 			last_message = await self.get_last_message(room_name)
@@ -62,6 +53,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'message': ''
 				})
 			)
+
+		elif type == 'get_stored_messages':
+			messages = await self.get_messages(room_name)
+			for message in messages:
+				await self.send(text_data=json.dumps({
+					'type': 'add_stored_message',
+					'room_name': message.room_name,
+					'username': message.sender,
+					'message': message.message,
+					'sent_at': message.sent_at.isoformat()
+				}))
 
 		elif type == 'chat_message':
 			message = data['message']
@@ -87,6 +89,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				'room_name': room_name,
 				'action': action
 			})
+
+		elif type == 'send_notification':
+			target_user = data['room_name']
+			notification = data['notification']
+			new_relationship = data['new_relationship']
+			await self.channel_layer.group_send(
+				f"wsUser_{target_user}",
+				{
+					'type': 'send_notification',
+					'from': username,
+					'notification': notification,
+					'new_relationship': new_relationship
+				}
+			)
 
 	@sync_to_async
 	def store_message(self, room_name, username, message):
@@ -123,6 +139,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			'type': 'update_html',
 			'room_name': event['room_name'],
 			'action': event['action']
+		}
+		))
+
+	async def send_notification(self, event):
+		await self.send(text_data=json.dumps({
+			'type': 'receive_notification',
+			'from': event['from'],
+			'notification': event['notification'],
+			'new_relationship': event['new_relationship']
 		}
 		))
 

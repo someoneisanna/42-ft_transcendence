@@ -76,7 +76,8 @@ function notificationAcceptInvitation(buttonRef, username) {
 		buttonRef.parentElement.parentElement.remove();
 		if (document.querySelector('.notificationElement') === null)
 			document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
-		addFriendToLists(username);
+		notifyUser(username, 'friendship_changed', 'friends');
+		updateListsandChat('friends');
 	})
 	.catch(error => {
 		console.error('Error accepting invitation:', error);

@@ -66,26 +66,8 @@ function getChannelRoomName(username) {
 	return roomName;
 }
 
-function addFriendToLists(username) {
-	const roomName = getChannelRoomName(username);
-	console.log('WS: adding chat room: ' + roomName);
-	chatSocket.send(JSON.stringify({
-		'type': 'update_html',
-		'room_name': roomName,
-		'username': current_user,
-		'action': 'add_chat_room',
-	}));
-}
-
-function removeChatRoom(username) {
-	const roomName = getChannelRoomName(username);
-	console.log('WS: removing chat room: ' + roomName);
-	chatSocket.send(JSON.stringify({
-		'type': 'update_html',
-		'room_name': roomName,
-		'username': current_user,
-		'action': 'remove_chat_room',
-	}));
+function goToFriendProfile(username) {
+	alert('Placeholder: ' + username);
 }
 
 function buildChatFriendsList() {
@@ -138,6 +120,9 @@ function buildChatFriendsList() {
 					document.querySelector('.blockButtonClass').onclick = function() {
 						blockUser(item.username, data.current_user);
 					}
+					document.querySelector('.profileButtonClass').onclick = function() {
+						goToFriendProfile(item.username);
+					}
 				});
 				listContainer.appendChild(newElement);
 			});
@@ -182,10 +167,8 @@ function blockUser(friend, current_user) {
 		})
 		.then(data => {
 			console.log('Block user response:' + data);
-			lastActiveButton = null;
-			document.querySelector('.chatContent').classList.add('showFriendsOnly');
-			document.querySelector('.chatWindow').classList.add('noChatClicked');
-			removeChatRoom(friend);
+			notifyUser(friend, 'friendship_changed', 'none');
+			updateListsandChat('none');
 		})
 		.catch(error => {
 			console.error('Error during block user:' + error);
