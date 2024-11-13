@@ -33,8 +33,9 @@
     bottom: 55px;
     left: 10px;
     width: 775px;
-    background-color: rgb(155, 210, 214);
-    border-radius: 5px;
+    background-color: rgba(6, 8, 9, 0.98);
+    color: white;
+    border-radius: 30px;
     z-index: 1000;
     padding: 10px;
     height: 500px;
@@ -47,7 +48,7 @@
 
 #chatFriendsList {
     flex: 4;
-    margin: 20px;
+    padding: 20px;
 }
 
 #chatFriendsList h5 {
@@ -56,15 +57,36 @@
     margin-bottom: 15px;
 }
 
+#chatFriendsListContent a {
+    color: white;
+    text-decoration: none;
+}
+
+.smallMessage {
+    font-size: 13px;
+    color: rgb(172, 172, 172);
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.smallTime {
+    font-size: 10px;
+    font-style: italic;
+    color: rgb(172, 172, 172);
+}
+
 #chatWindow {
     flex: 5;
     padding: 10px;
+    border-left: 1px solid rgb(255, 255, 255);
 }
 
 .scrollableTexts {
     height: 360px;
     overflow-y: scroll;
-    border-top: 1px solid black;
+    border-top: 1px solid rgb(255, 255, 255);
 }
 
 .scrollableFriends {
@@ -81,11 +103,52 @@
 }
 
 .setDarkerBackground {
-    background: rgb(98, 159, 167);
+    background: rgb(43, 43, 43);
 }
 
 .smallerText {
     font-size: 10px;
     font-style: italic;
     text-align: right;
+    color: white;
+}
+
+.messageText {
+    word-wrap: break-word;
+    max-width: 335px;
+}
+
+.emojiPicker {
+    position: absolute;
+    bottom: 115px;
+    left: 720px;
+    background-color: rgba(34, 34, 34, 0.9);
+    border: 1px solid #222121;
+    border-radius: 5px;
+    padding: 2px;
+    z-index: 1001;
+}
+
+.fa-smile {
+    color: #5c5454;
+}
+
+.fa-smile:hover, .fa-paper-plane:hover {
+    cursor: pointer;
+}
+
+.emoji {
+    font-size: 15px;
+    border: none;
+    background: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.emoji:hover {
+    background-color: #f0f0f0;
+}
+
+.hideEmojis {
+    display: none;
 }

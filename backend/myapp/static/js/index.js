@@ -5,6 +5,9 @@ var pongSocket = null;
 var lastActiveButton = null;
 
 function openChat(roomName, buttonRef) {
+
+	if (document.querySelector('.hideEmojis') === null)
+		document.querySelector('.emojiPicker').classList.add('hideEmojis');
 	
 	const chatContent = document.querySelector('.chatContent');
 	const chatWindow = document.querySelector('.chatWindow');
@@ -38,6 +41,10 @@ function openChat(roomName, buttonRef) {
 	}));
 
 	document.querySelector(".sendMessageButton").onclick = function() {
+
+		if (document.querySelector('.hideEmojis') === null)
+			document.querySelector('.emojiPicker').classList.add('hideEmojis');
+
 		const messageInput = document.querySelector("#sendMessageInput").value;
 		if (messageInput == '')
 			return;
@@ -101,17 +108,16 @@ function buildChatFriendsList() {
 				var newElement = document.createElement('li');
 				newElement.className = 'chatFriendListContent p-2 border-bottom';
 				newElement.innerHTML = `
-						<a href="#" class="d-flex justify-content-between">
+						<a class="chatFriendListContent_a d-flex justify-content-between" style="cursor: pointer;">
 							<div class="d-flex flex-row">
 								<img src="${item.profile_pic}" width="50" height="50" class="d-flex align-self-center me-3 rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
 								<div class="pt-1">
 									<p class="fw-bold mb-0">${item.username}</p>
-									<p id="lastMsg_${roomName}" class="small text-muted"></p>
+									<p id="lastMsg_${roomName}" class="smallMessage"></p>
 								</div>
 							</div>
 							<div class="pt-1">
-								<p id="timeLastMsg_${roomName}" class="small text-muted mb-1">-</p>
-								<span class="badge bg-danger rounded-pill float-end">3</span> 
+								<p id="timeLastMsg_${roomName}" class="smallTime mb-1">-</p>
 							</div>
 						</a>
 					</li>`;
@@ -140,6 +146,8 @@ function toggleChatWindow() {
 	document.querySelector('.chatContent').classList.toggle('showChat');
 	document.querySelector('.chatContent').classList.add('showFriendsOnly');
 	document.querySelector('.chatWindow').classList.add('noChatClicked');
+	if (document.querySelector('.hideEmojis') === null)
+		document.querySelector('.emojiPicker').classList.add('hideEmojis');
 }
 
 function formatDate(isoDate) {
@@ -182,4 +190,14 @@ function buildChat() {
 		document.querySelector('.chatContent').classList.remove('showChat');
 	buildChatFriendsList();
 	chatBuilt = true;
+}
+
+function toggleEmojiPicker() {
+	const emojiPicker = document.querySelector('.emojiPicker');
+	emojiPicker.classList.toggle('hideEmojis');
+}
+
+function insertEmoji(emoji) {
+	const messageInput = document.querySelector('#sendMessageInput');
+	messageInput.value += emoji;
 }

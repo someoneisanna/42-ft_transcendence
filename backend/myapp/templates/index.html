@@ -38,13 +38,10 @@
 	<div id="chat" class="hiddenChat">
 		<button id="chatButton" onclick="toggleChatWindow()">Chat<i class="fas fa-chevron-up ms-2"></i></button>
 		<div class="chatContent showFriendsOnly">
-			<div id="chatHeader"></div>
 			<div id="chatFriendsList">
 				<div class="scrollableFriends">
-					<div data-mdb-perfect-scrollbar-init style="position: relative; height: 350px">
-						<ul id="chatFriendsListContent" class="list-unstyled mb-0">
-						</ul>
-					</div>
+					<ul id="chatFriendsListContent" class="list-unstyled mb-0">
+					</ul>
 				</div>
 			</div>
 			<div id="chatWindow" class="chatWindow noChatClicked">
@@ -60,11 +57,29 @@
 					</div>
 				</div>
 				<div class="text-muted d-flex justify-content-start align-items-center pt-3">
-					<input type="text" class="form-control form-control-md" id="sendMessageInput" placeholder="Type message"></input>
-					<a class="ms-3 text-muted" href="#!"><i class="fas fa-smile"></i></a>
-					<a class="sendMessageButton ms-3" href="#"><i class="fas fa-paper-plane"></i></a>
+					<input type="text" class="ms-2 form-control form-control-md" id="sendMessageInput" placeholder="Type message"></input>
+					<a class="ms-3 text-muted"  onclick="toggleEmojiPicker()"><i class="fas fa-smile"></i></a>
+					<a class="sendMessageButton ms-3"><i class="fas fa-paper-plane"></i></a>
 				</div>
 			</div>
+		</div>
+		<div class="emojiPicker hideEmojis">
+			<button class="emoji" onclick="insertEmoji('😄')">😄</button>
+			<button class="emoji" onclick="insertEmoji('😍')">😍</button>
+			<button class="emoji" onclick="insertEmoji('🥺')">🥺</button>
+			<button class="emoji" onclick="insertEmoji('😜')">😜</button><br>
+			<button class="emoji" onclick="insertEmoji('😇')">😇</button>
+			<button class="emoji" onclick="insertEmoji('😉')">😉</button>
+			<button class="emoji" onclick="insertEmoji('🤗')">🤗</button>
+			<button class="emoji" onclick="insertEmoji('😌')">😌</button><br>
+			<button class="emoji" onclick="insertEmoji('🙃')">🙃</button>
+			<button class="emoji" onclick="insertEmoji('😏')">😏</button>
+			<button class="emoji" onclick="insertEmoji('😝')">😝</button>
+			<button class="emoji" onclick="insertEmoji('😎')">😎</button><br>
+			<button class="emoji" onclick="insertEmoji('🥳')">🥳</button>
+			<button class="emoji" onclick="insertEmoji('🤩')">🤩</button>
+			<button class="emoji" onclick="insertEmoji('😬')">😬</button>
+			<button class="emoji" onclick="insertEmoji('🤡')">🤡</button>
 		</div>
 	</div>
 	

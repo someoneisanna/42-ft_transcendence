@@ -50,16 +50,16 @@ chatSocket.onmessage = function (e) {
 			var newElement = `
 				<div class="d-flex flex-row justify-content-end pt-1">
 					<div>
-						<p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message}</p>
-						<p class="small me-3 mb-1 rounded-3 text-muted smallerText">${timestamp}</p>
+						<p class="messageText small p-2 me-3 mb-1 text-white rounded-3" style="background-color:#449397;">${message}</p>
+						<p class="small me-3 mb-1 text-white smallerText">${timestamp}</p>
 					</div>
 				</div>`;
 		else
 			var newElement = `
 				<div class="d-flex flex-row justify-content-start">
 					<div>
-						<p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">${message}</p>
-						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
+						<p class="messageText small p-2 ms-3 mb-1 text-black rounded-3" style="background-color:#b9b8b6;">${message}</p>
+						<p class="small ms-3 mb-3 text-white float-end smallerText">${timestamp}</p>
 					</div>
 				</div>`;
 		var textsContainer = document.getElementById('textsContainer');
