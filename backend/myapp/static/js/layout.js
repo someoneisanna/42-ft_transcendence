@@ -22,7 +22,7 @@ function changeSmallProfilePic(path) {
 		profilePic.src = path;
 }
 
-function initializeJS() {
+function searchPendingInvitations() {
 	fetch('/api/search_pending/')
 		.then(response => {
 			if (!response.ok)
@@ -30,10 +30,11 @@ function initializeJS() {
 			return response.json();
 		})
 		.then(data => {
-			if (data.length === 0)
+			if (data.length === 0) {
+				document.getElementById('notificationBell').style.color = 'black';
 				document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
+			}
 			data.forEach(item => {
-				console.log('Pending:', item);
 				var newElement = `
 				<li class="dropdown-item text-white d-flex justify-content-between align-items-center notificationElement">
 					<p class="m-0 me-2">${item.username}</p>
@@ -47,6 +48,7 @@ function initializeJS() {
 					</div>
 				</li>`;
 				document.getElementById('notificationList').innerHTML += newElement;
+				document.getElementById('notificationBell').style.color = 'red';
 			});
 		})
 		.catch(error => {
@@ -74,8 +76,10 @@ function notificationAcceptInvitation(buttonRef, username) {
 	.then(data => {
 		console.log('Invitation accepted:', data);
 		buttonRef.parentElement.parentElement.remove();
-		if (document.querySelector('.notificationElement') === null)
+		if (document.querySelector('.notificationElement') === null) {
+			document.getElementById('notificationBell').style.color = 'black';
 			document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
+		}
 		notifyUser(username, 'friendship_changed', 'friends');
 		updateListsandChat('friends');
 	})
@@ -104,8 +108,10 @@ function notificationRejectInvitation(buttonRef, username) {
 	.then(data => {
 		console.log('Invitation rejected:', data);
 		buttonRef.parentElement.parentElement.remove();
-		if (document.querySelector('.notificationElement') === null)
+		if (document.querySelector('.notificationElement') === null) {
+			document.getElementById('notificationBell').style.color = 'black';
 			document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
+		}
 	})
 	.catch(error => {
 		console.error('Error rejecting invitation:', error);

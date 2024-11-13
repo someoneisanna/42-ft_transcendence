@@ -42,6 +42,7 @@ function userLoggedIn() {
 		modalBackdrop.remove();
 	loadPage('/layout/', true);
 	loadScript('/static/js/ws.js');
+	searchPendingInvitations();
 }
 
 // If the user is already logged in, and chooses to sign out
@@ -56,8 +57,7 @@ if (confirmSignOut) {
 const confirmYes = document.getElementById('confirmYes');
 if (confirmYes) {
 	confirmYes.addEventListener('click', function() {
-		loadPage('/layout/', true);
-		loadScript('/static/js/ws.js');
+		userLoggedIn();
 	});
 	if (!current_user)
 		fetch('/api/get_current_user/')

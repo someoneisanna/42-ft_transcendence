@@ -2,11 +2,11 @@ chatSocket = new WebSocket("wss://" + window.location.host + "/ws/chat/");
 pongSocket = new WebSocket("wss://" + window.location.host + "/ws/pong/");
 
 chatSocket.onopen = function (e){
-	console.log("The connection to the chatSocket was setup successfully!");
+	console.info("The connection to the chatSocket was setup successfully!");
 };
 
 chatSocket.onclose = function (e) {
-	console.log("The connection to the chatSocket was closed unexpectedly!");
+	console.info("The connection to the chatSocket was closed unexpectedly!");
 };
 
 chatSocket.onerror = function (error) {
@@ -18,24 +18,30 @@ window.onbeforeunload = function () {
 };
 
 chatSocket.onmessage = function (e) {
-	var textsContainer = document.getElementById('textsContainer');
 
 	const data = JSON.parse(e.data);
 	const type = data.type;
 	const action = data.action;
+	const new_relationship = data.new_relationship;
 	const notification = data.notification;
 	const room_name = data.room_name;
 	const username = data.username;
 	const message = data.message;
 	const timestamp = formatDate(data.sent_at);
 
+	console.info('WS: Received message:', data);
+
 	if (type === 'authenticated')
-		console.log(username + ' is now connected to the ws.');
+		console.debug('WS: ' + username + ' is now connected to the ws.');
 	
 	if (type === 'receive_notification') {
-		console.debug('TEST: receive_notification:', data);
+		console.debug('WS: receive_notification:', data);
 		if (notification === 'friendship_changed')
-			updateListsandChat(message);
+			updateListsandChat(new_relationship);
+		if (notification === 'invitation_changed') {
+			document.getElementById('notificationList').innerHTML = `<h6 class="text-white ms-3 me-3">Pending Invitations</h6> <li><hr class="dropdown-divider"></li>`;
+			searchPendingInvitations();
+		}
 	}
 
 	if (type === 'chat_message' || type === 'add_stored_message')
@@ -56,7 +62,10 @@ chatSocket.onmessage = function (e) {
 						<p class="small ms-3 mb-3 rounded-3 text-muted float-end smallerText">${timestamp}</p>
 					</div>
 				</div>`;
+		var textsContainer = document.getElementById('textsContainer');
 		textsContainer.innerHTML += newElement;
+		var scrollableTexts = document.querySelector('.scrollableTexts');
+		scrollableTexts.scrollTop = scrollableTexts.scrollHeight;
 	}
 
 	if (type === 'chat_message') {

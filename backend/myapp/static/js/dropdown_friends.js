@@ -70,7 +70,6 @@ function changeButton(username, relationship) {
 }
 
 function performSearch(query) {
-	console.log('Searching for:', query);
 	fetch(`/api/search_friends/?q=${query}`)
 		.then(response => {
 			if (!response.ok)
@@ -118,6 +117,7 @@ function sendInvitation(buttonRef, username) {
 	.then(data => {
 		console.log('Friend request sent:', data);
 		buttonRef.outerHTML = changeButton(username, 'invitation_sent');
+		notifyUser(username, 'invitation_changed', 'invitation_received');
 	})
 	.catch(error => {
 		console.error('Error sending friend request:', error);
@@ -172,6 +172,7 @@ function cancelInvitation(buttonRef, username) {
 	.then(data => {
 		console.log('Invitation cancelled:', data);
 		buttonRef.outerHTML = changeButton(username, 'none');
+		notifyUser(username, 'invitation_changed', 'invitation_was_cancelled');
 	})
 	.catch(error => {
 		console.error('Error cancelling invitation:', error);
@@ -270,23 +271,12 @@ function updateListsandChat(relationship) {
 }
 
 function notifyUser(username, notification, new_relationship) {
-	console.debug('TESTS: sending notification to ' + username + ': ' + notification);
+	console.debug('WS: sending notification to ' + username + ': ' + notification);
 	chatSocket.send(JSON.stringify({
 		'type': 'send_notification',
 		'room_name': username,
 		'username': current_user,
 		'notification': notification,
 		'new_relationship': new_relationship
-	}));
-}
-
-function notifyUsers(username, action) {
-	const roomName = getChannelRoomName(username);
-	console.debug('WS: updating message for room:', roomName);
-	chatSocket.send(JSON.stringify({
-		'type': 'update_html',
-		'room_name': roomName,
-		'username': current_user,
-		'action': action,
 	}));
 }

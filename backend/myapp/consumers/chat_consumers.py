@@ -1,6 +1,5 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
 from myapp.models import Message, User
 from asgiref.sync import sync_to_async
 
@@ -24,6 +23,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, close_code):
 		if hasattr(self, 'room_group_name'):
 			await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+		if hasattr(self, 'user_group_name'):
+			await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
 
 	# Triggered when a message is received from the websocket connection. Here we broadcast the message to all users in the chat room.
 	async def receive(self, text_data):
@@ -70,7 +71,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			sent_at = data['sent_at']
 			await self.store_message(room_name, username, message)
 			await self.channel_layer.group_send(
-				self.room_group_name,
+				room_name,
 				{
 					'type': 'send_message',
 					'room_name': room_name,

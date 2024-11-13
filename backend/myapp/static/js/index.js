@@ -30,7 +30,7 @@ function openChat(roomName, buttonRef) {
 	lastActiveButton = buttonRef;
 	textsContainer.innerHTML = '';
 
-	console.log('WS: get stored messages:', roomName);
+	console.debug('WS: get stored messages:', roomName);
 	chatSocket.send(JSON.stringify({
 		'type': 'get_stored_messages',
 		'room_name': roomName,
@@ -41,7 +41,7 @@ function openChat(roomName, buttonRef) {
 		const messageInput = document.querySelector("#sendMessageInput").value;
 		if (messageInput == '')
 			return;
-		console.log('WS: sending message from ' + current_user + ' to ' + roomName + ': ' + messageInput);
+		console.debug('WS: sending message from ' + current_user + ' to ' + roomName + ': ' + messageInput);
 		chatSocket.send(JSON.stringify({
 			'type': 'chat_message',
 			'room_name': roomName,
@@ -84,14 +84,14 @@ function buildChatFriendsList() {
 				
 				const roomName = getChannelRoomName(item.username)
 				
-				console.log('WS: opening chat room:', roomName);
+				console.debug('WS: opening chat room:', roomName);
 				chatSocket.send(JSON.stringify({
 					'type': 'join_room',
 					'room_name': roomName,
 					'username': current_user
 				}));
 
-				console.log('WS: getting last message for room:', roomName);
+				console.debug('WS: getting last message for room:', roomName);
 				chatSocket.send(JSON.stringify({
 					'type': 'get_last_messages',
 					'room_name': roomName,
@@ -134,6 +134,9 @@ function buildChatFriendsList() {
 
 function toggleChatWindow() {
 	lastActiveButton = null;
+	const chatHighlight = document.querySelector('.setDarkerBackground');
+	if (chatHighlight !== null)
+		chatHighlight.classList.remove('setDarkerBackground');
 	document.querySelector('.chatContent').classList.toggle('showChat');
 	document.querySelector('.chatContent').classList.add('showFriendsOnly');
 	document.querySelector('.chatWindow').classList.add('noChatClicked');
@@ -158,15 +161,12 @@ function blockUser(friend, current_user) {
 		body: JSON.stringify({'target': friend, 'current_user': current_user})
 		})
 		.then(response => {
-			console.log('current user:', current_user);
-			console.log('Block user:', friend);
-			console.log('Block user response:', response);
 			if (!response.ok)
 				throw new Error('Block user request failed:' + response.statusText);
 			return response.json();
 		})
 		.then(data => {
-			console.log('Block user response:' + data);
+			console.log('User blocked:' + friend);
 			notifyUser(friend, 'friendship_changed', 'none');
 			updateListsandChat('none');
 		})
