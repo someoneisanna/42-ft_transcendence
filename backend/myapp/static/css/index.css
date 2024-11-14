@@ -29,16 +29,18 @@
 
 .chatContent {
     display: none;
-    position: absolute;
+    position: fixed;
     bottom: 55px;
     left: 10px;
     width: 775px;
     background-color: rgba(6, 8, 9, 0.98);
     color: white;
-    border-radius: 30px;
-    z-index: 1000;
+    border-radius: 25px;
+    z-index: 1001;
     padding: 10px;
     height: 500px;
+    border: 1px solid #cce0e3;
+    box-shadow: 0 0 5px rgb(179, 214, 255), 0 0 1px rgba(179, 214, 255, 0.5);
 }
 
 .showChat {
@@ -151,4 +153,8 @@
 
 .hideEmojis {
     display: none;
+}
+
+#content {
+    padding-top: 50px;
 }

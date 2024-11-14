@@ -88,7 +88,6 @@ function buildChatFriendsList() {
 		})
 		.then(data => {
 			data.friends.forEach(item => {
-				
 				const roomName = getChannelRoomName(item.username)
 				
 				console.debug('WS: opening chat room:', roomName);

@@ -36,3 +36,10 @@
 	padding: 6px 12px;
 	font-size: 16px;
 }
+
+.settingsPage .settingsSwitch {
+	transform: scale(2);
+	width: 2em;
+	height: 1em;
+}
+

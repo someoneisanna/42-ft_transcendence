@@ -25,9 +25,11 @@
 				<button type="submit">Change</button>
 				<p id="changePasswordError"></p>
 		</div>
-		<div class="settingBlock mt-3">
-			<h3>Two-factor authentication</h3>
-			<button id="2fa" onclick="2fa()">Enable/Disable</button>
+		<div class="settingBlock mt-3 d-flex align-items-center justify-content-start">
+			<h3 class="mb-0 me-3">Two-factor authentication</h3>
+			<div class="form-check form-switch ms-3">
+				<input class="form-check-input settingsSwitch" type="checkbox" role="switch" id="settings2fa">
+			</div>
 		</div>
 		<div class="settingBlock mt-3">
 			<h3>Reset stats</h3>
@@ -35,23 +37,38 @@
 		</div>
 		<div class="settingBlock mt-3">
 			<h3>Allow comments on your profile</h3>
-			<form>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" id="settingsComments1" value="anyone" checked> {% comment %} aaaaaaaaa {% endcomment %}
+				<label class="form-check-label" for="settingsComments1">
+					From anyone
+				</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" id="settingsComments2" value="friends">
+				<label class="form-check-label" for="settingsComments2">
+					From friends only
+				</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" id="settingsComments3" value="no_one">
+				<label class="form-check-label" for="settingsComments3">
+					Don't allow
+				</label>
+			</div>
+			{% comment %} <form>
 				<input type="radio" id="from_anyone" name="comment_preference" value="anyone">
 				<label for="from_anyone">From anyone</label><br>
 				<input type="radio" id="from_friends" name="comment_preference" value="friends">
 				<label for="from_friends">From friends only</label><br>
 				<input type="radio" id="no_comment" name="comment_preference" value="none">
 				<label for="no_comment">Don't allow</label>
-			</form>
+			</form> {% endcomment %}
 		</div>
-		<div class="settingBlock mt-3">
-			<h3>Allow people to invite you to a tournament</h3>
-			<form>
-				<input type="radio" id="allow_invite" name="invite_preference" value="allow">
-				<label for="allow_invite">Allow</label><br>
-				<input type="radio" id="deny_invite" name="invite_preference" value="deny">
-				<label for="deny_invite">Deny</label>
-			</form>
+		<div class="settingBlock mt-3 d-flex align-items-center justify-content-start">
+			<h3 class="mb-0 me-3">Allow people to invite you to a tournament</h3>
+			<div class="form-check form-switch ms-3">
+				<input class="form-check-input settingsSwitch" type="checkbox" role="switch" id="settingsInviteSwitch">
+			</div>
 		</div>
 		<div class="settingBlock mt-3">
 			<h3>Delete account</h3>
