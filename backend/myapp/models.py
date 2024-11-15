@@ -5,7 +5,11 @@ class User(models.Model):
 	password = models.CharField(max_length=64)
 	check2FA = models.BooleanField(default=False)
 	skey_2FA = models.CharField(max_length=32)
+
 	profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg')
+	motto = models.CharField(max_length=100, default='')
+	comments_policy = models.CharField(max_length=10, default='anyone')
+
 	blocked_users = models.ManyToManyField("self", symmetrical=False, related_name="blocked_by")
 
 	def __str__(self):

@@ -202,7 +202,42 @@ def change_pic(request):
 		return JsonResponse({'error': 'No file provided.'}, status=400)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
-	
+
+# UPDATE MOTTO ---------------------------------------------------------------------------------------------------
+
+def update_motto(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+
+			request.user.motto = data
+			request.user.save()
+
+			return JsonResponse({'message': 'Motto changed successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# UPDATE COMMENTS POLICY -----------------------------------------------------------------------------------------
+
+def update_comments_policy(request):
+	if request.method == 'POST':
+		try:
+			policy_input = json.loads(request.body)
+
+			if policy_input != 'anyone' and policy_input != 'friends' and policy_input != 'nobody':
+				return JsonResponse({'error': 'Invalid policy'}, status=400)
+
+			request.user.comments_policy = policy_input
+			request.user.save()
+
+			return JsonResponse({'message': 'Comments policy updated to ' + policy_input}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 # SEARCH FOR FRIENDS ---------------------------------------------------------------------------------------------
 
 def search_friends(request):
@@ -513,7 +548,7 @@ def unblock_user(request):
 
 def users(request):
 	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA', 'profile_pic')
+		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA', 'profile_pic', 'motto', 'comments_policy')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
 

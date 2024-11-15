@@ -91,6 +91,46 @@ function removeProfilePic() {
 	}
 }
 
+function updateMottoCharCount() {
+	const mottoInput = document.getElementById('motto');
+	const charCount = document.getElementById('motto-char-count');
+
+	charCount.innerText = `${mottoInput.value.length} / 100`;
+}
+
+function updateMotto() {
+	const mottoInput = document.getElementById('motto');
+	const motto = mottoInput.value;
+
+	if (motto.length > 100) {
+		console.error('Motto cannot exceed 100 characters!');
+		return;
+	}
+
+	// const motto_data = {
+	// 	motto: motto
+	// };
+
+	fetch('/api/update_motto/', {
+		method: 'POST',
+		headers: {
+			'X-csrftoken': csrftoken_var,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(motto),
+		credentials: 'same-origin',
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		if (response.ok) {
+			console.log('Motto updated successfully.');
+		}
+		else
+			console.error('Failed to update motto:', response.statusText);
+	});
+}
+
 function updatePassword(event) {
 	console.log('Updating password...');
 	event.preventDefault();
@@ -144,6 +184,41 @@ function updatePassword(event) {
 	.then(data => {
 		console.log('Password change was a success:', data.username);
 		document.getElementById('changePasswordError').innerText = 'Password was changed successfully!';
+	})
+	.catch((error) => {
+		console.error('Registration Error:', error);
+	});
+}
+
+function updateCommentsPolicy(event) {
+	event.preventDefault();
+
+	const commentsPolicy = document.querySelector('input[name="commentPolicy"]:checked').value;
+
+	// Send POST request to your API
+	fetch('/api/update_comments_policy/', {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(commentsPolicy),
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok) {
+			return response.json().then(err => {
+				// document.getElementById('commentsPolicyError').innerText = err.error;
+				throw new Error(err.error);
+			});
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('Comments policy update was a success:', data.message);
+		// document.getElementById('commentsPolicyError').innerText = 'Comments policy was updated successfully!';
 	})
 	.catch((error) => {
 		console.error('Registration Error:', error);

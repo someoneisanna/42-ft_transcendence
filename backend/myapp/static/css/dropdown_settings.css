@@ -1,15 +1,29 @@
 .settingsPage {
 	border: 2px solid #ccc;
 	background-color: rgba(0, 0, 0, 0.5);
-	width: 1500px;
+	width: 1300px;
 	margin: 0 auto;
 	text-align: left;
 	border-radius: 10px;
 	top: 50px;
 	position: relative;
-	display: flex; /* Makes the content flow in a row (two columns) */
-	justify-content: space-between; /* Ensures space between the two columns */
+	display: flex;
+	justify-content: space-between;
 	margin-bottom: 100px;
+}
+
+.settingsInfo{
+	color: white;
+	border-right: 2px solid rgb(255, 255, 255);
+	text-align: center;
+	flex: 1; /* Equal width for both columns */
+	padding: 20px;
+}
+
+.settingsStats {
+	flex: 4; /* Equal width for both columns */
+	padding: 20px;
+	color: white;
 }
 
 .settingBlock {
@@ -19,14 +33,17 @@
 	background-color: #111;
 }
 
-.settingBlock input {
+.settingBlock textarea, input:not([type="checkbox"]) {
 	background-color: #000; /* Background color */
     color: #fff; /* Text color */
     border: 1px solid #404040; /* Border color */
     border-radius: 4px;
     padding: 5px;
     font-size: 16px;
+}
 
+.settingBlock input[type="radio"] {
+    border-radius: 100px;
 }
 
 .settingsPage button {
@@ -42,4 +59,9 @@
 	transform: scale(2);
 	width: 2em;
 	height: 1em;
+}
+
+#motto-char-count {
+	font-size: 15px;
+	font-style: italic;
 }
