@@ -151,6 +151,27 @@ def get_current_user(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+# UPDATE PASSWORD ------------------------------------------------------------------------------------------------
+
+def update_password(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			old_password = data['old_password']
+			new_password = data['new_password']
+
+			if request.user.password != old_password:
+				return JsonResponse({'error': 'Incorrect password. Please try again.'}, status=400)
+
+			request.user.password = new_password
+			request.user.save()
+
+			return JsonResponse({'message': 'Password updated successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 # LOGOUT USERS ---------------------------------------------------------------------------------------------------
 
 def logout(request):

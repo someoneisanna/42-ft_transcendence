@@ -37,9 +37,9 @@ function initializeJS() {
 // IF USER IS ALREADY LOGGED IN -----------------------------------------------------------------------------------------------------------
 
 function userLoggedIn() {
-	const modalBackdrop = document.querySelector('.modal-backdrop');
-	if (modalBackdrop)
-		modalBackdrop.remove();
+	const loginModal = document.getElementById('loginModal');
+	if (loginModal)
+		bootstrap.Modal.getInstance(loginModal).hide();
 	loadPage('/layout/', true);
 	loadScript('/static/js/ws.js');
 	searchPendingInvitations();
@@ -203,6 +203,12 @@ registerForm.addEventListener('submit', function(event) {
 	// Validate username length (max 20 characters)
 	if (username_input.length > 20) {
 		document.getElementById('registerError').innerText = 'Username must be 20 characters or less!';
+		return;
+	}
+
+	// Validate password length (min 8 characters)
+	if (password_input.length < 1) {
+		document.getElementById('registerError').innerText = 'Password must be at least 1 character!';
 		return;
 	}
 

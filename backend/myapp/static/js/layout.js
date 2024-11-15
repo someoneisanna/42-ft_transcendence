@@ -30,8 +30,9 @@ function searchPendingInvitations() {
 			return response.json();
 		})
 		.then(data => {
-			if (data.length === 0) {
-				document.getElementById('notificationBell').style.color = 'black';
+			const notificationBell = document.getElementById('notificationBell');
+			if (data.length === 0 && notificationBell ) {
+				notificationBell.style.color = 'black';
 				document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
 			}
 			data.forEach(item => {

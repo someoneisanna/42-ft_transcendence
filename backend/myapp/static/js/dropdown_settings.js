@@ -90,3 +90,62 @@ function removeProfilePic() {
 		console.error('Error removing profile picture:', error);
 	}
 }
+
+function updatePassword(event) {
+	console.log('Updating password...');
+	event.preventDefault();
+
+	const oldPassword = CryptoJS.SHA256(document.getElementById('old-password').value).toString();
+	const newPassword = CryptoJS.SHA256(document.getElementById('new-password').value).toString();
+	const confirmPassword = CryptoJS.SHA256(document.getElementById('new-password-confirmation').value).toString();
+
+	if (oldPassword === '' || newPassword === '' || confirmPassword === '') {
+		document.getElementById('changePasswordError').innerText = 'All fields are required!';
+		return;
+	}
+
+	if (oldPassword === newPassword) {
+		document.getElementById('changePasswordError').innerText = 'New password must be different from the old password!';
+		return;
+	}
+
+	if (newPassword !== confirmPassword) {
+		document.getElementById('changePasswordError').innerText = 'Passwords do not match!';
+		return;
+	}
+
+	// Create the data object
+	const password_data = {
+		old_password: oldPassword,
+		new_password: newPassword
+	};
+
+	// Send POST request to your API
+	fetch('/api/update_password/', {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(password_data),
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok) {
+			return response.json().then(err => {
+				document.getElementById('changePasswordError').innerText = err.error;
+				throw new Error(err.error);
+			});
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('Password change was a success:', data.username);
+		document.getElementById('changePasswordError').innerText = 'Password was changed successfully!';
+	})
+	.catch((error) => {
+		console.error('Registration Error:', error);
+	});
+}

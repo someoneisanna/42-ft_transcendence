@@ -13,17 +13,18 @@
 	<div class="profileStats">
 		<div class="settingBlock">
 			<h3>Your Motto</h3>
-			<input type="text" id="motto" name="motto" placeholder="Your motto" value="{{ motto }}" required>
-			<br><button class="settingsUpdateButton" onclick="update()">Update</button>
+			<input class="ms-3 mt-2 mb-3 form-control w-50" type="text" id="motto" name="motto" placeholder="Your motto" value="{{ motto }}" required>
+			<button class="ms-3 settingsUpdateButton" onclick="update()">Update</button>
 		</div>
 		<div class="settingBlock mt-3">
 			<h3>Change password</h3>
-			<form id="change-password-form">
-				<input type="password" id="old-password" name="old_password" placeholder="Old password" required>
-				<input type="password" id="new-password" name="new_password" placeholder="New password" required>
-				<input type="password" id="new-password-confirmation" name="new_password_confirmation" placeholder="Confirm new password" required>
-				<button type="submit">Change</button>
-				<p id="changePasswordError"></p>
+			<form id="change-password-form" onsubmit="updatePassword(event)">
+				<input class="ms-3 mt-2 mb-1 form-control w-50" name="password" type="password" id="old-password" placeholder="Old password" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
+				<input class="ms-3 mb-1 form-control w-50" name="password" type="password" id="new-password" placeholder="New password" required>
+				<input class="ms-3 mb-3 form-control w-50" name="password" type="password" id="new-password-confirmation" placeholder="Confirm new password" required>
+				<p class="ms-3" id="changePasswordError"></p>
+				<button class="ms-3" type="submit">Change</button>
+			</form>
 		</div>
 		<div class="settingBlock mt-3 d-flex align-items-center justify-content-start">
 			<h3 class="mb-0 me-3">Two-factor authentication</h3>
@@ -32,37 +33,26 @@
 			</div>
 		</div>
 		<div class="settingBlock mt-3">
-			<h3>Reset stats</h3>
-			<button id="resetStats" onclick="resetStats()">Reset</button>
-		</div>
-		<div class="settingBlock mt-3">
 			<h3>Allow comments on your profile</h3>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" id="settingsComments1" value="anyone" checked> {% comment %} aaaaaaaaa {% endcomment %}
+			<div class="mt-2 ms-3 form-check">
+				<input class="form-check-input" name="allowComments" type="radio" id="settingsComments1" value="anyone" checked> {% comment %} aaaaaaaaa {% endcomment %}
 				<label class="form-check-label" for="settingsComments1">
 					From anyone
 				</label>
 			</div>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" id="settingsComments2" value="friends">
+			<div class="ms-3 form-check">
+				<input class="form-check-input" name="allowComments" type="radio" id="settingsComments2" value="friends">
 				<label class="form-check-label" for="settingsComments2">
 					From friends only
 				</label>
 			</div>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" id="settingsComments3" value="no_one">
+			<div class="ms-3 form-check">
+				<input class="form-check-input" name="allowComments" type="radio" id="settingsComments3" value="no_one">
 				<label class="form-check-label" for="settingsComments3">
 					Don't allow
 				</label>
 			</div>
-			{% comment %} <form>
-				<input type="radio" id="from_anyone" name="comment_preference" value="anyone">
-				<label for="from_anyone">From anyone</label><br>
-				<input type="radio" id="from_friends" name="comment_preference" value="friends">
-				<label for="from_friends">From friends only</label><br>
-				<input type="radio" id="no_comment" name="comment_preference" value="none">
-				<label for="no_comment">Don't allow</label>
-			</form> {% endcomment %}
+			<button class="mt-3 ms-3" id="applyCommentSettings" onclick="applyCommentSettings()">Apply</button>
 		</div>
 		<div class="settingBlock mt-3 d-flex align-items-center justify-content-start">
 			<h3 class="mb-0 me-3">Allow people to invite you to a tournament</h3>
@@ -71,8 +61,12 @@
 			</div>
 		</div>
 		<div class="settingBlock mt-3">
+			<h3>Reset stats</h3>
+			<button class="ms-3" id="resetStats" onclick="resetStats()">Reset</button>
+		</div>
+		<div class="settingBlock mt-3">
 			<h3>Delete account</h3>
-			<button id="deleteAccount" onclick="deleteAccount()">Delete</button>
+			<button class="ms-3" id="deleteAccount" onclick="deleteAccount()">Delete</button>
 		</div>
 	</div>
 </div>

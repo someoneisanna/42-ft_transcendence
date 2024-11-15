@@ -9,6 +9,7 @@
 	position: relative;
 	display: flex; /* Makes the content flow in a row (two columns) */
 	justify-content: space-between; /* Ensures space between the two columns */
+	margin-bottom: 100px;
 }
 
 .settingBlock {
@@ -42,4 +43,3 @@
 	width: 2em;
 	height: 1em;
 }
-
