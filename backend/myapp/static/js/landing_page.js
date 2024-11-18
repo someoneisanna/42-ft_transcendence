@@ -255,7 +255,7 @@ registerForm.addEventListener('submit', function(event) {
 			document.getElementById('registerButton').innerText = 'Continue';
 			document.getElementById('checkboxContainer').classList.toggle('hide');
 			document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
-			qrCodeId = document.getElementById('qrCodeContainer');
+			let qrCodeId = document.getElementById('qrCodeContainer');
 			qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
 			qrCodeId.classList.toggle('mt-2');
 			isRegistered = true;

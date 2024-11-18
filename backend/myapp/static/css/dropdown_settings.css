@@ -1,29 +1,41 @@
 .settingsPage {
-	border: 2px solid #ccc;
-	background-color: rgba(0, 0, 0, 0.5);
-	width: 1300px;
-	margin: 0 auto;
-	text-align: left;
-	border-radius: 10px;
-	top: 50px;
-	position: relative;
 	display: flex;
-	justify-content: space-between;
-	margin-bottom: 100px;
+	flex-wrap: wrap;
+	gap: 20px;
+	padding: 20px;
+	justify-content: center;
+	align-items: flex-start;
+	width: 60%;
+	box-sizing: border-box;
+	margin: 50px auto;
+	min-width: 745px;
 }
 
 .settingsInfo{
+	flex: 1;
 	color: white;
-	border-right: 2px solid rgb(255, 255, 255);
 	text-align: center;
-	flex: 1; /* Equal width for both columns */
 	padding: 20px;
 }
 
 .settingsStats {
-	flex: 4; /* Equal width for both columns */
+	flex: 2;
 	padding: 20px;
 	color: white;
+	border-left: 2px solid rgb(255, 255, 255);
+}
+
+#bigProfilePicture {
+	max-width: 80%;
+	height: auto;
+	margin-bottom: 20px;
+}
+
+#browseForProfilePicture {
+	width: 65%;
+	overflow: hidden;
+	text-overflow: clip;
+	white-space: nowrap;
 }
 
 .settingBlock {
@@ -33,7 +45,7 @@
 	background-color: #111;
 }
 
-.settingBlock textarea, input:not([type="checkbox"]) {
+.settingBlock textarea, .settingBlock input:not([type="checkbox"]) {
 	background-color: #000; /* Background color */
     color: #fff; /* Text color */
     border: 1px solid #404040; /* Border color */
@@ -41,6 +53,17 @@
     padding: 5px;
     font-size: 16px;
 }
+
+#qrCodeSettingsText {
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+#qrCodeSettingsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+} 
 
 .settingBlock input[type="radio"] {
     border-radius: 100px;

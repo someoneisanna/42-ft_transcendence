@@ -2,13 +2,13 @@
 
 function initializeJS() {
 
-	const profileForm = document.getElementById('profile-form');
+	const profileForm = document.getElementById('changeProfilePictureForm');
 	if (profileForm) {
 		profileForm.addEventListener('submit', async function(event) {
 			event.preventDefault();
 			
 			const errorMessage = document.getElementById('uploadError');
-			const fileInput = document.getElementById('profile-picture');
+			const fileInput = document.getElementById('browseForProfilePicture');
 	
 			if (fileInput.files.length === 0) {
 				console.error('No file selected.');
@@ -186,7 +186,46 @@ function updatePassword(event) {
 		document.getElementById('changePasswordError').innerText = 'Password was changed successfully!';
 	})
 	.catch((error) => {
-		console.error('Registration Error:', error);
+		console.error('Update password error:', error);
+	});
+}
+
+function update2FAcheck(checkbox) {
+	// Send POST request to your API
+	fetch('/api/update2FAcheck/', {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(checkbox.checked),
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok) {
+			return response.json().then(err => {
+				// document.getElementById('2faError').innerText = err.error;
+				throw new Error(err.error);
+			});
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('2FA update was a success:', data.message);
+		if (checkbox.checked === false) {
+			document.getElementById('qrCodeSettingsText').innerText = '';
+			document.getElementById('qrCodeSettingsContainer').innerHTML = '';
+		}
+		else {
+			document.getElementById('qrCodeSettingsText').innerText = 'Scan the QR code below to get the 2FA code:';
+			document.getElementById('qrCodeSettingsContainer').innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
+		}
+		// document.getElementById('2faError').innerText = '2FA was updated successfully!';
+	})
+	.catch((error) => {
+		console.error('Update 2FA error:', error);
 	});
 }
 
@@ -221,6 +260,67 @@ function updateCommentsPolicy(event) {
 		// document.getElementById('commentsPolicyError').innerText = 'Comments policy was updated successfully!';
 	})
 	.catch((error) => {
-		console.error('Registration Error:', error);
+		console.error('Update comments policy error:', error);
+	});
+}
+
+function updateGameInvitationsPolicy(checkbox) {
+	// Send POST request to your API
+	fetch('/api/update_game_invitations_policy/', {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(checkbox.checked),
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok) {
+			return response.json().then(err => {
+				// document.getElementById('gameInvitationsPolicyError').innerText = err.error;
+				throw new Error(err.error);
+			});
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('Game invitations policy update was a success:', data.message);
+		// document.getElementById('gameInvitationsPolicyError').innerText = 'Game invitations policy was updated successfully!';
+	})
+	.catch((error) => {
+		console.error('Update game invitation error:', error);
+	});
+}
+
+function deleteAccount() {
+	// Send POST request to your API
+	fetch('/api/delete_user/', {
+		method: 'DELETE',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403) {
+			window.location.href = '/';
+		} else if (!response.ok) {
+			return response.json().then(err => {
+				// document.getElementById('deleteAccountError').innerText = err.error;
+				throw new Error(err.error);
+			});
+		}
+		return response.json();
+	})
+	.then(data => {
+		console.log('Account deletion was a success:', data.message);
+		// document.getElementById('deleteAccountError').innerText = 'Account was deleted successfully!';
+	})
+	.catch((error) => {
+		console.error('Delete account error:', error);
 	});
 }

@@ -81,16 +81,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				}
 			)
 
-		elif type == 'update_html':
-			action = data['action']
-			await self.channel_layer.group_send(
-				self.room_group_name,
-			{
-				'type': 'update_html',
-				'room_name': room_name,
-				'action': action
-			})
-
 		elif type == 'send_notification':
 			target_user = data['room_name']
 			notification = data['notification']
@@ -132,14 +122,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			'username': event['username'],
 			'message': event['message'],
 			'sent_at': event['sent_at']
-		}
-		))
-
-	async def update_html(self, event):
-		await self.send(text_data=json.dumps({
-			'type': 'update_html',
-			'room_name': event['room_name'],
-			'action': event['action']
 		}
 		))
 

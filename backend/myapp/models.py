@@ -9,6 +9,7 @@ class User(models.Model):
 	profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg')
 	motto = models.CharField(max_length=100, default='')
 	comments_policy = models.CharField(max_length=10, default='anyone')
+	allow_game_invitations = models.BooleanField(default=True)
 
 	blocked_users = models.ManyToManyField("self", symmetrical=False, related_name="blocked_by")
 

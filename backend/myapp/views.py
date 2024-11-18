@@ -48,7 +48,20 @@ def dropdown_profile(request):
 	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
 def dropdown_settings(request):
-	return render(request, 'dropdown_settings.html')
+	qr_code64 = ''
+	if (request.user.check2FA == True):
+		qr_code = generate_2fa_qr_code(secret=request.user.skey_2FA, username=request.user.username)
+		qr_code64 = base64.b64encode(qr_code).decode('utf-8')
+	return render(request, 'dropdown_settings.html', {
+		'username': request.user.username, 
+		'profile_pic': request.user.profile_pic.url,
+		'qr_code': qr_code64,
+		'motto': request.user.motto,
+		'n_characters': len(request.user.motto),
+		'check2FA': request.user.check2FA,
+		'comments_policy': request.user.comments_policy,
+		'allow_game_invitations': request.user.allow_game_invitations
+		})
 
 def dropdown_friends(request):
 	return render(request, 'dropdown_friends.html')
@@ -171,6 +184,29 @@ def update_password(request):
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# UPDATE 2FA CHECK -----------------------------------------------------------------------------------------------
+
+def update2FAcheck(request):
+	if request.method == 'POST':
+		try:
+			checkbox_input = json.loads(request.body)
+
+			request.user.check2FA = checkbox_input
+			request.user.save()
+
+			secret_key = generate_2fa_secret_key(user=request.user.username)
+			qr_code = generate_2fa_qr_code(secret=secret_key, username=request.user.username)
+			qr_code64 = base64.b64encode(qr_code).decode('utf-8')
+
+			request.user.skey_2FA = secret_key
+			request.user.save()
+
+			return JsonResponse({'message': f'2FAcheck updated successfully to {str(checkbox_input)}', 'qr_code': qr_code64}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # LOGOUT USERS ---------------------------------------------------------------------------------------------------
 
@@ -233,6 +269,22 @@ def update_comments_policy(request):
 			request.user.save()
 
 			return JsonResponse({'message': 'Comments policy updated to ' + policy_input}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# UPDATE GAME INVITATIONS POLICY --------------------------------------------------------------------------------
+
+def update_game_invitations_policy(request):
+	if request.method == 'POST':
+		try:
+			checkbox_input = json.loads(request.body)
+
+			request.user.allow_game_invitations = checkbox_input
+			request.user.save()
+
+			return JsonResponse({'message': f'Game invitations policy updated successfully to {str(checkbox_input)}'}, status=200)
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
@@ -544,13 +596,28 @@ def unblock_user(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+# DELETE USER ----------------------------------------------------------------------------------------------------
+
+def delete_user(request):
+	if request.method == 'DELETE':
+		request.user.delete()
+		return JsonResponse({'message': 'User deleted successfully'}, status=200)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 # GET ALL USERS IN THE DATABASE (FOR TESTING PURPOSES) -----------------------------------------------------------
 
 def users(request):
 	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA', 'profile_pic', 'motto', 'comments_policy')
+		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA', 'profile_pic', 'motto', 'comments_policy', 'allow_game_invitations')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
+
+def friendships(request):
+	if request.method == 'GET':
+		friendships = Friendship.objects.all().values('user1', 'user2', 'created_at')
+		friend_list = list(friendships)
+		return JsonResponse(friend_list, safe=False)
 
 def delete(request):
 	if request.method == 'GET':
