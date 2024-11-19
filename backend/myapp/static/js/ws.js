@@ -74,3 +74,19 @@ chatSocket.onmessage = function (e) {
 		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
 	}
 };
+
+pongSocket.onopen = function (e){
+	console.info("The connection to the pongSocket was setup successfully!");
+};
+
+pongSocket.onclose = function (e) {
+	console.info("The connection to the pongSocket was closed unexpectedly!");
+};
+
+pongSocket.onerror = function (error) {
+	console.error("pongSocket error:", error);
+};
+
+pongSocket.onmessage = function (e) {
+	console.warn('WS: Received message:', e.data);
+};

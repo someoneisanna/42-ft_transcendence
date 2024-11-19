@@ -69,6 +69,9 @@ def dropdown_friends(request):
 def pong_game(request):
 	return render(request, 'pong/pong_game.html')
 
+def pong_matchmaking(request):
+	return render(request, 'pong/pong_matchmaking.html')
+
 # HELPER FUNCTIONS -----------------------------------------------------------------------------------------------
 
 def generate_2fa_secret_key(user):

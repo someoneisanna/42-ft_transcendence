@@ -13,6 +13,7 @@ function goToFriends() {
 }
 
 function goHome() {
+	// loadPage('/game_choice/', true);
 	loadPage('/layout/', true);
 }
 

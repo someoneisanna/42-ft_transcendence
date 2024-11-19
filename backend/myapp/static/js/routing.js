@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	window.loadPage = (url, addHistory, signOut) => {
+		// if (window.location.href === 'https://localhost/pong_matchmaking/') {
+		// 	console.log('Loading page:' + url + ' from ' + window.location.href);
+		// }
 		fetch(url)
 			.then(response => {
 				if (!response.ok && url !== '/landing/') {
@@ -39,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				throw new Error('Page not found');
 			})
 			.then(html => {
-				
 				if (localStorage.getItem('cookieConsent_transcendence') !== 'accepted')
 					showCookieConsent();
 
@@ -72,11 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
 						buildFriendsList();
 					else if (url === '/pong_game/')
 						loadScript('/static/js/pong/pong_game.js');
+					else if (url === '/pong_matchmaking/')
+						loadScript('/static/js/pong/pong_matchmaking.js');
 				}
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
 					history.pushState({ url: url }, '', url);
 				}
+
+				// if (url === '/game_choice/' && addHistory)
+				// 	history.pushState({ url: '/layout/' }, '', '/layout/');
 			})
 			.catch(error => {
 				console.error('Error loading page:', error);
