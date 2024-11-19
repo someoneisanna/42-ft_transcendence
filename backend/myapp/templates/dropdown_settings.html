@@ -22,7 +22,7 @@
 			{% endif %}
 			<div class="d-flex justify-content-between align-items-center">
 				<button class="ms-3 settingsUpdateButton" onclick="updateMotto()">Update</button>
-				<div class="ms-2" id="updateMottoError">Updated successfully!</div>
+				<div class="ms-2 settingsErrorText" id="updateMottoError"></div>
 			</div>
 		</div>
 		<div class="settingBlock mt-3">
@@ -31,8 +31,10 @@
 				<input class="ms-3 mt-2 mb-1 form-control w-50" name="password" type="password" id="old-password" placeholder="Old password" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
 				<input class="ms-3 mb-1 form-control w-50" name="password" type="password" id="new-password" placeholder="New password" required>
 				<input class="ms-3 mb-3 form-control w-50" name="password" type="password" id="new-password-confirmation" placeholder="Confirm new password" required>
-				<p class="ms-3" id="changePasswordError"></p>
-				<button class="ms-3" type="submit">Change</button>
+				<div class="d-flex justify-content-between align-items-center">
+					<button class="ms-3 settingsUpdateButton" type="submit">Change</button>
+					<div class="ms-2 settingsErrorText" id="updatePasswordError"></div>
+				</div>
 			</form>
 		</div>
 		<div class="settingBlock mt-3">
@@ -79,7 +81,7 @@
 					From friends only
 				</label>
 			</div>
-			<div class="ms-3 form-check">
+			<div class="ms-3 mb-3 form-check">
 				<input class="form-check-input" name="commentPolicy" type="radio" id="settingsComments3" value="nobody"
 					{% if comments_policy == "nobody" %}
 						checked
@@ -89,7 +91,10 @@
 					Don't allow
 				</label>
 			</div>
-			<button class="mt-3 ms-3" id="updateCommentsPolicyButton" onclick="updateCommentsPolicy(event)">Apply</button>
+			<div class="d-flex justify-content-between align-items-center">
+				<button class="ms-3" id="updateCommentsPolicyButton" onclick="updateCommentsPolicy(event)">Apply</button>
+				<div class="ms-2 settingsErrorText" id="updateCommentsPolicyError"></div>
+			</div>
 		</div>
 		<div class="settingBlock mt-3 d-flex align-items-center justify-content-start">
 			<h3 class="mb-0 me-3">Allow people to invite you to games</h3>

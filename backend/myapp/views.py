@@ -244,12 +244,15 @@ def change_pic(request):
 def update_motto(request):
 	if request.method == 'POST':
 		try:
-			data = json.loads(request.body)
+			new_motto = json.loads(request.body)
 
-			request.user.motto = data
+			if new_motto == request.user.motto:
+				return JsonResponse({'message': 'Motto is already set to this value.'}, status=200)
+
+			request.user.motto = new_motto
 			request.user.save()
 
-			return JsonResponse({'message': 'Motto changed successfully'}, status=200)
+			return JsonResponse({'message': 'Motto changed successfully!'}, status=200)
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
@@ -601,7 +604,9 @@ def unblock_user(request):
 def delete_user(request):
 	if request.method == 'DELETE':
 		request.user.delete()
-		return JsonResponse({'message': 'User deleted successfully'}, status=200)
+		response = JsonResponse({'message': 'User deleted successfully'}, status=200)
+		response.delete_cookie('jwt_transcendence')
+		return response
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 

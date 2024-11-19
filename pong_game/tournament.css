@@ -1,0 +1,24 @@
+#tournamentMap {
+	display: flex;
+	align-items:stretch;
+	column-gap: 5px;
+}
+
+.tournamentRound {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	row-gap: 5px;
+}
+
+.tournamentNode {
+	width: 100px;
+	text-align: center;
+	padding: 10px;
+	border: 1px solid #ccc;
+	background: #f8f8f8;
+}
+
+.winner {
+	background-color: yellow;
+}

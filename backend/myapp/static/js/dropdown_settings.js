@@ -91,6 +91,14 @@ function removeProfilePic() {
 	}
 }
 
+function applyErrorMessage(id, text) {
+	errorMessage = document.getElementById(id);
+	errorMessage.classList.remove('fade-out');
+	errorMessage.innerText = text;
+	void errorMessage.offsetWidth;
+	errorMessage.classList.add('fade-out');
+}
+
 function updateMottoCharCount() {
 	const mottoInput = document.getElementById('motto');
 	const charCount = document.getElementById('motto-char-count');
@@ -103,13 +111,9 @@ function updateMotto() {
 	const motto = mottoInput.value;
 
 	if (motto.length > 100) {
-		console.error('Motto cannot exceed 100 characters!');
+		applyErrorMessage('updateMottoError', 'Motto cannot exceed 100 characters!');
 		return;
 	}
-
-	// const motto_data = {
-	// 	motto: motto
-	// };
 
 	fetch('/api/update_motto/', {
 		method: 'POST',
@@ -123,16 +127,23 @@ function updateMotto() {
 	.then(response => {
 		if (response.status === 401 || response.status === 403)
 			window.location.href = '/';
-		if (response.ok) {
-			console.log('Motto updated successfully.');
+		else if (!response.ok) {
+			return response.json().then(err => {
+				throw new Error(err.error);
+			});
 		}
-		else
-			console.error('Failed to update motto:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Motto update was a success:', data.message);
+		applyErrorMessage('updateMottoError', data.message);
+	})
+	.catch((error) => {
+		console.error('Failed to update motto:', response.statusText);
 	});
 }
 
 function updatePassword(event) {
-	console.log('Updating password...');
 	event.preventDefault();
 
 	const oldPassword = CryptoJS.SHA256(document.getElementById('old-password').value).toString();
@@ -140,27 +151,25 @@ function updatePassword(event) {
 	const confirmPassword = CryptoJS.SHA256(document.getElementById('new-password-confirmation').value).toString();
 
 	if (oldPassword === '' || newPassword === '' || confirmPassword === '') {
-		document.getElementById('changePasswordError').innerText = 'All fields are required!';
+		applyErrorMessage('updatePasswordError', 'All fields are required!');
 		return;
 	}
 
 	if (oldPassword === newPassword) {
-		document.getElementById('changePasswordError').innerText = 'New password must be different from the old password!';
+		applyErrorMessage('updatePasswordError', 'New password must be different from the old password!');
 		return;
 	}
 
 	if (newPassword !== confirmPassword) {
-		document.getElementById('changePasswordError').innerText = 'Passwords do not match!';
+		applyErrorMessage('updatePasswordError', 'Passwords do not match!');
 		return;
 	}
 
-	// Create the data object
 	const password_data = {
 		old_password: oldPassword,
 		new_password: newPassword
 	};
 
-	// Send POST request to your API
 	fetch('/api/update_password/', {
 		method: 'POST',
 		headers: {
@@ -175,7 +184,7 @@ function updatePassword(event) {
 			window.location.href = '/';
 		} else if (!response.ok) {
 			return response.json().then(err => {
-				document.getElementById('changePasswordError').innerText = err.error;
+				applyErrorMessage('updatePasswordError', err.error);
 				throw new Error(err.error);
 			});
 		}
@@ -183,7 +192,7 @@ function updatePassword(event) {
 	})
 	.then(data => {
 		console.log('Password change was a success:', data.username);
-		document.getElementById('changePasswordError').innerText = 'Password was changed successfully!';
+		applyErrorMessage('updatePasswordError', 'Password was changed successfully!');
 	})
 	.catch((error) => {
 		console.error('Update password error:', error);
@@ -191,7 +200,6 @@ function updatePassword(event) {
 }
 
 function update2FAcheck(checkbox) {
-	// Send POST request to your API
 	fetch('/api/update2FAcheck/', {
 		method: 'POST',
 		headers: {
@@ -206,7 +214,6 @@ function update2FAcheck(checkbox) {
 			window.location.href = '/';
 		} else if (!response.ok) {
 			return response.json().then(err => {
-				// document.getElementById('2faError').innerText = err.error;
 				throw new Error(err.error);
 			});
 		}
@@ -222,7 +229,6 @@ function update2FAcheck(checkbox) {
 			document.getElementById('qrCodeSettingsText').innerText = 'Scan the QR code below to get the 2FA code:';
 			document.getElementById('qrCodeSettingsContainer').innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
 		}
-		// document.getElementById('2faError').innerText = '2FA was updated successfully!';
 	})
 	.catch((error) => {
 		console.error('Update 2FA error:', error);
@@ -234,7 +240,6 @@ function updateCommentsPolicy(event) {
 
 	const commentsPolicy = document.querySelector('input[name="commentPolicy"]:checked').value;
 
-	// Send POST request to your API
 	fetch('/api/update_comments_policy/', {
 		method: 'POST',
 		headers: {
@@ -249,7 +254,6 @@ function updateCommentsPolicy(event) {
 			window.location.href = '/';
 		} else if (!response.ok) {
 			return response.json().then(err => {
-				// document.getElementById('commentsPolicyError').innerText = err.error;
 				throw new Error(err.error);
 			});
 		}
@@ -257,7 +261,7 @@ function updateCommentsPolicy(event) {
 	})
 	.then(data => {
 		console.log('Comments policy update was a success:', data.message);
-		// document.getElementById('commentsPolicyError').innerText = 'Comments policy was updated successfully!';
+		applyErrorMessage('updateCommentsPolicyError', 'Comments policy was updated successfully!');
 	})
 	.catch((error) => {
 		console.error('Update comments policy error:', error);
@@ -265,7 +269,6 @@ function updateCommentsPolicy(event) {
 }
 
 function updateGameInvitationsPolicy(checkbox) {
-	// Send POST request to your API
 	fetch('/api/update_game_invitations_policy/', {
 		method: 'POST',
 		headers: {
@@ -280,7 +283,6 @@ function updateGameInvitationsPolicy(checkbox) {
 			window.location.href = '/';
 		} else if (!response.ok) {
 			return response.json().then(err => {
-				// document.getElementById('gameInvitationsPolicyError').innerText = err.error;
 				throw new Error(err.error);
 			});
 		}
@@ -288,7 +290,6 @@ function updateGameInvitationsPolicy(checkbox) {
 	})
 	.then(data => {
 		console.log('Game invitations policy update was a success:', data.message);
-		// document.getElementById('gameInvitationsPolicyError').innerText = 'Game invitations policy was updated successfully!';
 	})
 	.catch((error) => {
 		console.error('Update game invitation error:', error);
@@ -296,7 +297,8 @@ function updateGameInvitationsPolicy(checkbox) {
 }
 
 function deleteAccount() {
-	// Send POST request to your API
+	if (confirm("Are you sure you want to delete your account?") == false)
+		return;
 	fetch('/api/delete_user/', {
 		method: 'DELETE',
 		headers: {
@@ -310,7 +312,6 @@ function deleteAccount() {
 			window.location.href = '/';
 		} else if (!response.ok) {
 			return response.json().then(err => {
-				// document.getElementById('deleteAccountError').innerText = err.error;
 				throw new Error(err.error);
 			});
 		}
@@ -318,7 +319,10 @@ function deleteAccount() {
 	})
 	.then(data => {
 		console.log('Account deletion was a success:', data.message);
-		// document.getElementById('deleteAccountError').innerText = 'Account was deleted successfully!';
+		chatBuilt = false;
+		loadPage('/landing/', true, true);
+		if (chatSocket && chatSocket.readyState === WebSocket.OPEN)
+			chatSocket.close();
 	})
 	.catch((error) => {
 		console.error('Delete account error:', error);

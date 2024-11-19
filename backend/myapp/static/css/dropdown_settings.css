@@ -88,3 +88,24 @@
 	font-size: 15px;
 	font-style: italic;
 }
+
+.settingsErrorText {
+    transition: opacity 0.1s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 3s forwards; /* The animation stays in its final state */
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1; /* Fully visible */
+    }
+    90% {
+        opacity: 0; /* Start fading out */
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden; /* Optional: Remove from visual flow */
+    }
+}
