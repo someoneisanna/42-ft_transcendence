@@ -27,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	window.loadPage = (url, addHistory, signOut) => {
-		// if (window.location.href === 'https://localhost/pong_matchmaking/') {
-		// 	console.log('Loading page:' + url + ' from ' + window.location.href);
-		// }
 		fetch(url)
 			.then(response => {
 				if (!response.ok && url !== '/landing/') {
@@ -48,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (url === '/layout/') {
 					layoutDiv.innerHTML = html;
 					loadPage('/game_choice/', true);
-					loadScript('/static/js/layout.js');
+					// loadScript('/static/js/layout.js');
 					if (chatBuilt === false)
 						buildChat();
 				}

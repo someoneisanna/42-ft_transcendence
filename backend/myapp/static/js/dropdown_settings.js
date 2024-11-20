@@ -1,7 +1,7 @@
 // RUN THE SCRIPT WHEN THE PAGE IS FULLY LOADED -------------------------------------------------------------------------------------------
 
 function initializeJS() {
-
+	alert('Dropdown settings script loaded');
 	const profileForm = document.getElementById('changeProfilePictureForm');
 	if (profileForm) {
 		profileForm.addEventListener('submit', async function(event) {

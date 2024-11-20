@@ -1,7 +1,11 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 
 class PongConsumer(AsyncWebsocketConsumer):
+
+	matchmaking_user_count = 0
+
 	async def connect(self):
 		user = self.scope.get('user')
 		await self.accept()
@@ -22,11 +26,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 		if type == 'matchmaking':
 			self.room_group_name = 'matchmaking_room'
 			await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+			user_count = await self.update_user_count(+1)
 			await self.channel_layer.group_send(
 				'matchmaking_room',
 				{
 					'type': 'send_message',
-					'username': username
+					'username': username,
+					'user_count': user_count
 				}
 			)
 
@@ -34,6 +40,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=json.dumps({
 			'type': 'user_joined',
 			'username': event['username'],
-			'room_name': self.room_group_name
+			'room_name': self.room_group_name,
+			'user_count': event['user_count']
 		}
 		))
+
+	async def update_user_count(self, diff):
+		self.__class__.matchmaking_user_count += diff
+		curr_count = self.__class__.matchmaking_user_count
+		# if curr_count == 2:
+		return curr_count
