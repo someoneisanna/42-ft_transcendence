@@ -1,3 +1,15 @@
+function showCookieConsent() {
+	var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
+	cookieConsentModal.show();
+	const acceptButton = document.getElementById('acceptCookiesButton');
+	if (acceptButton) {
+		acceptButton.addEventListener('click', function() {
+			localStorage.setItem('cookieConsent_transcendence', 'accepted');
+			cookieConsentModal.hide();
+		});
+	}
+}
+
 function loadScript(url) {
 	const script = document.createElement('script');
 	script.src = url;
@@ -7,30 +19,28 @@ function loadScript(url) {
 	document.body.appendChild(script);
 }
 
+var prevURL = '';
+var currURL = window.location.href;
+
 document.addEventListener('DOMContentLoaded', () => {
-	
+
 	const contentDiv = document.getElementById('content');
 	const layoutDiv = document.getElementById('layout');
 	const chatDiv = document.getElementById('chat');
-
-
-	function showCookieConsent() {
-		var cookieConsentModal = new bootstrap.Modal(document.getElementById('cookieconsent'));
-		cookieConsentModal.show();
-		const acceptButton = document.getElementById('acceptCookiesButton');
-		if (acceptButton) {
-			acceptButton.addEventListener('click', function() {
-				localStorage.setItem('cookieConsent_transcendence', 'accepted');
-				cookieConsentModal.hide();
-			});
-		}
-	}
-
+	
 	window.loadPage = (url, addHistory, signOut) => {
+		prevURL = currURL;
+		currURL = url;
+		if (prevURL === '/pong_matchmaking/') {
+			pongSocket.send(JSON.stringify({
+				'type': 'leave_matchmaking',
+				'username': current_user
+			}));
+		}
 		fetch(url)
 			.then(response => {
-				if (!response.ok && url !== '/landing/') {
-					loadPage('/landing/', false);
+			if (!response.ok && url !== '/landing/') {
+				loadPage('/landing/', false);
 					history.replaceState({ url: '/landing/' }, '', '/landing/');
 					return Promise.reject('Unauthorized');
 				}
@@ -78,9 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
 					history.pushState({ url: url }, '', url);
 				}
-
-				// if (url === '/game_choice/' && addHistory)
-				// 	history.pushState({ url: '/layout/' }, '', '/layout/');
 			})
 			.catch(error => {
 				console.error('Error loading page:', error);

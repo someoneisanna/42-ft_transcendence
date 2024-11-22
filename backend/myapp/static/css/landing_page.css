@@ -51,7 +51,7 @@ body {
 }
 
 #title-container.shrink {
-    top: 0;
+    top: -50px;
     left: 0;
     transform: translate(0, 0);
     font-style: italic;

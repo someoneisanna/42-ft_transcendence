@@ -51,3 +51,13 @@ class Message(models.Model):
 
 	def __str__(self):
 		return f"{self.sender.username} sent a message in room {self.room_name}"
+
+class pongGame(models.Model):
+	player1 = models.ForeignKey(User, related_name='player1', on_delete=models.CASCADE)
+	player2 = models.ForeignKey(User, related_name='player2', on_delete=models.CASCADE)
+	player1_score = models.IntegerField(default=0)
+	player2_score = models.IntegerField(default=0)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.player1.username} is playing against {self.player2.username}"

@@ -88,5 +88,12 @@ pongSocket.onerror = function (error) {
 };
 
 pongSocket.onmessage = function (e) {
+
+	const data = JSON.parse(e.data);
+	const type = data.type;
+	const action = data.action;
+
 	console.warn('WS: Received message:', e.data);
+	if (type == 'receive_notification' && action == 'Create a new game')
+		startPongRemoteGame(data);
 };
