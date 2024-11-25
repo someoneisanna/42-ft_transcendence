@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const chatDiv = document.getElementById('chat');
 	
 	window.loadPage = (url, addHistory, signOut) => {
+		gameOngoing = false;
 		prevURL = currURL;
 		currURL = url;
 		if (prevURL === '/pong_matchmaking/') {

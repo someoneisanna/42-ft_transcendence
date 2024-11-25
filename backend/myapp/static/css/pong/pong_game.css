@@ -1,16 +1,15 @@
 #tally {
+	width: 100%;
 	font-size: 10vh;
+	text-align: center;
 }
 
 #canvasContainer {
 	margin-left: 25%;
+	margin-right: 25%;
 	padding: 0;
 	width: 50%;
-	/* border: 1px solid blue; */
 	aspect-ratio: 16 / 9;
-	display: flex;
-	justify-content: center; /* Center the canvas horizontally */
-	align-items: center; /* Center the canvas vertically */
 }
 
 #gameCanvas {
