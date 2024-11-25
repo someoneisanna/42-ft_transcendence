@@ -1,7 +1,24 @@
+class GameSettings
+{
+	constructor()
+	{
+		this.initialSpeed = 0.0;
+		this.speedIncrease = 0;
+		this.targetScore = 0;
+		this.typePlayer1 = "";
+		this.typePlayer2 = "";
+		this.namePlayer1 = "";
+		this.namePlayer2 = "";
+		this.modifiers = false;
+		this.modifierCooldown = 0;
+	}
+}
+
 class Pad
 {
 	constructor(x, y, color, width, height, playerType)
 	{
+		this.playerName = "";
 		this.score = 0;
 
 		this.playerType = playerType;
@@ -212,7 +229,7 @@ class Ball
 			
 			this.moveDirX = newDirX;
 			this.moveDirY = newDirY;
-			this.moveSpeed += speedIncrease;
+			this.moveSpeed += gameSettings.speedIncrease;
 
 			return;
 		}
@@ -240,7 +257,7 @@ class Ball
 			
 			this.moveDirX = newDirX;
 			this.moveDirY = newDirY;
-			this.moveSpeed += speedIncrease;
+			this.moveSpeed += gameSettings.speedIncrease;
 
 			return;
 		}

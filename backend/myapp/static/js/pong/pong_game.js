@@ -1,12 +1,40 @@
 var gameSettings = {
 	initialSpeed: 10.0,
 	speedIncrease: 1,
-	targetScore: 20,
+	targetScore: 3,
 	typePlayer1: "human",
 	typePlayer2: "cpu",
+	namePlayer1: "Player 1",
+	namePlayer2: "Player 2",
 	modifiers: true,
 	modifierCooldown: 3
 };
+
+function getDefaultSettings()
+{
+	let settings = new GameSettings();
+	settings.initialSpeed = 10.0;
+	settings.speedIncrease = 1;
+	settings.targetScore = 3;
+	settings.typePlayer1 = "human";
+	settings.typePlayer2 = "cpu";
+	settings.namePlayer1 = "Player 1";
+	settings.namePlayer2 = "Player 2";
+	settings.modifiers = true;
+	settings.modifierCooldown = 3;
+	return settings;
+}
+
+function getRemoteSettings(player1name, player2name)
+{
+	let settings = getDefaultSettings();
+	settings.namePlayer1 = player1name;
+	settings.namePlayer2 = player2name;
+	settings.typePlayer2 = "human";
+	return settings;
+}
+
+
 
 function MoveTowards(from, target, delta)
 {
@@ -67,9 +95,9 @@ function isCircleCircleOverlap(x1, y1, r1, x2, y2, r2)
 function score(scorer)
 {
 	scorer.score++;
-	scoreText.innerText = pad1.score + " - " + pad2.score;
+	scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
 
-	if (scorer.score >= targetScore)
+	if (scorer.score >= gameSettings.targetScore)
 		endGame();
 	else
 		newPlay();
@@ -117,8 +145,9 @@ function init()
 
 	pad1.score = 0;
 	pad2.score = 0;
+	scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
 	ball.moveDirX = 1;
-	ball.moveSpeed = initialSpeed;
+	ball.moveSpeed = gameSettings.initialSpeed;
 	gameOngoing = true;
 	timeCurrent = Date.now();
 	newPlay()
@@ -220,7 +249,6 @@ function gameUpdate()
 
 function gameLoop()
 {
-	console.log(gameOngoing);
 	if (!gameOngoing)
 		return;
 	timePrevious = timeCurrent;
@@ -228,6 +256,8 @@ function gameLoop()
 	gameUpdate();
 	requestAnimationFrame(gameLoop)
 }
+
+var pongRoomName;
 
 var canvasContainer;
 var canvasElement;
@@ -291,7 +321,40 @@ var listTemps;
 var listMods;
 
 
+function startGameWithSettings(settings)
+{
+	console.log("Starting game with settings:");
+	gameSettings = settings;
+
+	initialSpeed = gameSettings.initialSpeed;
+	speedIncrease = gameSettings.speedIncrease;
+	targetScore = gameSettings.targetScore;
+	pad1 = new Pad(10, fieldHeight / 2, "#ff0000", padWidth, padHeight, gameSettings.typePlayer1);
+	pad2 = new Pad(fieldWidth - padWidth - 10, fieldHeight / 2, "#0000ff", padWidth, padHeight, gameSettings.typePlayer2);
+	ball = new Ball(fieldWidth / 2, fieldHeight / 2, "#00ff00", 35);
+
+	pad1.playerType = gameSettings.typePlayer1;
+	pad2.playerType = gameSettings.typePlayer2;
+	pad1.playerName = gameSettings.namePlayer1;
+	pad2.playerName = gameSettings.namePlayer2;
+
+	init();
+	gameLoop();
+}
+
 function initializeJS() {
+	// if its a remote game
+	// wait for both players to be ready
+	// flood the room with ready messages until the other player is also ready
+
+	// decide on which side to play on, and the initial direction of the ball
+
+	// then start the game
+
+	// the players will periodically send the position and move direction of their pads to each other
+	// the ball position and move direction will be updated by by whichever player will catch it next
+
+
 	canvasContainer = document.getElementById("canvasContainer");
 	canvasElement = document.getElementById("gameCanvas");
 	ctx = canvasElement.getContext("2d");
@@ -311,7 +374,7 @@ function initializeJS() {
 	debugSpeedIncrease = document.getElementById("speedIncrease");
 
 	debugGameResetButton.addEventListener('click', function() {
-		scoreText.innerText = "0 - 0";
+		scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
 		if (gameOngoing)
 			init();
 		else
@@ -360,16 +423,15 @@ function initializeJS() {
 		speedIncrease = debugSpeedIncrease.value;
 	});
 
-	
-	initialSpeed = 10.0;
-	speedIncrease = 1;
-	targetScore = 20;
+
+	// initialSpeed = 10.0;
+	// speedIncrease = 1;
+	// targetScore = 20;
+
 	gameOngoing = false;
 
 
 	countdown = 0.0;
-	timeCurrent;
-	timePrevious;
 
 	fieldWidth = 1920;
 	fieldHeight = 1080;
@@ -380,6 +442,7 @@ function initializeJS() {
 
 	window.addEventListener("resize", function(event)
 	{
+		console.log("resize");
 		canvasElement.width = canvasContainer.clientWidth;
 		canvasElement.height = canvasContainer.clientHeight;
 		scaleFactor = canvasContainer.clientWidth / 1920;
@@ -422,10 +485,8 @@ function initializeJS() {
 	backgroundColor = "#f7ffbd";
 
 	// objects
-	pad1 = new Pad(10, fieldHeight / 2, "#ff0000", padWidth, padHeight, debugPlayer1AI.value);
-	pad2 = new Pad(fieldWidth - padWidth - 10, fieldHeight / 2, "#0000ff", padWidth, padHeight, debugPlayer2AI.value);
-	ball = new Ball(fieldWidth / 2, fieldHeight / 2, "#00ff00", ballRadius);
-
+	console.log("Creating objects");
+	
 	// lists
 	listDrawables = [];
 	listMovables = [];
@@ -439,6 +500,7 @@ function initializeJS() {
 	listMovables.push(pad2);
 	listMovables.push(ball);
 
-	init();
-	gameLoop();
+	//startGameWithSettings(getDefaultSettings());
+
+	
 }
