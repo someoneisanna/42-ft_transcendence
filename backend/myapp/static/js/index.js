@@ -33,7 +33,7 @@ function openChat(roomName, buttonRef) {
 	lastActiveButton = buttonRef;
 	textsContainer.innerHTML = '';
 
-	console.debug('WS: get stored messages:', roomName);
+	// console.debug('WS: get stored messages:', roomName);
 	chatSocket.send(JSON.stringify({
 		'type': 'get_stored_messages',
 		'room_name': roomName,
@@ -48,7 +48,7 @@ function openChat(roomName, buttonRef) {
 		const messageInput = document.querySelector("#sendMessageInput").value;
 		if (messageInput == '')
 			return;
-		console.debug('WS: sending message from ' + current_user + ' to ' + roomName + ': ' + messageInput);
+		// console.debug('WS: sending message from ' + current_user + ' to ' + roomName + ': ' + messageInput);
 		chatSocket.send(JSON.stringify({
 			'type': 'chat_message',
 			'room_name': roomName,
@@ -90,14 +90,14 @@ function buildChatFriendsList() {
 			data.friends.forEach(item => {
 				const roomName = getChannelRoomName(item.username)
 				
-				console.debug('WS: opening chat room:', roomName);
+				// console.debug('WS: opening chat room:', roomName);
 				chatSocket.send(JSON.stringify({
 					'type': 'join_room',
 					'room_name': roomName,
 					'username': current_user
 				}));
 
-				console.debug('WS: getting last message for room:', roomName);
+				// console.debug('WS: getting last message for room:', roomName);
 				chatSocket.send(JSON.stringify({
 					'type': 'get_last_messages',
 					'room_name': roomName,

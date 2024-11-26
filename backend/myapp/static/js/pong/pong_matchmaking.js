@@ -1,7 +1,7 @@
 function initializeJS() {
 	// alert('pong_matchmaking.js loaded');
 	pongSocket.send(JSON.stringify({
-		'type': 'matchmaking',
+		'type': 'join_matchmaking_room',
 		'username': current_user
 	}));
 }

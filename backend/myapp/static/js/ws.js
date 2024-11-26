@@ -29,13 +29,13 @@ chatSocket.onmessage = function (e) {
 	const message = data.message;
 	const timestamp = formatDate(data.sent_at);
 
-	console.info('WS: Received message:', data);
+	// console.info('WS: Received message:', data);
 
 	if (type === 'authenticated')
-		console.debug('WS: ' + username + ' is now connected to the ws.');
+		console.info('WS: ' + username + ' is now connected to the chat ws.');
 	
 	if (type === 'receive_notification') {
-		console.debug('WS: receive_notification:', data);
+		// console.debug('WS: receive_notification:', data);
 		if (notification === 'friendship_changed')
 			updateListsandChat(new_relationship);
 		if (notification === 'invitation_changed') {

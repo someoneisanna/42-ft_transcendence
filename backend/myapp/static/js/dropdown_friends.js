@@ -271,7 +271,7 @@ function updateListsandChat(relationship) {
 }
 
 function notifyUser(username, notification, new_relationship) {
-	console.debug('WS: sending notification to ' + username + ': ' + notification);
+	// console.debug('WS: sending notification to ' + username + ': ' + notification);
 	chatSocket.send(JSON.stringify({
 		'type': 'send_notification',
 		'room_name': username,

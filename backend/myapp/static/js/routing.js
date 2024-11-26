@@ -34,7 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		currURL = url;
 		if (prevURL === '/pong_matchmaking/') {
 			pongSocket.send(JSON.stringify({
-				'type': 'leave_matchmaking',
+				'type': 'leave_matchmaking_room',
+				'username': current_user
+			}));
+		}
+		if (prevURL === '/pong_game/') {
+			pongSocket.send(JSON.stringify({
+				'type': 'leave_pong_room',
 				'username': current_user
 			}));
 		}
