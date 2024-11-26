@@ -2,15 +2,18 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import time
+import redis
 
 class PongConsumer(AsyncWebsocketConsumer):
 
 	matchmaking_user_count = 0
-	users_ready = {'player1': '', 'player2': ''}
+	redis_client = None
 
 	async def connect(self):
 		user = self.scope.get('user')
 		await self.accept()
+		if self.redis_client is None:
+			self.redis_client = await self.get_redis_connection()
 		await self.send(text_data=json.dumps({
 			"type": "pong: new user connected",
 			"username": user.username,
@@ -57,24 +60,44 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 			# add user to the room
 			await self.channel_layer.group_add(self.pong_game_room, self.channel_name)
+
+			room_exists = await self.redis_client.exists(self.pong_game_room)
+			if not room_exists:
+				# Create a new room and set player1 and player2 to empty
+				await self.redis_client.hset(self.pong_game_room, 'player1', '')
+				await self.redis_client.hset(self.pong_game_room, 'player2', '')
+
+			player1 = await self.redis_client.hget(self.pong_game_room, 'player1')
+			player2 = await self.redis_client.hget(self.pong_game_room, 'player2')
 			
-			# add usernames to the users_ready dict
-			current_users_ready = self.__class__.users_ready
-			if current_users_ready['player1'] == '':
-				current_users_ready['player1'] = data['username']
-			elif current_users_ready['player2'] == '':
-				current_users_ready['player2'] = data['username']
-			
-			# when both of them are ready, send a message to start the game
-			if current_users_ready['player1'] != '' and current_users_ready['player2'] != '':
+			if not player1:
+				await self.redis_client.hset(self.pong_game_room, 'player1', data['username'])
+			elif not player2:
+				await self.redis_client.hset(self.pong_game_room, 'player2', data['username'])
+
+			player1 = await self.redis_client.hget(self.pong_game_room, 'player1')
+			player2 = await self.redis_client.hget(self.pong_game_room, 'player2')
+
+			await self.channel_layer.group_send(
+					self.pong_game_room,
+					{
+						'type': 'send_game_notification',
+						'action': '%^&474',
+						'room_name': self.pong_game_room,
+						'player1': player1,
+						'player2': player2
+					}
+			)
+
+			if player1 and player2:
 				await self.channel_layer.group_send(
 					self.pong_game_room,
 					{
 						'type': 'send_game_notification',
 						'action': 'Start game',
 						'room_name': self.pong_game_room,
-						'player1': current_users_ready['player1'],
-						'player2': current_users_ready['player2']
+						'player1': player1,
+						'player2': player2
 					}
 				)
 
@@ -101,7 +124,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 						'player1': data['username']
 					}
 				)
-
 			await self.channel_layer.group_discard(self.pong_game_room, self.channel_name)
 			del self.pong_game_room
 
@@ -130,3 +152,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 				'player2': event.get('player2', '')
 			}
 		))
+
+	async def get_redis_connection(self):
+		return redis.asyncio.StrictRedis(host='redis', port=6379, db=0, decode_responses=True)

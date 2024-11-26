@@ -94,12 +94,15 @@ pongSocket.onmessage = function (e) {
 	const action = data.action;
 
 	console.warn('WS: Received message:', e.data);
+
 	if (type == 'receive_notification')
 	{
-		if (action == 'Create a new game')
+		if (action == 'Create a new game') {
 			startPongRemoteGame(data);
+		}
 		else if (action == 'Start game')
 		{
+			console.log('The game is starting!');
 			// console.log('sleep')
 			// for (let i = 0; i < 100000; i++) {console.log("sleep");}
 			// console.log('sleep done')
