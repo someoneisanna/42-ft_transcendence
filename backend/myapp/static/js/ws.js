@@ -87,26 +87,26 @@ pongSocket.onerror = function (error) {
 	console.error("pongSocket error:", error);
 };
 
+var users_ready = 0;
+
 pongSocket.onmessage = function (e) {
 
 	const data = JSON.parse(e.data);
 	const type = data.type;
 	const action = data.action;
 
-	console.warn('WS: Received message:', e.data);
+	console.debug('WS: Received message:', data);
 
 	if (type == 'receive_notification')
 	{
 		if (action == 'Create a new game') {
 			startPongRemoteGame(data);
 		}
-		else if (action == 'Start game')
+		else if (action == 'User is ready')
 		{
-			console.log('The game is starting!');
-			// console.log('sleep')
-			// for (let i = 0; i < 100000; i++) {console.log("sleep");}
-			// console.log('sleep done')
-			startGameWithSettings(getRemoteSettings(data.player1, data.player2));
+			users_ready++;
+			if (users_ready == 2)
+				startGameWithSettings(getRemoteSettings(data.player1, data.player2));
 		}
 	}
 };

@@ -354,6 +354,7 @@ function initializeJS() {
 	// the players will periodically send the position and move direction of their pads to each other
 	// the ball position and move direction will be updated by by whichever player will catch it next
 
+	console.log("Initializing pong game");
 
 	canvasContainer = document.getElementById("canvasContainer");
 	canvasElement = document.getElementById("gameCanvas");
@@ -501,6 +502,11 @@ function initializeJS() {
 	listMovables.push(ball);
 
 	//startGameWithSettings(getDefaultSettings());
+	pongSocket.send(JSON.stringify({
+		'type': 'start_game',
+		'username': current_user,
+	}));
+	// alert('The game is starting!');
 
 	
 }

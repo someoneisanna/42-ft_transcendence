@@ -14,10 +14,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 		await self.accept()
 		if self.redis_client is None:
 			self.redis_client = await self.get_redis_connection()
-		await self.send(text_data=json.dumps({
-			"type": "pong: new user connected",
-			"username": user.username,
-		}))
 
 	async def disconnect(self, close_code):
 		if hasattr(self, 'matchmaking_room'):
@@ -46,69 +42,34 @@ class PongConsumer(AsyncWebsocketConsumer):
 				self.matchmaking_room = 'pong_matchmaking_room'
 				await self.channel_layer.group_add(self.matchmaking_room, self.channel_name)
 				await self.update_user_count(+1)
-				
-				# send message saying user joined the room
-				await self.send(text_data=json.dumps(
-					{
-						"type": "user joined the matchmaking room",
-						"user_count": self.__class__.matchmaking_user_count
-					}
-				))
 
 		elif type == 'join_pong_room':
 			self.pong_game_room = data['room_name']
-
-			# add user to the room
+			username = data['username']
+			player_count = await self.redis_client.rpush(self.pong_game_room, username)
+			if player_count > 2:
+				await self.redis_client.lrem(self.pong_game_room, 0, username)
+				return
 			await self.channel_layer.group_add(self.pong_game_room, self.channel_name)
 
-			room_exists = await self.redis_client.exists(self.pong_game_room)
-			if not room_exists:
-				# Create a new room and set player1 and player2 to empty
-				await self.redis_client.hset(self.pong_game_room, 'player1', '')
-				await self.redis_client.hset(self.pong_game_room, 'player2', '')
-
-			player1 = await self.redis_client.hget(self.pong_game_room, 'player1')
-			player2 = await self.redis_client.hget(self.pong_game_room, 'player2')
-			
-			if not player1:
-				await self.redis_client.hset(self.pong_game_room, 'player1', data['username'])
-			elif not player2:
-				await self.redis_client.hset(self.pong_game_room, 'player2', data['username'])
-
-			player1 = await self.redis_client.hget(self.pong_game_room, 'player1')
-			player2 = await self.redis_client.hget(self.pong_game_room, 'player2')
-
+		elif type == 'start_game':
+			player1, player2 = None, None
+			while not player1 or not player2:
+				player1 = await self.redis_client.lindex(self.pong_game_room, 0)
+				player2 = await self.redis_client.lindex(self.pong_game_room, 1)
 			await self.channel_layer.group_send(
-					self.pong_game_room,
-					{
-						'type': 'send_game_notification',
-						'action': '%^&474',
-						'room_name': self.pong_game_room,
-						'player1': player1,
-						'player2': player2
-					}
+				self.pong_game_room,
+				{
+					'type': 'send_game_notification',
+					'action': 'User is ready',
+					'room_name': self.pong_game_room,
+					'username': data['username'],
+					'player1': player1,
+					'player2': player2
+				}
 			)
 
-			if player1 and player2:
-				await self.channel_layer.group_send(
-					self.pong_game_room,
-					{
-						'type': 'send_game_notification',
-						'action': 'Start game',
-						'room_name': self.pong_game_room,
-						'player1': player1,
-						'player2': player2
-					}
-				)
-
 		elif type == 'leave_matchmaking_room':
-			# send message saying user left the room
-			await self.send(text_data=json.dumps(
-				{
-					"type": "user left the matchmaking room",
-					"users_count": self.__class__.matchmaking_user_count
-				}))
-			
 			await self.channel_layer.group_discard(self.matchmaking_room, self.channel_name)
 			await self.update_user_count(-1)
 			del self.matchmaking_room
@@ -148,6 +109,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 				'type': 'receive_notification',
 				'action': event['action'],
 				'room_name': event['room_name'],
+				'username': event.get('username', ''),
 				'player1': event.get('player1', ''),
 				'player2': event.get('player2', '')
 			}
