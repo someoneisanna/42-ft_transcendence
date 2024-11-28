@@ -42,6 +42,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 				self.matchmaking_room = 'pong_matchmaking_room'
 				await self.channel_layer.group_add(self.matchmaking_room, self.channel_name)
 				await self.update_user_count(+1)
+				await self.send(text_data=json.dumps(
+				{
+					'type': 'receive_notification',
+					'action': 'Joined matchmaking room',
+					'user_count':self.__class__.matchmaking_user_count
+				}
+			))
 
 		elif type == 'join_pong_room':
 			self.pong_game_room = data['room_name']
@@ -70,6 +77,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 			)
 
 		elif type == 'leave_matchmaking_room':
+			await self.send(text_data=json.dumps(
+				{
+					'type': 'receive_notification',
+					'action': 'Left matchmaking room',
+					'user_count':self.__class__.matchmaking_user_count - 1
+				}
+			))
 			await self.channel_layer.group_discard(self.matchmaking_room, self.channel_name)
 			await self.update_user_count(-1)
 			del self.matchmaking_room

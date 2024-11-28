@@ -106,6 +106,7 @@ pongSocket.onmessage = function (e) {
 		{
 			users_ready++;
 			if (users_ready == 2)
+				// alert('Both users are ready!');
 				startGameWithSettings(getRemoteSettings(data.player1, data.player2));
 		}
 	}

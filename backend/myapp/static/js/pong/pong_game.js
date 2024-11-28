@@ -1,3 +1,5 @@
+// import { GameSettings, Pad, Ball, CollisionEffect, Modifier } from './pong_init.js';
+
 class GameSettings
 {
 	constructor()
@@ -315,7 +317,7 @@ class CollisionEffect
 
 		const currentRadius = Interpolate(this.radiusStart, this.radiusEnd, this.durationCurrent / this.duration);
 		const currentOpacity = Interpolate(this.opacityStart, this.opacityEnd, this.durationCurrent / this.duration);
-		
+
 		ctx.globalAlpha = currentOpacity;
 
 		ctx.beginPath();
@@ -396,7 +398,6 @@ class Modifier
 		listTemps.splice(index, 1);
 	}
 }
-
 
 var gameSettings = {
 	initialSpeed: 10.0,
@@ -548,6 +549,7 @@ function init()
 	scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
 	ball.moveDirX = 1;
 	ball.moveSpeed = gameSettings.initialSpeed;
+	console.log("ballllllllllllllll init", ball);
 	gameOngoing = true;
 	timeCurrent = Date.now();
 	newPlay()
@@ -594,21 +596,12 @@ var listMods;
 
 function moveObjects()
 {
-	// console.log(listMovables.length);
-	for (let i = 0; i < listMovables.length; i++)
-	{
-		listMovables[i].move();
-	}
-	// listMovables.forEach(obj => {
-	// 	obj.move();
-	// });
-	for (let i = 0; i < listMovables.length; i++)
-	{
-		listMovables[i].checkCollision();
-	}
-	// listMods.forEach(obj => {
-	// 	obj.checkCollision();
-	// });
+	listMovables.forEach(obj => {
+		obj.move();
+	});
+	listMods.forEach(obj => {
+		obj.checkCollision();
+	});
 	
 }
 
@@ -664,6 +657,7 @@ function gameUpdate()
 
 function gameLoop()
 {
+	console.log("gameLoop");
 	if (!gameOngoing)
 		return;
 	timePrevious = timeCurrent;
@@ -743,6 +737,21 @@ function startGameWithSettings(settings)
 	pad1 = new Pad(10, fieldHeight / 2, "#ff0000", padWidth, padHeight, gameSettings.typePlayer1);
 	pad2 = new Pad(fieldWidth - padWidth - 10, fieldHeight / 2, "#0000ff", padWidth, padHeight, gameSettings.typePlayer2);
 	ball = new Ball(fieldWidth / 2, fieldHeight / 2, "#00ff00", 35);
+	
+	// lists
+	listDrawables = [];
+	listMovables = [];
+	listTemps = [];
+	listMods = [];
+
+	listDrawables.push(pad1);
+	listDrawables.push(pad2);
+	listDrawables.push(ball);
+	listMovables.push(pad1);
+	listMovables.push(pad2);
+	listMovables.push(ball);
+	console.log("ballllllllllllllll initializeJS", ball);
+	console.log("listMovables initializeJS", listMovables[2]);
 
 	pad1.playerType = gameSettings.typePlayer1;
 	pad2.playerType = gameSettings.typePlayer2;
@@ -754,7 +763,6 @@ function startGameWithSettings(settings)
 }
 
 function initializeJS() {
-
 	// if its a remote game
 	// wait for both players to be ready
 	// flood the room with ready messages until the other player is also ready
@@ -817,13 +825,13 @@ function initializeJS() {
 	debugSpeedModButton.addEventListener('click', function() {
 		var posX = Math.random() * fieldWidth;
 		var posY = Math.random() * fieldHeight;
-		//new Modifier(posX, posY, 100, "speed", 1, "#0000ff", 5);
+		new Modifier(posX, posY, 100, "speed", 1, "#0000ff", 5);
 		// new Modifier(fieldWidth / 2, fieldHeight / 2, 100, "speed", 1, "#0000ff", 5);
 	});
 	debugHeightModButton.addEventListener('click', function() {
 		var posX = Math.random() * fieldWidth;
 		var posY = Math.random() * fieldHeight;
-		//new Modifier(posX, posY, 100, "height", 1, "#555555", 5);
+		new Modifier(posX, posY, 100, "height", 1, "#555555", 5);
 		// new Modifier(fieldWidth / 2, fieldHeight / 2, 100, "height", 1, "#555555", 5);
 	});
 	debugTargetScore.addEventListener('input', function() {
@@ -900,18 +908,20 @@ function initializeJS() {
 	// objects
 	console.log("Creating objects");
 	
-	// lists
-	listDrawables = [];
-	listMovables = [];
-	listTemps = [];
-	listMods = [];
+	// // lists
+	// listDrawables = [];
+	// listMovables = [];
+	// listTemps = [];
+	// listMods = [];
 
-	listDrawables.push(pad1);
-	listDrawables.push(pad2);
-	listDrawables.push(ball);
-	listMovables.push(pad1);
-	listMovables.push(pad2);
-	listMovables.push(ball);
+	// listDrawables.push(pad1);
+	// listDrawables.push(pad2);
+	// listDrawables.push(ball);
+	// listMovables.push(pad1);
+	// listMovables.push(pad2);
+	// listMovables.push(ball);
+	// console.log("ballllllllllllllll initializeJS", ball);
+	// console.log("listMovables initializeJS", listMovables[2]);
 
 	//startGameWithSettings(getDefaultSettings());
 	pongSocket.send(JSON.stringify({
