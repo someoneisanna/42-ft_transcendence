@@ -95,7 +95,7 @@ pongSocket.onmessage = function (e) {
 	const type = data.type;
 	const action = data.action;
 
-	console.debug('WS: Received message:', data);
+	// console.debug('WS: Received message:', data);
 
 	if (type == 'receive_notification')
 	{
@@ -110,4 +110,10 @@ pongSocket.onmessage = function (e) {
 				startGameWithSettings(getRemoteSettings(data.player1, data.player2));
 		}
 	}
+	if (type == 'receive_pad_state')
+		updateRemotePad(data);
+	else if (type == 'receive_ball_state')
+		updateRemoteBall(data);
+	else if (type == 'receive_score_notification')
+		updateRemoteScore(data);
 };

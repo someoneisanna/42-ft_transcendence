@@ -76,6 +76,44 @@ class PongConsumer(AsyncWebsocketConsumer):
 				}
 			)
 
+		elif type == 'send_pad_state':
+			await self.channel_layer.group_send(
+				self.pong_game_room,
+				{
+					'type': 'send_game_update',
+					'action': 'Update pad state',
+					'pad_name': data['pad_name'],
+					'pos_x': data['pos_x'],
+					'pos_y': data['pos_y'],
+					'request_up': data['request_up'],
+					'request_down': data['request_down'],
+				}
+			)
+
+		elif type == 'send_ball_state':
+			await self.channel_layer.group_send(
+				self.pong_game_room,
+				{
+					'type': 'send_game_update',
+					'action': 'Update ball state',
+					'pos_x': data['pos_x'],
+					'pos_y': data['pos_y'],
+					'move_dir_x': data['move_dir_x'],
+					'move_dir_y': data['move_dir_y'],
+					'move_speed': data['move_speed']
+				}
+			)
+
+		elif type == 'notify_score':
+			await self.channel_layer.group_send(
+				self.pong_game_room,
+				{
+					'type': 'send_game_update',
+					'action': 'Score notification',
+					'scorer': data['scorer']
+				}
+			)
+
 		elif type == 'leave_matchmaking_room':
 			await self.send(text_data=json.dumps(
 				{
@@ -128,6 +166,37 @@ class PongConsumer(AsyncWebsocketConsumer):
 				'player2': event.get('player2', '')
 			}
 		))
+
+	async def send_game_update(self, event):
+		if event['action'] == 'Update pad state':
+			await self.send(text_data=json.dumps(
+				{
+					'type': 'receive_pad_state',
+					'pad_name': event['pad_name'],
+					'pos_x': event['pos_x'],
+					'pos_y': event['pos_y'],
+					'request_up': event['request_up'],
+					'request_down': event['request_down'],
+				}
+			))
+		elif event['action'] == 'Update ball state':
+			await self.send(text_data=json.dumps(
+				{
+					'type': 'receive_ball_state',
+					'pos_x': event['pos_x'],
+					'pos_y': event['pos_y'],
+					'move_dir_x': event['move_dir_x'],
+					'move_dir_y': event['move_dir_y'],
+					'move_speed': event['move_speed']
+				}
+			))
+		elif event['action'] == 'Score notification':
+			await self.send(text_data=json.dumps(
+				{
+					'type': 'receive_score_notification',
+					'scorer': event['scorer']
+				}
+			))
 
 	async def get_redis_connection(self):
 		return redis.asyncio.StrictRedis(host='redis', port=6379, db=0, decode_responses=True)

@@ -4,6 +4,7 @@ class GameSettings
 {
 	constructor()
 	{
+		this.gameType = "";
 		this.initialSpeed = 0.0;
 		this.speedIncrease = 0;
 		this.targetScore = 0;
@@ -209,6 +210,9 @@ class Ball
 		// check collision with paddles
 		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY - pad1.getEffectiveHeight() / 2, pad1.posX + pad1.width, pad1.posY + pad1.getEffectiveHeight() / 2))
 		{
+			if (gameSettings.gameType === "remote" && current_user !== pad1.playerName)
+				return;
+
 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
 			var relativeImpactPoint = (this.posY - (pad1.posY - pad1.getEffectiveHeight() / 2)) / pad1.getEffectiveHeight();
 			var newDirX, newDirY;
@@ -233,10 +237,25 @@ class Ball
 			this.moveDirY = newDirY;
 			this.moveSpeed += gameSettings.speedIncrease;
 
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'send_ball_state',
+					'pos_x': this.posX,
+					'pos_y': this.posY,
+					'move_dir_x': this.moveDirX,
+					'move_dir_y': this.moveDirY,
+					'move_speed': this.moveSpeed
+				}));
+			}
+
 			return;
 		}
 		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY - pad2.getEffectiveHeight() / 2, pad2.posX + pad2.width, pad2.posY + pad2.getEffectiveHeight() / 2))
 		{
+			if (gameSettings.gameType === "remote" && current_user !== pad2.playerName)
+				return;
+
 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
 			var relativeImpactPoint = (this.posY - (pad2.posY - pad2.getEffectiveHeight() / 2)) / pad2.getEffectiveHeight();
 			var newDirX, newDirY;
@@ -261,23 +280,56 @@ class Ball
 			this.moveDirY = newDirY;
 			this.moveSpeed += gameSettings.speedIncrease;
 
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'send_ball_state',
+					'pos_x': this.posX,
+					'pos_y': this.posY,
+					'move_dir_x': this.moveDirX,
+					'move_dir_y': this.moveDirY,
+					'move_speed': this.moveSpeed
+				}));
+			}
+
 			return;
 		}
 
 		if (this.posX + this.radius >= fieldWidth)	// ball hits right wall
 		{
 			new CollisionEffect(fieldWidth, fieldHeight / 2, "#ffffff", 1, 0, this.radius, this.radius * 20, 1);
-			// this.x -= (this.x + this.radius - fieldWidth);
-			// this.speedX *= -1;
+			
+			if (gameSettings.gameType === "remote" && current_user === pad1.playerName)
+				return;
+
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'notify_score',
+					'scorer': pad1.playerName
+				}));
+			}
+
 			score(pad1);
 		}
 		if (this.posX - this.radius <= 0)	// ball hits left wall
 		{
 			new CollisionEffect(0, fieldHeight / 2, "#ffffff", 1, 0, this.radius, this.radius * 20, 1);
-			// this.x -= (this.x - this.radius);
-			// this.speedX *= -1;
+			
+			if (gameSettings.gameType === "remote" && current_user === pad2.playerName)
+				return;
+			
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'notify_score',
+					'scorer': pad2.playerName
+				}));
+			}
+
 			score(pad2);
 		}
+
 		if (this.posY + this.radius >= fieldHeight)	// ball hits top wall
 		{
 			new CollisionEffect(this.posX, this.posY + this.radius, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
@@ -414,6 +466,7 @@ var gameSettings = {
 function getDefaultSettings()
 {
 	let settings = new GameSettings();
+	settings.gameType = "local";
 	settings.initialSpeed = 10.0;
 	settings.speedIncrease = 1;
 	settings.targetScore = 3;
@@ -429,13 +482,12 @@ function getDefaultSettings()
 function getRemoteSettings(player1name, player2name)
 {
 	let settings = getDefaultSettings();
+	settings.gameType = "remote";
 	settings.namePlayer1 = player1name;
 	settings.namePlayer2 = player2name;
 	settings.typePlayer2 = "human";
 	return settings;
 }
-
-
 
 function MoveTowards(from, target, delta)
 {
@@ -549,7 +601,6 @@ function init()
 	scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
 	ball.moveDirX = 1;
 	ball.moveSpeed = gameSettings.initialSpeed;
-	console.log("ballllllllllllllll init", ball);
 	gameOngoing = true;
 	timeCurrent = Date.now();
 	newPlay()
@@ -562,21 +613,83 @@ function handleInputs()
 	pad2.requestUp = false;
 	pad2.requestDown = false;
 
-	if (pad1.playerType === "human")
+	if (gameSettings.gameType === "local")
 	{
-		pad1.requestUp = pressW;
-		pad1.requestDown = pressS;
+		if (pad1.playerType === "human")
+		{
+			pad1.requestUp = pressW;
+			pad1.requestDown = pressS;
+		}
+		else if (pad1.playerType === "cpu")
+			pad1.decideMovement();
+		
+		if (pad2.playerType === "human")
+		{
+			pad2.requestUp = pressUp;
+			pad2.requestDown = pressDown;
+		}
+		else if (pad2.playerType === "cpu")
+			pad2.decideMovement();
 	}
-	else if (pad1.playerType === "cpu")
-		pad1.decideMovement();
-	
-	if (pad2.playerType === "human")
+	else if (gameSettings.gameType === "remote")
 	{
-		pad2.requestUp = pressUp;
-		pad2.requestDown = pressDown;
+		let myPad;
+		if (current_user === gameSettings.namePlayer1)
+			myPad = pad1;
+		else if (current_user === gameSettings.namePlayer2)
+			myPad = pad2;
+		myPad.requestUp = pressW || pressUp;
+		myPad.requestDown = pressS || pressDown;
+		pongSocket.send(JSON.stringify({
+			'type': 'send_pad_state',
+			'pad_name': myPad.playerName,
+			'pos_x': myPad.posX,
+			'pos_y': myPad.posY,
+			'request_up': myPad.requestUp,
+			'request_down': myPad.requestDown
+		}));
 	}
-	else if (pad2.playerType === "cpu")
-		pad2.decideMovement();
+}
+
+function updateRemotePad(data)
+{
+	//console.log(data);
+	if (data.pad_name === current_user)
+		return;
+	let otherPad;
+	if (data.pad_name === pad1.playerName)
+		otherPad = pad1;
+	else if (data.pad_name === pad2.playerName)
+		otherPad = pad2;
+	otherPad.posX = data.pos_x;
+	otherPad.posY = data.pos_y;
+	otherPad.requestUp = data.request_up;
+	otherPad.requestDown = data.request_down;
+}
+
+function updateRemoteBall(data)
+{
+	//console.log(data);
+	if (data.pad_name === current_user)
+		return;
+	ball.posX = data.pos_x;
+	ball.posY = data.pos_y;
+	ball.moveDirX = data.move_dir_x;
+	ball.moveDirY = data.move_dir_y;
+	ball.moveSpeed = data.move_speed;
+}
+
+function updateRemoteScore(data)
+{
+	console.log("updateRemoteScore", data);
+	if (data.scorer !== current_user)
+		return;
+	let otherPad;
+	if (data.scorer === pad1.playerName)
+		otherPad = pad1;
+	else if (data.scorer === pad2.playerName)
+		otherPad = pad2;
+	score(otherPad);
 }
 
 function updateCountdown()
@@ -657,7 +770,6 @@ function gameUpdate()
 
 function gameLoop()
 {
-	console.log("gameLoop");
 	if (!gameOngoing)
 		return;
 	timePrevious = timeCurrent;
@@ -728,7 +840,6 @@ var ball;
 
 function startGameWithSettings(settings)
 {
-	console.log("Starting game with settings:");
 	gameSettings = settings;
 
 	initialSpeed = gameSettings.initialSpeed;
@@ -750,8 +861,6 @@ function startGameWithSettings(settings)
 	listMovables.push(pad1);
 	listMovables.push(pad2);
 	listMovables.push(ball);
-	console.log("ballllllllllllllll initializeJS", ball);
-	console.log("listMovables initializeJS", listMovables[2]);
 
 	pad1.playerType = gameSettings.typePlayer1;
 	pad2.playerType = gameSettings.typePlayer2;
@@ -767,14 +876,12 @@ function initializeJS() {
 	// wait for both players to be ready
 	// flood the room with ready messages until the other player is also ready
 
-	// decide on which side to play on, and the initial direction of the ball
+	// figure out whih side you play on, and the initial direction of the ball
 
 	// then start the game
 
 	// the players will periodically send the position and move direction of their pads to each other
 	// the ball position and move direction will be updated by by whichever player will catch it next
-
-	console.log("Initializing pong game");
 
 	canvasContainer = document.getElementById("canvasContainer");
 	canvasElement = document.getElementById("gameCanvas");
@@ -863,7 +970,6 @@ function initializeJS() {
 
 	window.addEventListener("resize", function(event)
 	{
-		console.log("resize");
 		canvasElement.width = canvasContainer.clientWidth;
 		canvasElement.height = canvasContainer.clientHeight;
 		scaleFactor = canvasContainer.clientWidth / 1920;
@@ -876,9 +982,9 @@ function initializeJS() {
 
 	document.addEventListener('keydown', function(event)
 	{
-		if (event.key === "w")
+		if (event.key === "w" || event.key === "W")
 			pressW = true;
-		else if (event.key === "s")
+		else if (event.key === "s" || event.key === "S")
 			pressS = true;
 		else if (event.key === "ArrowUp")
 			pressUp = true;
@@ -905,8 +1011,7 @@ function initializeJS() {
 	ballRadius = 35;
 	backgroundColor = "#f7ffbd";
 
-	// objects
-	console.log("Creating objects");
+	// // objects
 	
 	// // lists
 	// listDrawables = [];
@@ -920,8 +1025,6 @@ function initializeJS() {
 	// listMovables.push(pad1);
 	// listMovables.push(pad2);
 	// listMovables.push(ball);
-	// console.log("ballllllllllllllll initializeJS", ball);
-	// console.log("listMovables initializeJS", listMovables[2]);
 
 	//startGameWithSettings(getDefaultSettings());
 	pongSocket.send(JSON.stringify({

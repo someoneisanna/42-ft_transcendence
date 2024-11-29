@@ -11,7 +11,7 @@ function showCookieConsent() {
 }
 
 function loadScript(url) {
-	console.debug('Loading script:', url);
+	// console.debug('Loading script:', url);
 	const script = document.createElement('script');
 	script.src = url;
 	// if (url === '/static/js/pong/pong_game.js')
