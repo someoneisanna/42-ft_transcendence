@@ -72,6 +72,9 @@ def pong_game(request):
 def pong_matchmaking(request):
 	return render(request, 'pong/pong_matchmaking.html')
 
+def pong_localTournament(request):
+	return render(request, 'pong/pong_localTournament.html', {'name': request.user.username, 'profile_pic': request.user.profile_pic.url})
+
 # HELPER FUNCTIONS -----------------------------------------------------------------------------------------------
 
 def generate_2fa_secret_key(user):

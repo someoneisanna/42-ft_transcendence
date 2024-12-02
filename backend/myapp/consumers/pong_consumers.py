@@ -25,7 +25,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 					self.pong_game_room,
 					{
 						'type': 'send_game_notification',
-						'action': 'End game - User left',
+						'action': 'User left',
 						'room_name': self.pong_game_room,
 						'player1': user.username
 					}
@@ -132,7 +132,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 					self.pong_game_room,
 					{
 						'type': 'send_game_notification',
-						'action': 'End game - User left',
+						'action': 'User left',
 						'room_name': self.pong_game_room,
 						'player1': data['username']
 					}

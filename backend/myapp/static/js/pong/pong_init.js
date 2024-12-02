@@ -1,398 +1,450 @@
-// export class GameSettings
-// {
-// 	constructor()
-// 	{
-// 		this.initialSpeed = 0.0;
-// 		this.speedIncrease = 0;
-// 		this.targetScore = 0;
-// 		this.typePlayer1 = "";
-// 		this.typePlayer2 = "";
-// 		this.namePlayer1 = "";
-// 		this.namePlayer2 = "";
-// 		this.modifiers = false;
-// 		this.modifierCooldown = 0;
-// 	}
-// }
+class GameSettings
+{
+	constructor()
+	{
+		this.gameType = "";
+		this.initialSpeed = 0.0;
+		this.speedIncrease = 0;
+		this.targetScore = 0;
+		this.typePlayer1 = "";
+		this.typePlayer2 = "";
+		this.namePlayer1 = "";
+		this.namePlayer2 = "";
+		this.modifiers = false;
+		this.modifierCooldown = 0;
+	}
+}
 
-// export class Pad
-// {
-// 	constructor(x, y, color, width, height, playerType)
-// 	{
-// 		this.playerName = "";
-// 		this.score = 0;
+class Pad
+{
+	constructor(x, y, color, width, height, playerType)
+	{
+		this.playerName = "";
+		this.score = 0;
 
-// 		this.playerType = playerType;
-// 		this.cpuBlindnessCooldown = 0;
-// 		this.cpuPerceivedBallPosX = 0;
-// 		this.cpuPerceivedBallPosY = 0;
-// 		this.cpuPerceivedBallMoveDirX = 1;
-// 		this.cpuPerceivedBallMoveDirY = 0;
-// 		this.cpuPredictedBallPosY = 0;
+		this.playerType = playerType;
+		this.cpuBlindnessCooldown = 0;
+		this.cpuPerceivedBallPosX = 0;
+		this.cpuPerceivedBallPosY = 0;
+		this.cpuPerceivedBallMoveDirX = 1;
+		this.cpuPerceivedBallMoveDirY = 0;
+		this.cpuPredictedBallPosY = 0;
 
-// 		this.posX = x;
-// 		this.posY = y;
+		this.posX = x;
+		this.posY = y;
 
-// 		this.color = color;
-// 		this.width = width;
-// 		this.height = height;
+		this.color = color;
+		this.width = width;
+		this.height = height;
 
-// 		this.maxSpeed = 20;
-// 		this.acceleration = 3;
-// 		this.currentSpeed = 0;
-// 		this.targetSpeed = 0;
+		this.maxSpeed = 20;
+		this.acceleration = 3;
+		this.currentSpeed = 0;
+		this.targetSpeed = 0;
 
-// 		this.requestUp = false;
-// 		this.requestDown = false;
+		this.requestUp = false;
+		this.requestDown = false;
 
-// 		this.modifierList = [];
-// 	}
+		this.modifierList = [];
+	}
 
-// 	getEffectiveHeight()
-// 	{
-// 		var effectiveHeight = this.height;
+	getEffectiveHeight()
+	{
+		var effectiveHeight = this.height;
 
-// 		this.modifierList.forEach(mod => {
-// 			if (mod.type === "height")
-// 				effectiveHeight += this.height * mod.strength;
-// 		});
-// 		return effectiveHeight;
-// 	}
+		this.modifierList.forEach(mod => {
+			if (mod.type === "height")
+				effectiveHeight += this.height * mod.strength;
+		});
+		return effectiveHeight;
+	}
 
-// 	getEffectiveMaxSpeed()
-// 	{
-// 		var effectiveMaxSpeed = this.maxSpeed;
+	getEffectiveMaxSpeed()
+	{
+		var effectiveMaxSpeed = this.maxSpeed;
 
-// 		this.modifierList.forEach(mod => {
-// 			if (mod.type === "speed")
-// 				effectiveMaxSpeed += this.maxSpeed * mod.strength;
-// 		});
-// 		return effectiveMaxSpeed;
-// 	}
+		this.modifierList.forEach(mod => {
+			if (mod.type === "speed")
+				effectiveMaxSpeed += this.maxSpeed * mod.strength;
+		});
+		return effectiveMaxSpeed;
+	}
 
-// 	updateModifiers()
-// 	{
-// 		for (let i = 0; i < this.modifierList.length; i++)
-// 		{
-// 			this.modifierList[i].duration -= (timeCurrent - timePrevious) / 1000;
-// 			if (this.modifierList[i].duration <= 0)
-// 				this.modifierList.splice(i, 1);
-// 		}
-// 	}
+	updateModifiers()
+	{
+		for (let i = 0; i < this.modifierList.length; i++)
+		{
+			this.modifierList[i].duration -= (timeCurrent - timePrevious) / 1000;
+			if (this.modifierList[i].duration <= 0)
+				this.modifierList.splice(i, 1);
+		}
+	}
 
-// 	draw()
-// 	{
-// 		ctx.fillStyle = this.color;
-// 		ctx.fillRect(this.posX * scaleFactor, (this.posY - this.getEffectiveHeight() / 2) * scaleFactor, this.width * scaleFactor, this.getEffectiveHeight() * scaleFactor);
-// 	}
+	draw()
+	{
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.posX * scaleFactor, (this.posY - this.getEffectiveHeight() / 2) * scaleFactor, this.width * scaleFactor, this.getEffectiveHeight() * scaleFactor);
+	}
 
-// 	move()
-// 	{
-// 		if (countdown >= 1)
-// 			return;
+	move()
+	{
+		if (countdown >= 1)
+			return;
 
-// 		this.targetSpeed = 0;
-// 		if (this.requestUp)
-// 			this.targetSpeed = -this.getEffectiveMaxSpeed();
-// 		if (this.requestDown)
-// 			this.targetSpeed = this.getEffectiveMaxSpeed();
+		this.targetSpeed = 0;
+		if (this.requestUp)
+			this.targetSpeed = -this.getEffectiveMaxSpeed();
+		if (this.requestDown)
+			this.targetSpeed = this.getEffectiveMaxSpeed();
+		
+		if (this.currentSpeed > 0 && this.requestUp || this.currentSpeed < 0 && this.requestDown)	// have more acceleration if changing directions
+			this.currentSpeed = MoveTowards(this.currentSpeed, this.targetSpeed, this.acceleration * 2);
+		else
+			this.currentSpeed = MoveTowards(this.currentSpeed, this.targetSpeed, this.acceleration);
+		this.posY += this.currentSpeed;
 
-// 		if (this.currentSpeed > 0 && this.requestUp || this.currentSpeed < 0 && this.requestDown)	// have more acceleration if changing directions
-// 			this.currentSpeed = MoveTowards(this.currentSpeed, this.targetSpeed, this.acceleration * 2);
-// 		else
-// 			this.currentSpeed = MoveTowards(this.currentSpeed, this.targetSpeed, this.acceleration);
-// 		this.posY += this.currentSpeed;
+		if (this.posY - this.getEffectiveHeight() / 2 < 0)
+		{
+			this.posY = this.getEffectiveHeight() / 2;
+			this.currentSpeed = 0;
+		}
+		else if (this.posY + this.getEffectiveHeight() / 2 > fieldHeight)
+		{
+			this.posY = fieldHeight - this.getEffectiveHeight() / 2;
+			this.currentSpeed = 0;
+		}
+	}
 
-// 		if (this.posY - this.getEffectiveHeight() / 2 < 0)
-// 		{
-// 			this.posY = this.getEffectiveHeight() / 2;
-// 			this.currentSpeed = 0;
-// 		}
-// 		else if (this.posY + this.getEffectiveHeight() / 2 > fieldHeight)
-// 		{
-// 			this.posY = fieldHeight - this.getEffectiveHeight() / 2;
-// 			this.currentSpeed = 0;
-// 		}
-// 	}
+	decideMovement()
+	{
+		var side = (this.posX < fieldWidth / 2) ? "left" : "right";
+		var padCenterPos = this.posY;
+		
+		// the ai can only see the ball once every second
+		if (this.cpuBlindnessCooldown > 0)
+			this.cpuBlindnessCooldown -= (timeCurrent - timePrevious) / 1000;
+		else
+		{
+			this.cpuBlindnessCooldown = 1;
+			this.cpuPerceivedBallPosX = ball.posX;
+			this.cpuPerceivedBallPosY = ball.posY;
+			this.cpuPerceivedBallMoveDirX = ball.moveDirX;
+		}
+		// if the ball is moving away
+		if ((side === "left" && this.cpuPerceivedBallMoveDirX > 0) || (side === "right" && this.cpuPerceivedBallMoveDirX < 0))
+		{
+			if (Math.abs(padCenterPos - fieldHeight / 2) < this.getEffectiveHeight() / 2)
+				return;
+			// move to middle of the field
+			if (padCenterPos < fieldHeight / 2)
+				this.requestDown = true;
+			else if (padCenterPos > fieldHeight / 2)
+				this.requestUp = true;
+		}
+		else // if the ball is moving towards the player
+		{
+			// Calculate the time it will take for the ball to reach the AI's x-position
+			var distanceToAi = Math.abs(this.posX - ball.posX);
+			var timeToReachAi = distanceToAi / Math.abs(ball.moveDirX);
+		
+			// Predict the y-position based on current y-velocity
+			this.cpuPredictedBallPosY = ball.posY + ball.moveDirY * timeToReachAi;
+		
+			// Handle bounces off the top and bottom boundaries
+			while (this.cpuPredictedBallPosY < 0 || this.cpuPredictedBallPosY > fieldHeight)
+			{
+				if (this.cpuPredictedBallPosY < 0)
+					this.cpuPredictedBallPosY = -this.cpuPredictedBallPosY;
+				else if (this.cpuPredictedBallPosY > fieldHeight)
+					this.cpuPredictedBallPosY = 2 * fieldHeight - this.cpuPredictedBallPosY;
+			}
 
-// 	decideMovement()
-// 	{
-// 		var side = (this.posX < fieldWidth / 2) ? "left" : "right";
-// 		var padCenterPos = this.posY;
+			// Try to align paddle center with the predicted ball position
+			if (Math.abs(padCenterPos - this.cpuPredictedBallPosY) < 100)
+				return;
+			
+			if (padCenterPos < this.cpuPredictedBallPosY)
+				this.requestDown = true;
+			else if (padCenterPos > this.cpuPredictedBallPosY)
+				this.requestUp = true;
+		}
+	}
+}
 
-// 		// the ai can only see the ball once every second
-// 		if (this.cpuBlindnessCooldown > 0)
-// 			this.cpuBlindnessCooldown -= (timeCurrent - timePrevious) / 1000;
-// 		else
-// 		{
-// 			this.cpuBlindnessCooldown = 1;
-// 			this.cpuPerceivedBallPosX = ball.posX;
-// 			this.cpuPerceivedBallPosY = ball.posY;
-// 			this.cpuPerceivedBallMoveDirX = ball.moveDirX;
-// 		}
-// 		// if the ball is moving away
-// 		if ((side === "left" && this.cpuPerceivedBallMoveDirX > 0) || (side === "right" && this.cpuPerceivedBallMoveDirX < 0))
-// 		{
-// 			if (Math.abs(padCenterPos - fieldHeight / 2) < this.getEffectiveHeight() / 2)
-// 				return;
-// 			// move to middle of the field
-// 			if (padCenterPos < fieldHeight / 2)
-// 				this.requestDown = true;
-// 			else if (padCenterPos > fieldHeight / 2)
-// 				this.requestUp = true;
-// 		}
-// 		else // if the ball is moving towards the player
-// 		{
-// 			// Calculate the time it will take for the ball to reach the AI's x-position
-// 			var distanceToAi = Math.abs(this.posX - ball.posX);
-// 			var timeToReachAi = distanceToAi / Math.abs(ball.moveDirX);
+class Ball
+{
+	constructor(x, y, color, radius)
+	{
+		this.posX = x;
+		this.posY = y;
+		this.color = color;
+		this.radius = radius;
+		this.moveSpeed = 0.0;
+		this.moveDirX = 0.0;
+		this.moveDirY = 0.0;
+	}
 
-// 			// Predict the y-position based on current y-velocity
-// 			this.cpuPredictedBallPosY = ball.posY + ball.moveDirY * timeToReachAi;
+	draw()
+	{
+		if (countdown >= 1)
+			return;
+		
+		ctx.beginPath();
+		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, this.radius * scaleFactor, 0, Math.PI * 2, false);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+		ctx.closePath();
+	}
 
-// 			// Handle bounces off the top and bottom boundaries
-// 			while (this.cpuPredictedBallPosY < 0 || this.cpuPredictedBallPosY > fieldHeight)
-// 			{
-// 				if (this.cpuPredictedBallPosY < 0)
-// 					this.cpuPredictedBallPosY = -this.cpuPredictedBallPosY;
-// 				else if (this.cpuPredictedBallPosY > fieldHeight)
-// 					this.cpuPredictedBallPosY = 2 * fieldHeight - this.cpuPredictedBallPosY;
-// 			}
+	move()
+	{
+		if (countdown >= 1)
+			return;
 
-// 			// Try to align paddle center with the predicted ball position
-// 			if (Math.abs(padCenterPos - this.cpuPredictedBallPosY) < 100)
-// 				return;
+		this.posX += this.moveDirX * this.moveSpeed;
+		this.posY += this.moveDirY * this.moveSpeed;
+		new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius / 2, 0.3);
 
-// 			if (padCenterPos < this.cpuPredictedBallPosY)
-// 				this.requestDown = true;
-// 			else if (padCenterPos > this.cpuPredictedBallPosY)
-// 				this.requestUp = true;
-// 		}
-// 	}
-// }
+		// check collision with paddles
+		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY - pad1.getEffectiveHeight() / 2, pad1.posX + pad1.width, pad1.posY + pad1.getEffectiveHeight() / 2))
+		{
+			if (gameSettings.gameType === "remote" && current_user !== pad1.playerName)
+				return;
 
-// export class Ball
-// {
-// 	constructor(x, y, color, radius)
-// 	{
-// 		this.posX = x;
-// 		this.posY = y;
-// 		this.color = color;
-// 		this.radius = radius;
-// 		this.moveSpeed = 0.0;
-// 		this.moveDirX = 0.0;
-// 		this.moveDirY = 0.0;
-// 	}
+			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
+			var relativeImpactPoint = (this.posY - (pad1.posY - pad1.getEffectiveHeight() / 2)) / pad1.getEffectiveHeight();
+			var newDirX, newDirY;
 
-// 	draw()
-// 	{
-// 		if (countdown >= 1)
-// 			return;
+			if (relativeImpactPoint <= 0.5)
+			{
+				const t = relativeImpactPoint / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
+				newDirX = (1 - t) * 0.5 + t * 1;      // Interpolates X from 0.5 to 1
+				newDirY = (1 - t) * -0.5 + t * 0;     // Interpolates Y from -0.5 to 0
+			}
+			else
+			{
+				const t = (relativeImpactPoint - 0.5) / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
+				newDirX = (1 - t) * 1 + t * 0.5;      // Interpolates X from 1 to 0.5
+				newDirY = (1 - t) * 0 + t * 0.5;      // Interpolates Y from 0 to 0.5
+			}
 
-// 		ctx.beginPath();
-// 		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, this.radius * scaleFactor, 0, Math.PI * 2, false);
-// 		ctx.fillStyle = this.color;
-// 		ctx.fill();
-// 		ctx.closePath();
-// 	}
+			// Normalize the resulting direction vector
+			const magnitude = Math.sqrt(newDirX ** 2 + newDirY ** 2);
+			
+			this.moveDirX = newDirX;
+			this.moveDirY = newDirY;
+			this.moveSpeed += gameSettings.speedIncrease;
 
-// 	move()
-// 	{
-// 		if (countdown >= 1)
-// 			return;
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'send_ball_state',
+					'pos_x': this.posX,
+					'pos_y': this.posY,
+					'move_dir_x': this.moveDirX,
+					'move_dir_y': this.moveDirY,
+					'move_speed': this.moveSpeed
+				}));
+			}
 
-// 		this.posX += this.moveDirX * this.moveSpeed;
-// 		this.posY += this.moveDirY * this.moveSpeed;
-// 		new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius / 2, 0.3);
+			return;
+		}
+		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY - pad2.getEffectiveHeight() / 2, pad2.posX + pad2.width, pad2.posY + pad2.getEffectiveHeight() / 2))
+		{
+			if (gameSettings.gameType === "remote" && current_user !== pad2.playerName)
+				return;
 
-// 		// check collision with paddles
-// 		if (this.moveDirX < 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad1.posX, pad1.posY - pad1.getEffectiveHeight() / 2, pad1.posX + pad1.width, pad1.posY + pad1.getEffectiveHeight() / 2))
-// 		{
-// 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-// 			var relativeImpactPoint = (this.posY - (pad1.posY - pad1.getEffectiveHeight() / 2)) / pad1.getEffectiveHeight();
-// 			var newDirX, newDirY;
+			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
+			var relativeImpactPoint = (this.posY - (pad2.posY - pad2.getEffectiveHeight() / 2)) / pad2.getEffectiveHeight();
+			var newDirX, newDirY;
 
-// 			if (relativeImpactPoint <= 0.5)
-// 			{
-// 				const t = relativeImpactPoint / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
-// 				newDirX = (1 - t) * 0.5 + t * 1;      // Interpolates X from 0.5 to 1
-// 				newDirY = (1 - t) * -0.5 + t * 0;     // Interpolates Y from -0.5 to 0
-// 			}
-// 			else
-// 			{
-// 				const t = (relativeImpactPoint - 0.5) / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
-// 				newDirX = (1 - t) * 1 + t * 0.5;      // Interpolates X from 1 to 0.5
-// 				newDirY = (1 - t) * 0 + t * 0.5;      // Interpolates Y from 0 to 0.5
-// 			}
+			if (relativeImpactPoint <= 0.5)
+			{
+				const t = relativeImpactPoint / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
+				newDirX = Interpolate(-0.5, -1, t);
+				newDirY = Interpolate(-0.5, 0, t);
+			}
+			else
+			{
+				const t = (relativeImpactPoint - 0.5) / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
+				newDirX = Interpolate(-1, -0.5, t);
+				newDirY = Interpolate(0, 0.5, t);
+			}
 
-// 			// Normalize the resulting direction vector
-// 			const magnitude = Math.sqrt(newDirX ** 2 + newDirY ** 2);
+			// Normalize the resulting direction vector
+			const magnitude = Math.sqrt(newDirX ** 2 + newDirY ** 2);
+			
+			this.moveDirX = newDirX;
+			this.moveDirY = newDirY;
+			this.moveSpeed += gameSettings.speedIncrease;
 
-// 			this.moveDirX = newDirX;
-// 			this.moveDirY = newDirY;
-// 			this.moveSpeed += gameSettings.speedIncrease;
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'send_ball_state',
+					'pos_x': this.posX,
+					'pos_y': this.posY,
+					'move_dir_x': this.moveDirX,
+					'move_dir_y': this.moveDirY,
+					'move_speed': this.moveSpeed
+				}));
+			}
 
-// 			return;
-// 		}
-// 		if (this.moveDirX > 0 && isCircleAABBOverlap(this.posX, this.posY, this.radius, pad2.posX, pad2.posY - pad2.getEffectiveHeight() / 2, pad2.posX + pad2.width, pad2.posY + pad2.getEffectiveHeight() / 2))
-// 		{
-// 			new CollisionEffect(this.posX, this.posY, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-// 			var relativeImpactPoint = (this.posY - (pad2.posY - pad2.getEffectiveHeight() / 2)) / pad2.getEffectiveHeight();
-// 			var newDirX, newDirY;
+			return;
+		}
 
-// 			if (relativeImpactPoint <= 0.5)
-// 			{
-// 				const t = relativeImpactPoint / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
-// 				newDirX = Interpolate(-0.5, -1, t);
-// 				newDirY = Interpolate(-0.5, 0, t);
-// 			}
-// 			else
-// 			{
-// 				const t = (relativeImpactPoint - 0.5) / 0.5; // Normalize relativeImpactPoint to range [0, 1] for this segment
-// 				newDirX = Interpolate(-1, -0.5, t);
-// 				newDirY = Interpolate(0, 0.5, t);
-// 			}
+		if (this.posX + this.radius >= fieldWidth)	// ball hits right wall
+		{
+			new CollisionEffect(fieldWidth, fieldHeight / 2, "#ffffff", 1, 0, this.radius, this.radius * 20, 1);
+			
+			if (gameSettings.gameType === "remote" && current_user === pad1.playerName)
+				return;
 
-// 			// Normalize the resulting direction vector
-// 			const magnitude = Math.sqrt(newDirX ** 2 + newDirY ** 2);
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'notify_score',
+					'scorer': pad1.playerName
+				}));
+			}
 
-// 			this.moveDirX = newDirX;
-// 			this.moveDirY = newDirY;
-// 			this.moveSpeed += gameSettings.speedIncrease;
+			score(pad1);
+		}
+		if (this.posX - this.radius <= 0)	// ball hits left wall
+		{
+			new CollisionEffect(0, fieldHeight / 2, "#ffffff", 1, 0, this.radius, this.radius * 20, 1);
+			
+			if (gameSettings.gameType === "remote" && current_user === pad2.playerName)
+				return;
+			
+			if (gameSettings.gameType === "remote")
+			{
+				pongSocket.send(JSON.stringify({
+					'type': 'notify_score',
+					'scorer': pad2.playerName
+				}));
+			}
 
-// 			return;
-// 		}
+			score(pad2);
+		}
 
-// 		if (this.posX + this.radius >= fieldWidth)	// ball hits right wall
-// 		{
-// 			new CollisionEffect(fieldWidth, fieldHeight / 2, "#ffffff", 1, 0, this.radius, this.radius * 20, 1);
-// 			// this.x -= (this.x + this.radius - fieldWidth);
-// 			// this.speedX *= -1;
-// 			score(pad1);
-// 		}
-// 		if (this.posX - this.radius <= 0)	// ball hits left wall
-// 		{
-// 			new CollisionEffect(0, fieldHeight / 2, "#ffffff", 1, 0, this.radius, this.radius * 20, 1);
-// 			// this.x -= (this.x - this.radius);
-// 			// this.speedX *= -1;
-// 			score(pad2);
-// 		}
-// 		if (this.posY + this.radius >= fieldHeight)	// ball hits top wall
-// 		{
-// 			new CollisionEffect(this.posX, this.posY + this.radius, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-// 			this.posY -= (this.posY + this.radius - fieldHeight);
-// 			this.moveDirY *= -1;
-// 		}
-// 		if (this.posY - this.radius <= 0)	// ball hits bottom wall
-// 		{
-// 			new CollisionEffect(this.posX, this.posY - this.radius, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
-// 			this.posY -= (this.posY - this.radius);
-// 			this.moveDirY *= -1;
-// 		}
-// 	}
-// }
+		if (this.posY + this.radius >= fieldHeight)	// ball hits top wall
+		{
+			new CollisionEffect(this.posX, this.posY + this.radius, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
+			this.posY -= (this.posY + this.radius - fieldHeight);
+			this.moveDirY *= -1;
+		}
+		if (this.posY - this.radius <= 0)	// ball hits bottom wall
+		{
+			new CollisionEffect(this.posX, this.posY - this.radius, "#ffffff", 1, 0, this.radius, this.radius + this.radius * (this.moveSpeed - 10) / 2, 0.4);
+			this.posY -= (this.posY - this.radius);
+			this.moveDirY *= -1;
+		}
+	}
+}
 
-// export class CollisionEffect
-// {
-// 	constructor(x, y, color, opacityStart, opacityEnd, radiusStart, radiusEnd, duration)
-// 	{
-// 		this.posX = x;
-// 		this.posY = y;
-// 		this.color = color;
-// 		this.opacityStart = opacityStart;
-// 		this.opacityEnd = opacityEnd;
-// 		this.radiusStart = radiusStart;
-// 		this.radiusEnd = radiusEnd;
-// 		this.duration = duration;
-// 		this.durationCurrent = 0;
+class CollisionEffect
+{
+	constructor(x, y, color, opacityStart, opacityEnd, radiusStart, radiusEnd, duration)
+	{
+		this.posX = x;
+		this.posY = y;
+		this.color = color;
+		this.opacityStart = opacityStart;
+		this.opacityEnd = opacityEnd;
+		this.radiusStart = radiusStart;
+		this.radiusEnd = radiusEnd;
+		this.duration = duration;
+		this.durationCurrent = 0;
 
-// 		listTemps.push(this);
-// 	}
+		listTemps.push(this);
+	}
 
-// 	draw()
-// 	{
-// 		if (countdown >= 1)
-// 			return;
+	draw()
+	{
+		if (countdown >= 1)
+			return;
 
-// 		const currentRadius = Interpolate(this.radiusStart, this.radiusEnd, this.durationCurrent / this.duration);
-// 		const currentOpacity = Interpolate(this.opacityStart, this.opacityEnd, this.durationCurrent / this.duration);
+		const currentRadius = Interpolate(this.radiusStart, this.radiusEnd, this.durationCurrent / this.duration);
+		const currentOpacity = Interpolate(this.opacityStart, this.opacityEnd, this.durationCurrent / this.duration);
 
-// 		ctx.globalAlpha = currentOpacity;
+		ctx.globalAlpha = currentOpacity;
 
-// 		ctx.beginPath();
-// 		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, currentRadius * scaleFactor, 0, Math.PI * 2, false);
-// 		ctx.fillStyle = this.color;
-// 		ctx.fill();
-// 		ctx.closePath();
-// 		ctx.globalAlpha = 1;
-// 	}
+		ctx.beginPath();
+		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, currentRadius * scaleFactor, 0, Math.PI * 2, false);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+		ctx.closePath();
+		ctx.globalAlpha = 1;
+	}
 
-// 	tickTime()
-// 	{
-// 		this.durationCurrent += (timeCurrent - timePrevious) / 1000;
-// 		if (this.durationCurrent > this.duration)
-// 		{
-// 			const index = listTemps.findIndex(obj => obj === this)
-// 			listTemps.splice(index, 1);
-// 		}
-// 	}
-// }
+	tickTime()
+	{
+		this.durationCurrent += (timeCurrent - timePrevious) / 1000;
+		if (this.durationCurrent > this.duration)
+		{
+			const index = listTemps.findIndex(obj => obj === this)
+			listTemps.splice(index, 1);
+		}
+	}
+}
 
-// export class Modifier
-// {
-// 	constructor(x, y, radius, type, strength, color, duration)
-// 	{
-// 		this.posX = x;
-// 		this.posY = y;
-// 		this.radius = radius;
-// 		this.type = type;
-// 		this.strength = strength;
-// 		this.color = color;
-// 		this.duration = duration;
-// 		this.durationCurrent = 0;
+class Modifier
+{
+	constructor(x, y, radius, type, strength, color, duration)
+	{
+		this.posX = x;
+		this.posY = y;
+		this.radius = radius;
+		this.type = type;
+		this.strength = strength;
+		this.color = color;
+		this.duration = duration;
+		this.durationCurrent = 0;
 
-// 		listMods.push(this);
-// 		listTemps.push(this);
-// 	}
+		listMods.push(this);
+		listTemps.push(this);
+	}
 
-// 	draw()
-// 	{
-// 		if (countdown >= 1)
-// 			return;
+	draw()
+	{
+		if (countdown >= 1)
+			return;
 
-// 		ctx.beginPath();
-// 		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, this.radius * scaleFactor, 0, Math.PI * 2, false);
-// 		ctx.fillStyle = this.color;
-// 		ctx.fill();
-// 		ctx.closePath();
-// 	}
+		ctx.beginPath();
+		ctx.arc(this.posX * scaleFactor, this.posY * scaleFactor, this.radius * scaleFactor, 0, Math.PI * 2, false);
+		ctx.fillStyle = this.color;
+		ctx.fill();
+		ctx.closePath();
+	}
 
-// 	tickTime()
-// 	{
-// 		this.durationCurrent += (timeCurrent - timePrevious) / 1000;
-// 		if (this.durationCurrent > this.duration)
-// 		{
-// 			let index = listMods.findIndex(obj => obj === this)
-// 			listMods.splice(index, 1);
+	tickTime()
+	{
+		this.durationCurrent += (timeCurrent - timePrevious) / 1000;
+		if (this.durationCurrent > this.duration)
+		{
+			let index = listMods.findIndex(obj => obj === this)
+			listMods.splice(index, 1);
 
-// 			index = listTemps.findIndex(obj => obj === this)
-// 			listTemps.splice(index, 1);
-// 		}
-// 	}
+			index = listTemps.findIndex(obj => obj === this)
+			listTemps.splice(index, 1);
+		}
+	}
 
-// 	checkCollision()
-// 	{
-// 		if (!isCircleCircleOverlap(this.posX, this.posY, this.radius, ball.posX, ball.posY, ball.radius))
-// 			return;
+	checkCollision()
+	{
+		if (!isCircleCircleOverlap(this.posX, this.posY, this.radius, ball.posX, ball.posY, ball.radius))
+			return;
 
-// 		let affectedPlayer = ball.moveDirX > 0 ? pad1 : pad2;
-// 		affectedPlayer.modifierList.push({
-// 			type: this.type,
-// 			strength: this.strength,
-// 			duration: this.duration
-// 		})
-// 		let index = listMods.findIndex(obj => obj === this)
-// 		listMods.splice(index, 1);
-// 		index = listTemps.findIndex(obj => obj === this)
-// 		listTemps.splice(index, 1);
-// 	}
-// }
+		let affectedPlayer = ball.moveDirX > 0 ? pad1 : pad2;
+		affectedPlayer.modifierList.push({
+			type: this.type,
+			strength: this.strength,
+			duration: this.duration
+		})
+		let index = listMods.findIndex(obj => obj === this)
+		listMods.splice(index, 1);
+		index = listTemps.findIndex(obj => obj === this)
+		listTemps.splice(index, 1);
+	}
+}

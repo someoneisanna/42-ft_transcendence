@@ -18,6 +18,7 @@ urlpatterns = [
 	path('dropdown_settings/', views.dropdown_settings, name='dropdown_settings'),			# HTML for settings page
 	path('dropdown_friends/', views.dropdown_friends, name='dropdown_friends'),				# HTML for friends page
 	path('pong_matchmaking/', views.pong_matchmaking, name='pong_matchmaking'),				# HTML for matchmaking
+	path('pong_localTournament/', views.pong_localTournament, name='pong_localTournament'),	# HTML for local tournament
 	
 	path('api/login/', views.login, name='login'),																				# API for logging in
 	path('api/register/', views.register, name='register'),																		# API for registering

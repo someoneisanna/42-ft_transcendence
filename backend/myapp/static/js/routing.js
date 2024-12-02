@@ -93,7 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
 					else if (url === '/pong_game/')
 						loadScript('/static/js/pong/pong_game.js');
 					else if (url === '/pong_matchmaking/')
+					{
+						pongIsRemote = true;
 						loadScript('/static/js/pong/pong_matchmaking.js');
+					}
 				}
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {

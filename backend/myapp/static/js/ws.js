@@ -28,8 +28,8 @@ chatSocket.onmessage = function (e) {
 	const message = data.message;
 	const timestamp = formatDate(data.sent_at);
 
-	if (type === 'online_users')
-		console.debug('WS: Received message:', data);
+	// if (type === 'online_users')
+	// 	console.debug('WS: Received message:', data);
 
 	if (type === 'authenticated')
 		console.info('WS: ' + username + ' is now connected to the chat ws.');
@@ -99,15 +99,24 @@ pongSocket.onmessage = function (e) {
 
 	if (type == 'receive_notification')
 	{
+		console.debug('WS: receive_notification:', data);
 		if (action == 'Create a new game') {
 			startPongRemoteGame(data);
 		}
 		else if (action == 'User is ready')
 		{
 			users_ready++;
+			console.debug('userisready', users_ready);
 			if (users_ready == 2)
-				// alert('Both users are ready!');
+			{
+				console.debug('gggggggggggggggggggggggggggggggggggggg');
 				startGameWithSettings(getRemoteSettings(data.player1, data.player2));
+				users_ready = 0;
+			}
+		}
+		else if (action == 'User left')
+		{
+			remoteOpponentLeft();
 		}
 	}
 	if (type == 'receive_pad_state')
