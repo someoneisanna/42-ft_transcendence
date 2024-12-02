@@ -2,25 +2,44 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from myapp.models import Message, User
 from asgiref.sync import sync_to_async
+import redis
+
+redis_client = redis.asyncio.StrictRedis(host='redis', port=6379, db=0, decode_responses=True)
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
+	online_users_list = []
+
 	# Triggered when a new websocket connection is established. 
 	async def connect(self):
-		user = self.scope.get('user')
-		if user is not None:
+		self.user = self.scope.get('user')
+		if self.user is not None:
 			await self.accept()
+			
 			await self.send(text_data=json.dumps({
 				"type": "authenticated",
-				"username": user.username,
+				"username": self.user.username,
 			}))
-			self.user_group_name = f"wsUser_{user.username}"
+			
+			self.user_group_name = f"wsUser_{self.user.username}"
 			await self.channel_layer.group_add(self.user_group_name, self.channel_name)
+
+			await redis_client.sadd("online_users", self.user.username)
+			online_users = await redis_client.smembers("online_users")
+			online_users_list = list(online_users)
+
+			await self.send(text_data=json.dumps({
+				"type": "online_users",
+				"username": self.user.username,
+				"online_users": online_users_list
+			}))
+			
 		else:
 			await self.close()
 
 	# Triggered when a websocket connection is closed. Here we remove the user from any chat room they joined.
 	async def disconnect(self, close_code):
+		await redis_client.srem("online_users", self.user.username)
 		if hasattr(self, 'room_group_name'):
 			await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 		if hasattr(self, 'user_group_name'):
@@ -133,7 +152,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			'new_relationship': event['new_relationship']
 		}
 		))
-
 
 # Timeline Summary
 

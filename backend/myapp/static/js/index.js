@@ -105,7 +105,7 @@ function buildChatFriendsList() {
 				}));
 
 				var newElement = document.createElement('li');
-				newElement.className = 'chatFriendListContent p-2 border-bottom';
+				newElement.className = `chatFriendListContent friendInChat_${roomName} p-2 border-bottom`;
 				// newElement.innerHTML = `
 				// 		<a class="chatFriendListContent_a d-flex justify-content-between" style="cursor: pointer;">
 				// 			<div class="d-flex flex-row">
