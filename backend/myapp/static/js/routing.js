@@ -97,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
 						pongIsRemote = true;
 						loadScript('/static/js/pong/pong_matchmaking.js');
 					}
+					else if (url === '/pong_localTournament/')
+						loadScript('/static/js/pong/pong_localTournament.js');
 				}
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
