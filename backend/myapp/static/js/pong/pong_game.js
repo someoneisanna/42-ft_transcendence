@@ -9,9 +9,18 @@ function getDefaultSettings()
 	settings.typePlayer2 = "cpu";
 	settings.namePlayer1 = current_user;
 	settings.namePlayer2 = "Guest";
+	settings.playerNames = [];
 	settings.modifiers = true;
 	settings.modifierCooldown = 3;
 	return settings;
+}
+
+function getLocalTournamentSettings()
+{
+	let settings = getDefaultSettings();
+	settings.gameType = "localTournament";
+	settings.playerNames = tournamentPlayerNames;
+
 }
 
 function getRemoteSettings(player1name, player2name)
@@ -322,6 +331,8 @@ function gameLoop()
 }
 
 var pongIsRemote;
+var pongIsTournament;
+var tournamentPlayerNames;
 var pongRoomName;
 
 var canvasContainer;
@@ -367,7 +378,6 @@ var pressUp;
 var pressDown;
 
 
-
 // values
 var padHeight;
 var padWidth;
@@ -411,6 +421,8 @@ function startGameWithSettings(settings)
 	pad2.playerType = gameSettings.typePlayer2;
 	pad1.playerName = gameSettings.namePlayer1;
 	pad2.playerName = gameSettings.namePlayer2;
+
+	
 
 	init();
 	gameLoop();
@@ -551,6 +563,8 @@ function initializeJS() {
 			'username': current_user,
 		}));
 	}
+	else if (pongIsTournament && !pongIsRemote)
+		startGameWithSettings(getLocalTournamentSettings());
 	else
 		startGameWithSettings(getDefaultSettings());
 	pongIsRemote = false;

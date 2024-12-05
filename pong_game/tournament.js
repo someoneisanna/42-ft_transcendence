@@ -120,15 +120,6 @@ class Node
 		html += `</div>`
 		return html;
 	}
-
-	printTree(depth = 0)
-	{
-		console.log('\t'.repeat(depth * 2) + (this.playerName || "Match"));
-		if (this.branchLeft)
-			this.branchLeft.printTree(depth + 1);
-		if (this.branchRight)
-			this.branchRight.printTree(depth + 1);
-	}
 }
 
 

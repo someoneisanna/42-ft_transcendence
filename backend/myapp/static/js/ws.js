@@ -109,10 +109,8 @@ pongSocket.onmessage = function (e) {
 		else if (action == 'User is ready')
 		{
 			users_ready++;
-			console.debug('userisready', users_ready);
 			if (users_ready == 2)
 			{
-				console.debug('gggggggggggggggggggggggggggggggggggggg');
 				startGameWithSettings(getRemoteSettings(data.player1, data.player2));
 				users_ready = 0;
 			}
