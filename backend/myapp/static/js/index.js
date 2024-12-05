@@ -104,8 +104,14 @@ function buildChatFriendsList() {
 					'username': current_user
 				}));
 
+				chatSocket.send(JSON.stringify({
+					'type': 'get_online_status',
+					'room_name': roomName,
+					'username': item.username
+				}));
+
 				var newElement = document.createElement('li');
-				newElement.className = `chatFriendListContent friendInChat_${roomName} p-2 border-bottom`;
+				newElement.className = 'chatFriendListContent p-2 border-bottom';
 				// newElement.innerHTML = `
 				// 		<a class="chatFriendListContent_a d-flex justify-content-between" style="cursor: pointer;">
 				// 			<div class="d-flex flex-row">
@@ -120,7 +126,7 @@ function buildChatFriendsList() {
 				// 					<p id="timeLastMsg_${roomName}" class="smallTime mb-1">-</p>
 				// 				</div>
 				// 				<div class="p-1 d-flex justify-content-end">
-				// 					<span class="online-indicator"></span>
+				// 					<span class="onlineStatus_${item.username} online-indicator"></span>
 				// 				</div>
 				// 			</div>
 				// 		</a>
@@ -130,7 +136,7 @@ function buildChatFriendsList() {
 						<div class="d-flex flex-row position-relative">
 							<div class="position-relative">
 								<img src="${item.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
-								<span class="online-indicator"></span>
+								<span id="onlineStatus_${item.username}" class="online-indicator"></span>
 							</div>
 							<div class="pt-1 ms-3">
 								<p class="fw-bold mb-0">${item.username}</p>

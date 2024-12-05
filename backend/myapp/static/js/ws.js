@@ -33,7 +33,7 @@ chatSocket.onmessage = function (e) {
 
 	if (type === 'authenticated')
 		console.info('WS: ' + username + ' is now connected to the chat ws.');
-	
+
 	if (type === 'receive_notification') {
 		// console.debug('WS: receive_notification:', data);
 		if (notification === 'friendship_changed')
@@ -73,6 +73,9 @@ chatSocket.onmessage = function (e) {
 			document.getElementById(`timeLastMsg_${room_name}`).innerHTML = formatDate(data.sent_at);
 		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
 	}
+
+	if (type === 'online_status')
+		document.getElementById(`onlineStatus_${username}`).style.backgroundColor = '#28a745';
 };
 
 pongSocket.onopen = function (e){

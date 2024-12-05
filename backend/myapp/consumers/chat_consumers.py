@@ -8,11 +8,10 @@ redis_client = redis.asyncio.StrictRedis(host='redis', port=6379, db=0, decode_r
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
-	online_users_list = []
-
 	# Triggered when a new websocket connection is established. 
 	async def connect(self):
 		self.user = self.scope.get('user')
+		self.online_users_list = []
 		if self.user is not None:
 			await self.accept()
 			
@@ -26,13 +25,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 			await redis_client.sadd("online_users", self.user.username)
 			online_users = await redis_client.smembers("online_users")
-			online_users_list = list(online_users)
+			self.online_users_list = list(online_users)
 
-			await self.send(text_data=json.dumps({
-				"type": "online_users",
-				"username": self.user.username,
-				"online_users": online_users_list
-			}))
+			# await self.send(text_data=json.dumps({
+			# 	"type": "online_users",
+			# 	"username": self.user.username,
+			# 	"online_users": self.online_users_list
+			# }))
 			
 		else:
 			await self.close()
@@ -73,6 +72,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'message': ''
 				})
 			)
+				
+		elif type == 'get_online_status':
+			target_user = data['username']
+			if target_user in self.online_users_list:
+				await self.send(text_data=json.dumps({
+					'type': 'online_status',
+					'username': target_user,
+					'online': True
+				}))
 
 		elif type == 'get_stored_messages':
 			messages = await self.get_messages(room_name)

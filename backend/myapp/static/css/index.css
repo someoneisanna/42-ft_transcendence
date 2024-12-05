@@ -163,7 +163,7 @@
     position: absolute;
     width: 14px;
     height: 14px;
-    background-color: #28a745; /* Bootstrap green color */
+    background-color: rgb(110, 110, 110); /* #28a745;  Bootstrap green color */
     border: 0.5px solid white; /* Matches the background of the avatar */
     border-radius: 50%;
     bottom: 15px;
