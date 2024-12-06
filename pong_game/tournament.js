@@ -99,27 +99,6 @@ class Node
 			roundSize /= 2;
 		}
 	}
-
-	printTreeHTML()
-	{
-		let list = this.reverseLevelOrderTraversalSort(root);
-		let html = ``
-		var roundSize = nPlayers;
-		while (list.length > 0)
-		{
-			html += `<div class="tournamentRound">`
-			for (let i = 0; i < roundSize; i++)
-			{
-				html += `<div class="tournamentNode" onclick="()=>{}">`
-				html += `${list.pop().playerName || 'TBD'}`
-				html += `</div>`
-			}
-			html += `</div>`
-			roundSize /= 2;
-		}
-		html += `</div>`
-		return html;
-	}
 }
 
 
@@ -152,7 +131,5 @@ while (currentNodes.length > 1)
 const root = currentNodes[0];
 
 // console.log(root);
-// root.printTree();
 
-// document.getElementById("tournamentMap").innerHTML = root.printTreeHTML();
 root.generateTreeHTML();

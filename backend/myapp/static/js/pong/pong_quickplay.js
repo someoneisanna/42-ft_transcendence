@@ -7,6 +7,7 @@ function loadRemotePong(){
 }
 
 function loadLocalPongAI(){
+	pongIsCpu = true;
 	loadPage('/pong_game/', true);
 }
 

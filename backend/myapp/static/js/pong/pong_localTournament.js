@@ -90,7 +90,8 @@ function pongTournamentRemoveParticipant(button) {
 function pongTournamentStart() {
 	let participantNames = Array.from(document.getElementsByClassName('participantName')).map(input => input.value.trim());
 	tournamentPlayerNames = shuffleArray(participantNames);
-	loadPage('/pong/pong_game/', true);
+	pongIsTournament = true;
+	loadPage('/pong_game/', true);
 }
 
 function initializeJS() {

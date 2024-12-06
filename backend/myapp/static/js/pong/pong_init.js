@@ -367,6 +367,8 @@ class CollisionEffect
 			return;
 
 		const currentRadius = Interpolate(this.radiusStart, this.radiusEnd, this.durationCurrent / this.duration);
+		if (currentRadius < 0)
+			currentRadius
 		const currentOpacity = Interpolate(this.opacityStart, this.opacityEnd, this.durationCurrent / this.duration);
 
 		ctx.globalAlpha = currentOpacity;
@@ -552,27 +554,6 @@ class TournamentNode
 		}
 	}
 
-	printTreeHTML()
-	{
-		let list = this.reverseLevelOrderTraversalSort(root);
-		let html = ``
-		var roundSize = nPlayers;
-		while (list.length > 0)
-		{
-			html += `<div class="tournamentRound">`
-			for (let i = 0; i < roundSize; i++)
-			{
-				html += `<div class="tournamentNode" onclick="()=>{}">`
-				html += `${list.pop().playerName || 'TBD'}`
-				html += `</div>`
-			}
-			html += `</div>`
-			roundSize /= 2;
-		}
-		html += `</div>`
-		return html;
-	}
-
 	printTree(depth = 0)
 	{
 		console.log('\t'.repeat(depth * 2) + (this.playerName || "Match"));
@@ -580,5 +561,15 @@ class TournamentNode
 			this.branchLeft.printTree(depth + 1);
 		if (this.branchRight)
 			this.branchRight.printTree(depth + 1);
+	}
+
+	findNextEmptyNode()
+	{
+		let sortedNodes = this.reverseLevelOrderTraversalSort(this);
+		for (let i = 0; i < sortedNodes.length; i++)
+		{
+			if (sortedNodes[i].playerName === '')
+				return sortedNodes[i];
+		}
 	}
 }

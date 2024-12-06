@@ -6,21 +6,46 @@ function getDefaultSettings()
 	settings.speedIncrease = 1;
 	settings.targetScore = 3;
 	settings.typePlayer1 = "human";
-	settings.typePlayer2 = "cpu";
-	settings.namePlayer1 = current_user;
-	settings.namePlayer2 = "Guest";
+	settings.typePlayer2 = "human";
+	settings.namePlayer1 = "";
+	settings.namePlayer2 = "";
 	settings.playerNames = [];
 	settings.modifiers = true;
 	settings.modifierCooldown = 3;
 	return settings;
 }
 
-function getLocalTournamentSettings()
+function getLocalSettings(player1name, player2name)
 {
 	let settings = getDefaultSettings();
-	settings.gameType = "localTournament";
-	settings.playerNames = tournamentPlayerNames;
+	settings.namePlayer1 = player1name;
+	settings.namePlayer2 = player2name;
+	
+	settings.gameType = "local";
+	if (settings.player1name === "")
+	{
+		settings.typePlayer1 = "cpu";
+		settings.player1name = "CPU 1";
+	}
+	if (settings.player2name === "")
+	{
+		settings.typePlayer2 = "cpu";
+		settings.player2name = "CPU 2";
+	}
 
+	return settings;
+}
+
+function getLocalTournamentSettings()
+{
+	console.log("getLocalTournamentSettings");
+	gameSettings = getDefaultSettings();
+	gameSettings.gameType = "localTournament";
+	gameSettings.playerNames = tournamentPlayerNames;
+
+	tournamentRoot = generateTournamentTree();
+
+	return gameSettings;
 }
 
 function getRemoteSettings(player1name, player2name)
@@ -29,7 +54,6 @@ function getRemoteSettings(player1name, player2name)
 	settings.gameType = "remote";
 	settings.namePlayer1 = player1name;
 	settings.namePlayer2 = player2name;
-	settings.typePlayer2 = "human";
 	return settings;
 }
 
@@ -95,7 +119,21 @@ function score(scorer)
 	scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
 
 	if (scorer.score >= gameSettings.targetScore)
-		endGame("Game Over");
+	{
+		if (gameSettings.gameType !== "localTournament")
+			endGame("Game Over");
+		else
+		{
+			let match = tournamentRoot.findNextEmptyNode();
+			let winnerNode;
+			if (scorer.playerName === match.branchLeft.playerName)
+				winnerNode = match.branchLeft;
+			else if (scorer.playerName === match.branchRight.playerName)
+				winnerNode = match.branchRight;
+			winnerNode.toggleWinner();
+			init();
+		}
+	}
 	else
 		newPlay();
 }
@@ -114,7 +152,6 @@ function endGame(gameEndMessage)
 
 function newPlay()
 {
-	console.log("newPlay");
 	pad1.modifierList = [];
 	pad2.modifierList = [];
 
@@ -131,7 +168,6 @@ function newPlay()
 
 function init()
 {
-	console.log("init");
 	// DEBUG
 	debugColorPickerBackground.value = backgroundColor;
 	debugColorPickerPlayer1.value = pad1.color;
@@ -142,6 +178,15 @@ function init()
 	debugSpeedIncrease.value = speedIncrease;
 	////////
 
+	if (gameSettings.gameType === "localTournament")
+	{
+		let nextMatch = tournamentRoot.findNextEmptyNode();
+		if (nextMatch.parent === null)
+			return;
+		pad1.playerName = nextMatch.branchLeft.playerName;
+		pad2.playerName = nextMatch.branchRight.playerName;
+	}
+
 	pad1.score = 0;
 	pad2.score = 0;
 	scoreText.innerText = pad1.playerName + " " + pad1.score + " - " + pad2.score + " " + pad2.playerName;
@@ -150,6 +195,33 @@ function init()
 	gameOngoing = true;
 	timeCurrent = Date.now();
 	newPlay()
+}
+
+function generateTournamentTree()
+{
+	let currNodes = [];
+	let prevNodes = [];
+	console.log("generateTournamentTree", gameSettings);
+	for (let i = 0; i < gameSettings.playerNames.length; i++)
+	{
+		currNodes.push(new TournamentNode(gameSettings.playerNames[i], null, null, null));
+	}
+	
+	while (currNodes.length > 1)
+	{
+		prevNodes = currNodes;
+		currNodes = [];
+	
+		for (let i = 0; i < prevNodes.length / 2; i++)
+		{
+			newNode = new TournamentNode("", prevNodes[i * 2 + 0], prevNodes[i * 2 + 1], null);
+			prevNodes[i * 2 + 0].parent = newNode;
+			prevNodes[i * 2 + 1].parent = newNode;
+			currNodes.push(newNode)
+		}
+	}
+
+	return currNodes[0];
 }
 
 function handleInputs()
@@ -322,6 +394,8 @@ function gameUpdate()
 
 function gameLoop()
 {
+	console.log("gameLoop");
+	console.log("gameOngoing", gameOngoing);
 	if (!gameOngoing)
 		return;
 	timePrevious = timeCurrent;
@@ -330,6 +404,15 @@ function gameLoop()
 	requestAnimationFrame(gameLoop)
 }
 
+//    _____ _      ____  ____          _       _____ 
+//   / ____| |    / __ \|  _ \   /\   | |     / ____|
+//  | |  __| |   | |  | | |_) | /  \  | |    | (___  
+//  | | |_ | |   | |  | |  _ < / /\ \ | |     \___ \ 
+//  | |__| | |___| |__| | |_) / ____ \| |____ ____) |
+//   \_____|______\____/|____/_/    \_\______|_____/ 
+
+var gameSettings;
+var pongIsCpu;
 var pongIsRemote;
 var pongIsTournament;
 var tournamentPlayerNames;
@@ -388,13 +471,13 @@ var backgroundColor;
 var pad1;
 var pad2;
 var ball;
+var tournamentRoot;
 
 
 
 
 function startGameWithSettings(settings)
 {
-	console.log("startGameWithSettings");
 	gameSettings = settings;
 
 	initialSpeed = gameSettings.initialSpeed;
@@ -422,13 +505,14 @@ function startGameWithSettings(settings)
 	pad1.playerName = gameSettings.namePlayer1;
 	pad2.playerName = gameSettings.namePlayer2;
 
-	
 
 	init();
+	console.log("startGameWithSettings", gameOngoing);
 	gameLoop();
 }
 
 function initializeJS() {
+	console.log("initializeJS", gameSettings);
 	canvasContainer = document.getElementById("canvasContainer");
 	canvasElement = document.getElementById("gameCanvas");
 	ctx = canvasElement.getContext("2d");
@@ -564,8 +648,15 @@ function initializeJS() {
 		}));
 	}
 	else if (pongIsTournament && !pongIsRemote)
+	{
+		console.log("inilisdhuaihdJS", gameSettings);
 		startGameWithSettings(getLocalTournamentSettings());
+	}
+	else if (pongIsCpu)
+		startGameWithSettings(getLocalSettings(current_user, ""));
 	else
-		startGameWithSettings(getDefaultSettings());
+		startGameWithSettings(getLocalSettings(current_user, "Guest"));
+	pongIsCpu = false;
+	pongIsTournament = false;
 	pongIsRemote = false;
 }
