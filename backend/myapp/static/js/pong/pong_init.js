@@ -498,7 +498,7 @@ class TournamentNode
 			nextNode.branchRight.winner = false;
 			nextNode = nextNode.parent;
 		}
-		root.generateTreeHTML();
+		//root.generateTreeHTML();
 	}
 
 	reverseLevelOrderTraversalSort()
@@ -571,5 +571,6 @@ class TournamentNode
 			if (sortedNodes[i].playerName === '')
 				return sortedNodes[i];
 		}
+		return null;
 	}
 }

@@ -4,7 +4,7 @@ function getDefaultSettings()
 	settings.gameType = "local";
 	settings.initialSpeed = 10.0;
 	settings.speedIncrease = 1;
-	settings.targetScore = 3;
+	settings.targetScore = 1;
 	settings.typePlayer1 = "human";
 	settings.typePlayer2 = "human";
 	settings.namePlayer1 = "";
@@ -22,15 +22,15 @@ function getLocalSettings(player1name, player2name)
 	settings.namePlayer2 = player2name;
 	
 	settings.gameType = "local";
-	if (settings.player1name === "")
+	if (settings.namePlayer1 === "")
 	{
 		settings.typePlayer1 = "cpu";
-		settings.player1name = "CPU 1";
+		settings.namePlayer1 = "Bot #1";
 	}
-	if (settings.player2name === "")
+	if (settings.namePlayer2 === "")
 	{
 		settings.typePlayer2 = "cpu";
-		settings.player2name = "CPU 2";
+		settings.namePlayer2 = "Bot #2";
 	}
 
 	return settings;
@@ -41,6 +41,7 @@ function getLocalTournamentSettings()
 	console.log("getLocalTournamentSettings");
 	gameSettings = getDefaultSettings();
 	gameSettings.gameType = "localTournament";
+	// gameSettings.typePlayer1 = "human";
 	gameSettings.playerNames = tournamentPlayerNames;
 
 	tournamentRoot = generateTournamentTree();
@@ -125,13 +126,18 @@ function score(scorer)
 		else
 		{
 			let match = tournamentRoot.findNextEmptyNode();
-			let winnerNode;
-			if (scorer.playerName === match.branchLeft.playerName)
-				winnerNode = match.branchLeft;
-			else if (scorer.playerName === match.branchRight.playerName)
-				winnerNode = match.branchRight;
-			winnerNode.toggleWinner();
-			init();
+			if (match === null)
+				endGame("Game Over");
+			else
+			{
+				let winnerNode;
+				if (scorer.playerName === match.branchLeft.playerName)
+					winnerNode = match.branchLeft;
+				else if (scorer.playerName === match.branchRight.playerName)
+					winnerNode = match.branchRight;
+				winnerNode.toggleWinner();
+				init();
+			}
 		}
 	}
 	else
@@ -181,7 +187,7 @@ function init()
 	if (gameSettings.gameType === "localTournament")
 	{
 		let nextMatch = tournamentRoot.findNextEmptyNode();
-		if (nextMatch.parent === null)
+		if (nextMatch === null)
 			return;
 		pad1.playerName = nextMatch.branchLeft.playerName;
 		pad2.playerName = nextMatch.branchRight.playerName;
@@ -231,10 +237,11 @@ function handleInputs()
 	pad2.requestUp = false;
 	pad2.requestDown = false;
 
-	if (gameSettings.gameType === "local")
+	if (gameSettings.gameType === "local" || gameSettings.gameType === "localTournament")
 	{
 		if (pad1.playerType === "human")
 		{
+			console.log("aaaaaaaaaaaa");
 			pad1.requestUp = pressW;
 			pad1.requestDown = pressS;
 		}
@@ -394,8 +401,8 @@ function gameUpdate()
 
 function gameLoop()
 {
-	console.log("gameLoop");
-	console.log("gameOngoing", gameOngoing);
+	// console.log("gameLoop");
+	// console.log("gameOngoing", gameOngoing);
 	if (!gameOngoing)
 		return;
 	timePrevious = timeCurrent;
@@ -483,10 +490,24 @@ function startGameWithSettings(settings)
 	initialSpeed = gameSettings.initialSpeed;
 	speedIncrease = gameSettings.speedIncrease;
 	targetScore = gameSettings.targetScore;
+	
 	pad1 = new Pad(10, fieldHeight / 2, "#ff0000", padWidth, padHeight, gameSettings.typePlayer1);
 	pad2 = new Pad(fieldWidth - padWidth - 10, fieldHeight / 2, "#0000ff", padWidth, padHeight, gameSettings.typePlayer2);
 	ball = new Ball(fieldWidth / 2, fieldHeight / 2, "#00ff00", 35);
 	
+	pad1.playerType = gameSettings.typePlayer1;
+	pad2.playerType = gameSettings.typePlayer2;
+	pad1.playerName = gameSettings.namePlayer1;
+	pad2.playerName = gameSettings.namePlayer2;
+
+	// if (gameSettings.gameType === "localTournament")
+	// {
+	// 	let nextGameNode = tournamentRoot.findNextEmptyNode();
+	// 	pad1.playerName = nextGameNode.branchLeft.playerName;
+	// 	pad2.playerName = nextGameNode.branchRight.playerName;
+	// }
+	console.log("pad1.playerName", pad1.playerName);
+	console.log("pad2.playerName", pad2.playerName);
 	// lists
 	listDrawables = [];
 	listMovables = [];
@@ -500,12 +521,8 @@ function startGameWithSettings(settings)
 	listMovables.push(pad2);
 	listMovables.push(ball);
 
-	pad1.playerType = gameSettings.typePlayer1;
-	pad2.playerType = gameSettings.typePlayer2;
-	pad1.playerName = gameSettings.namePlayer1;
-	pad2.playerName = gameSettings.namePlayer2;
 
-
+	console.log("startGameWithSettings pre init", gameOngoing);
 	init();
 	console.log("startGameWithSettings", gameOngoing);
 	gameLoop();
