@@ -28,19 +28,25 @@ chatSocket.onmessage = function (e) {
 	const message = data.message;
 	const timestamp = formatDate(data.sent_at);
 
-	// if (type === 'online_users')
-	// 	console.debug('WS: Received message:', data);
+	// console.debug('WS: Received message:', data);
 
 	if (type === 'authenticated')
 		console.info('WS: ' + username + ' is now connected to the chat ws.');
 
 	if (type === 'receive_notification') {
-		// console.debug('WS: receive_notification:', data);
 		if (notification === 'friendship_changed')
 			updateListsandChat(new_relationship);
 		if (notification === 'invitation_changed') {
 			document.getElementById('notificationList').innerHTML = `<h6 class="text-white ms-3 me-3">Pending Invitations</h6> <li><hr class="dropdown-divider"></li>`;
 			searchPendingInvitations();
+		}
+		if (notification === 'user_is_online') {
+			console.info('WS: ' + data.from + ' is now online.');
+			document.getElementById(`onlineStatus_${data.from}`).style.backgroundColor = '#28a745';
+		}
+		if (notification === 'user_is_offline') {
+			console.info('WS: ' + data.from + ' is now offline.');
+			document.getElementById(`onlineStatus_${data.from}`).style.backgroundColor = 'rgb(110, 110, 110)';
 		}
 	}
 

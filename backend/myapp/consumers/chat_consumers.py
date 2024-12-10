@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from myapp.models import Message, User
+from myapp.models import Message, Friendship
 from asgiref.sync import sync_to_async
 import redis
 
@@ -10,37 +10,69 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	# Triggered when a new websocket connection is established. 
 	async def connect(self):
+		
+		# Get the user from the scope of the websocket connection (ws_middleware.py)
 		self.user = self.scope.get('user')
-		self.online_users_list = []
+		
 		if self.user is not None:
+			# Accept the websocket connection
 			await self.accept()
 			
+			# Send a message to the frontend to indicate that the user is connected and authenticated
 			await self.send(text_data=json.dumps({
 				"type": "authenticated",
 				"username": self.user.username,
 			}))
 			
+			# Create a group for the user's own chat room (this way other users can send notifications to the user)
 			self.user_group_name = f"wsUser_{self.user.username}"
 			await self.channel_layer.group_add(self.user_group_name, self.channel_name)
 
+			# Add the user to the online users list
 			await redis_client.sadd("online_users", self.user.username)
+
+			# Notify friends that the user is online
+			self.friends_list = await self.get_friends()
+			for friend in self.friends_list:
+				await self.channel_layer.group_send(
+					f"wsUser_{friend['username']}",
+					{
+						'type': 'send_notification',
+						'from': self.user.username,
+						'notification': 'user_is_online',
+					}
+				)
+
+			# Get the list of online users
+			self.online_users_list = []
 			online_users = await redis_client.smembers("online_users")
 			self.online_users_list = list(online_users)
-
-			# await self.send(text_data=json.dumps({
-			# 	"type": "online_users",
-			# 	"username": self.user.username,
-			# 	"online_users": self.online_users_list
-			# }))
 			
 		else:
 			await self.close()
 
 	# Triggered when a websocket connection is closed. Here we remove the user from any chat room they joined.
 	async def disconnect(self, close_code):
+		
+		# Remove the user from the online users list
 		await redis_client.srem("online_users", self.user.username)
+		
+		# Notify friends that the user is offline
+		for friend in self.friends_list:
+			await self.channel_layer.group_send(
+				f"wsUser_{friend['username']}",
+				{
+					'type': 'send_notification',
+					'from': self.user.username,
+					'notification': 'user_is_offline',
+				}
+			)
+		
+		# Remove the user from any chat room they joined
 		if hasattr(self, 'room_group_name'):
 			await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+		
+		# Remove the user from their own message group
 		if hasattr(self, 'user_group_name'):
 			await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
 
@@ -140,6 +172,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	def get_last_message(self, room_name):
 		last_message = Message.objects.filter(room_name=room_name).order_by('-sent_at').first()
 		return last_message
+	
+	@sync_to_async
+	def get_friends(self):
+		friends = []
+		friendships = Friendship.objects.filter(user1=self.user) | Friendship.objects.filter(user2=self.user)
+		for friendship in friendships:
+			if friendship.user1 == self.user:
+				friends.append({'username': friendship.user2.username})
+			else:
+				friends.append({'username': friendship.user1.username})
+		return friends
 
 	# Triggered when the group_send message of type chat_message is received. Here we send the message to the websocket connection.
 	async def send_message(self, event):
@@ -157,7 +200,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			'type': 'receive_notification',
 			'from': event['from'],
 			'notification': event['notification'],
-			'new_relationship': event['new_relationship']
+			'new_relationship': event.get('new_relationship', None)
 		}
 		))
 
