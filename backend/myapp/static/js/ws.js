@@ -28,7 +28,7 @@ chatSocket.onmessage = function (e) {
 	const message = data.message;
 	const timestamp = formatDate(data.sent_at);
 
-	// console.debug('WS: Received message:', data);
+	console.debug('WS: Received message:', data);
 
 	if (type === 'authenticated')
 		console.info('WS: ' + username + ' is now connected to the chat ws.');
@@ -80,8 +80,10 @@ chatSocket.onmessage = function (e) {
 		document.getElementById(`lastMsg_${room_name}`).innerHTML = message;
 	}
 
-	if (type === 'online_status')
+	if (type === 'online_status') {
+		console.debug('WS: online status of ' + username + ': ' + data.online);
 		document.getElementById(`onlineStatus_${username}`).style.backgroundColor = '#28a745';
+	}
 };
 
 pongSocket.onopen = function (e){

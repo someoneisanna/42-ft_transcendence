@@ -47,6 +47,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			self.online_users_list = []
 			online_users = await redis_client.smembers("online_users")
 			self.online_users_list = list(online_users)
+
+			# Debugging: print the list of online users
+			await self.send(text_data=json.dumps({
+				"type": "print",
+				"online_users": self.online_users_list
+			}))
 			
 		else:
 			await self.close()
@@ -104,9 +110,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'message': ''
 				})
 			)
-				
+
 		elif type == 'get_online_status':
 			target_user = data['username']
+			online_users = await redis_client.smembers("online_users")
+			self.online_users_list = list(online_users)
 			if target_user in self.online_users_list:
 				await self.send(text_data=json.dumps({
 					'type': 'online_status',
