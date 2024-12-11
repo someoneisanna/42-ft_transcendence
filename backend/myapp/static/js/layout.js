@@ -87,6 +87,11 @@ function notificationAcceptInvitation(buttonRef, username) {
 	})
 	.catch(error => {
 		console.error('Error accepting invitation:', error);
+		buttonRef.parentElement.parentElement.remove();
+		if (document.querySelector('.notificationElement') === null) {
+			document.getElementById('notificationBell').style.color = 'black';
+			document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
+		}
 	});
 }
 
@@ -117,5 +122,10 @@ function notificationRejectInvitation(buttonRef, username) {
 	})
 	.catch(error => {
 		console.error('Error rejecting invitation:', error);
+		buttonRef.parentElement.parentElement.remove();
+		if (document.querySelector('.notificationElement') === null) {
+			document.getElementById('notificationBell').style.color = 'black';
+			document.getElementById('notificationList').innerHTML = '<li class="dropdown-item text-white">No pending invitations</li>';
+		}
 	});
 }
