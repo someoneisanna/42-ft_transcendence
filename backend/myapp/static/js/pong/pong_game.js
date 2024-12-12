@@ -154,6 +154,39 @@ function endGame(gameEndMessage)
 	ctx.strokeText(gameEndMessage, canvasElement.width / 2, canvasElement.height / 2 + 100 * scaleFactor);
 	ctx.fillStyle = "white";
 	ctx.fillText(gameEndMessage, canvasElement.width / 2, canvasElement.height / 2 + 100 * scaleFactor);
+	
+	const game_data = {
+		game_type: gameSettings.gameType,
+		room_name: "skdfsidfi",
+		player1: gameSettings.namePlayer1,
+		player2: gameSettings.namePlayer2,
+		player1_score: pad1.score,
+		player2_score: pad2.score
+	};
+	console.log('Game data:', game_data);
+	fetch('/api/pong_log_stats/', {
+		method: 'POST',
+		headers: {
+			'X-csrftoken': csrftoken_var,
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify(game_data),
+	credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
+			throw new Error('Game stats logging failed:', response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Game stats logged:', data);
+	})
+	.catch(error => {
+		console.error('Error logging stats:', error);
+	});
+
 }
 
 function newPlay()

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .models import User, Invitation, Friendship, Message
+from .models import User, Invitation, Friendship, Message, PongGame
 import json
 import jwt
 import datetime
@@ -619,6 +619,31 @@ def delete_user(request):
 		response = JsonResponse({'message': 'User deleted successfully'}, status=200)
 		response.delete_cookie('jwt_transcendence')
 		return response
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# LOG PONG GAME STATS --------------------------------------------------------------------------------------------
+
+def pong_log_stats(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			game_type = data['game_type']
+			room_name = data['room_name']
+			player1 = User.objects.get(username=data['player1'])
+			player2 = User.objects.get(username=data['player2'])
+			player1_score = data['player1_score']
+			player2_score = data['player2_score']
+
+			if game_type == 'remote':
+				if PongGame.objects.filter(room_name=room_name).exists():
+					return JsonResponse({'message': 'Game log already exists'}, status=200)
+
+			PongGame.objects.create(game_type=game_type, room_name=room_name, player1=player1, player2=player2, player1_score=player1_score, player2_score=player2_score)
+
+			return JsonResponse({'message': 'Game stats logged successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
 
