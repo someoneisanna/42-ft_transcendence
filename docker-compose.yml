@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: transcendence_postgres
-    ports:
+    expose:
       - "5432:5432"
     volumes:
       - ./database:/var/lib/postgresql/data
@@ -17,7 +17,7 @@ services:
   redis:
     image: redis:alpine
     container_name: transcendence_redis
-    ports:
+    expose:
       - "6379:6379"
     networks:
       - network
@@ -26,12 +26,10 @@ services:
     image: django
     container_name: transcendence_django
     build: ./backend
-    ports:
+    expose:
       - "8000:8000"
     volumes:
-      # - ./frontend:/app/frontend
       - ./backend:/app/
-      # - ./backend/media:/app/backend/media
     networks:
       - network
     depends_on:
@@ -47,7 +45,6 @@ services:
     ports:
       - "443:443"
     volumes:
-      # - ./frontend:/usr/share/nginx/html/static
       - ./backend/myapp/static:/usr/share/nginx/html/static
     networks:
       - network

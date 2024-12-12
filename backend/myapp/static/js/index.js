@@ -74,7 +74,7 @@ function getChannelRoomName(username) {
 }
 
 function goToFriendProfile(username) {
-	alert('Placeholder: ' + username);
+	loadPage('/user_profile/?u=' + username);
 }
 
 function buildChatFriendsList() {

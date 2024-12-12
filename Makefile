@@ -53,7 +53,6 @@ django:
 	docker exec -it transcendence_django bash
 
 mkdirs:
-	@mkdir -p frontend
 	@mkdir -p database
 
 certs:

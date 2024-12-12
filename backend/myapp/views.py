@@ -44,6 +44,16 @@ def pong_customGame(request):
 def pong_roomList(request):
 	return render(request, 'pong/pong_roomList.html')
 
+def user_profile(request):
+	if request.method == 'GET':
+		username = request.GET.get('u', '').strip()
+		user = User.objects.get(username=username)
+		if not user:
+			redirect('/')
+		return render(request, 'user_profile.html', {
+			'username': user.username, 
+			'profile_pic': user.profile_pic.url})
+
 def dropdown_profile(request):
 	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
 
@@ -452,9 +462,7 @@ def accept_invitation(request):
 
 def reject_invitation(request):
 	if request.method == 'POST':
-		print('1')
 		try:
-			print('2')
 			data = json.loads(request.body)
 			username_input = data['username']
 
@@ -482,9 +490,7 @@ def reject_invitation(request):
 
 def remove_friend(request):
 	if request.method == 'POST':
-		print('1')
 		try:
-			print('2')
 			data = json.loads(request.body)
 			username_input = data['username']
 

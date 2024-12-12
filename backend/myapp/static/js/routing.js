@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const layoutDiv = document.getElementById('layout');
 	const chatDiv = document.getElementById('chat');
 	
-	window.loadPage = (url, addHistory, signOut) => {
+	window.loadPage = (url, addHistory=true, signOut=false) => {
 		gameOngoing = false;
 		prevURL = currURL;
 		currURL = url;
@@ -99,6 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					}
 					else if (url === '/pong_localTournament/')
 						loadScript('/static/js/pong/pong_localTournament.js');
+					else if (url.startsWith("/user_profile/"))
+						loadScript('/static/js/user_profile.js');
 				}
 
 				if (addHistory && url !== '/game_choice/' && (url !== '/landing/' || signOut == true)) {
