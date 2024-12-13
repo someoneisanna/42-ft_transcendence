@@ -126,6 +126,7 @@ function score(scorer)
 		else
 		{
 			let match = tournamentRoot.findNextEmptyNode();
+			//console.log("matchnode", match);
 			if (match === null)
 				endGame("Game Over");
 			else
@@ -244,7 +245,7 @@ function generateTournamentTree()
 {
 	let currNodes = [];
 	let prevNodes = [];
-	console.log("generateTournamentTree", gameSettings);
+
 	for (let i = 0; i < gameSettings.playerNames.length; i++)
 	{
 		currNodes.push(new TournamentNode(gameSettings.playerNames[i], null, null, null));
@@ -278,7 +279,6 @@ function handleInputs()
 	{
 		if (pad1.playerType === "human")
 		{
-			console.log("aaaaaaaaaaaa");
 			pad1.requestUp = pressW;
 			pad1.requestDown = pressS;
 		}
@@ -315,7 +315,6 @@ function handleInputs()
 
 function updateRemotePad(data)
 {
-	//console.log(data);
 	if (data.pad_name === current_user)
 		return;
 	let otherPad;
@@ -331,7 +330,6 @@ function updateRemotePad(data)
 
 function updateRemoteBall(data)
 {
-	//console.log(data);
 	if (data.pad_name === current_user)
 		return;
 	ball.posX = data.pos_x;
@@ -343,7 +341,6 @@ function updateRemoteBall(data)
 
 function updateRemoteScore(data)
 {
-	console.log("updateRemoteScore", data);
 	if (data.scorer !== current_user)
 		return;
 	let otherPad;
@@ -438,8 +435,6 @@ function gameUpdate()
 
 function gameLoop()
 {
-	// console.log("gameLoop");
-	// console.log("gameOngoing", gameOngoing);
 	if (!gameOngoing)
 		return;
 	timePrevious = timeCurrent;
@@ -537,14 +532,6 @@ function startGameWithSettings(settings)
 	pad1.playerName = gameSettings.namePlayer1;
 	pad2.playerName = gameSettings.namePlayer2;
 
-	// if (gameSettings.gameType === "localTournament")
-	// {
-	// 	let nextGameNode = tournamentRoot.findNextEmptyNode();
-	// 	pad1.playerName = nextGameNode.branchLeft.playerName;
-	// 	pad2.playerName = nextGameNode.branchRight.playerName;
-	// }
-	console.log("pad1.playerName", pad1.playerName);
-	console.log("pad2.playerName", pad2.playerName);
 	// lists
 	listDrawables = [];
 	listMovables = [];
@@ -559,14 +546,11 @@ function startGameWithSettings(settings)
 	listMovables.push(ball);
 
 
-	console.log("startGameWithSettings pre init", gameOngoing);
 	init();
-	console.log("startGameWithSettings", gameOngoing);
 	gameLoop();
 }
 
 function initializeJS() {
-	console.log("initializeJS", gameSettings);
 	canvasContainer = document.getElementById("canvasContainer");
 	canvasElement = document.getElementById("gameCanvas");
 	ctx = canvasElement.getContext("2d");
@@ -702,10 +686,7 @@ function initializeJS() {
 		}));
 	}
 	else if (pongIsTournament && !pongIsRemote)
-	{
-		console.log("inilisdhuaihdJS", gameSettings);
 		startGameWithSettings(getLocalTournamentSettings());
-	}
 	else if (pongIsCpu)
 		startGameWithSettings(getLocalSettings(current_user, ""));
 	else
