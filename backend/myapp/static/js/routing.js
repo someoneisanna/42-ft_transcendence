@@ -43,10 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			}));
 		}
 		if (prevURL === '/pong_game/') {
-			pongSocket.send(JSON.stringify({
-				'type': 'leave_pong_room',
-				'username': current_user
-			}));
+			if (pongIsRemote) {
+				pongSocket.send(JSON.stringify({
+					'type': 'leave_pong_room',
+					'username': current_user
+				}));
+			}
 		}
 		fetch(url)
 			.then(response => {

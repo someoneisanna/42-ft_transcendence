@@ -155,14 +155,18 @@ function endGame(gameEndMessage)
 	ctx.fillStyle = "white";
 	ctx.fillText(gameEndMessage, canvasElement.width / 2, canvasElement.height / 2 + 100 * scaleFactor);
 	
-	const game_data = {
+	if (pongRoomName === undefined)
+		pongRoomName = '';
+	let game_data = {
 		game_type: gameSettings.gameType,
-		room_name: "skdfsidfi",
+		room_name: pongRoomName,
 		player1: gameSettings.namePlayer1,
 		player2: gameSettings.namePlayer2,
 		player1_score: pad1.score,
 		player2_score: pad2.score
 	};
+	if (gameSettings.typePlayer1 === "cpu" || gameSettings.typePlayer2 === "cpu")
+		game_data.game_type = "ai_match";
 	console.log('Game data:', game_data);
 	fetch('/api/pong_log_stats/', {
 		method: 'POST',
@@ -186,7 +190,7 @@ function endGame(gameEndMessage)
 	.catch(error => {
 		console.error('Error logging stats:', error);
 	});
-
+	pongRoomName = '';
 }
 
 function newPlay()

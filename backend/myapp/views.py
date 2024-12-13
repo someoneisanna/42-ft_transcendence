@@ -631,7 +631,10 @@ def pong_log_stats(request):
 			game_type = data['game_type']
 			room_name = data['room_name']
 			player1 = User.objects.get(username=data['player1'])
-			player2 = User.objects.get(username=data['player2'])
+			if (game_type == 'local' or game_type == 'ai_match'):
+				player2 = None
+			else:
+				player2 = User.objects.get(username=data['player2'])
 			player1_score = data['player1_score']
 			player2_score = data['player2_score']
 
@@ -664,7 +667,14 @@ def friendships(request):
 def delete(request):
 	if request.method == 'GET':
 		User.objects.all().delete()
-		Friendship.objects.all().delete()
-		Invitation.objects.all().delete()
-		Message.objects.all().delete()
+		# Friendship.objects.all().delete()
+		# Invitation.objects.all().delete()
+		# Message.objects.all().delete()
+		# PongGame.objects.all().delete()
 		return JsonResponse({'message': 'All users deleted'}, status=204)
+
+def pong_matches(request):
+	if request.method == 'GET':
+		matches = PongGame.objects.all().values('game_type', 'room_name', 'player1', 'player2', 'player1_score', 'player2_score')
+		match_list = list(matches)
+		return JsonResponse(match_list, safe=False)

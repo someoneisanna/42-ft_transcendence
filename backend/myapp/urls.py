@@ -48,6 +48,7 @@ urlpatterns = [
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('friendships/', views.friendships, name='friendships'),							# API for getting all friends
 	path('delete/', views.delete, name='delete'),											# API for deleting all users
+	path('pong_matches/', views.pong_matches, name='pong_matches'),							# API for getting all pong matches
 ]
 
 if settings.DEBUG:

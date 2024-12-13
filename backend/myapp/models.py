@@ -53,17 +53,13 @@ class Message(models.Model):
 		return f"{self.sender.username} sent a message in room {self.room_name}"
 
 class PongGame(models.Model):
-	game_type = models.CharField(max_length=20)
-	room_name = models.CharField(max_length=255)
-	player1 = models.ForeignKey(User, related_name='player1', on_delete=models.CASCADE)
-	player2 = models.ForeignKey(User, related_name='player2', on_delete=models.CASCADE)
+	game_type = models.CharField(max_length=20, default='local')
+	room_name = models.CharField(max_length=255, default='')
+	player1 = models.ForeignKey(User, related_name='player1', on_delete=models.CASCADE, null=True, blank=True)
+	player2 = models.ForeignKey(User, related_name='player2', on_delete=models.CASCADE, null=True, blank=True)
 	player1_score = models.IntegerField(default=0)
 	player2_score = models.IntegerField(default=0)
 	created_at = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return f"{self.player1.username} is playing against {self.player2.username}"
-
-#how many games were played
-#how many wins/losses
-#stats per game type?
