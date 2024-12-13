@@ -1,33 +1,34 @@
 .profilePage {
-	border: 2px solid #ccc;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
 	padding: 20px;
-	background-color: rgba(0, 0, 0, 0.5);
-	width: 1500px;
-	margin: 0 auto;
-	text-align: left;
-	border-radius: 10px;
-	top: 50px;
-	position: relative;
-	display: flex; /* Makes the content flow in a row (two columns) */
-	justify-content: space-between; /* Ensures space between the two columns */
+	justify-content: center;
+	align-items: flex-start;
+	width: 75%;
+	box-sizing: border-box;
+	margin: 50px auto;
+	min-width: 745px;
 }
 
 .profileInfo{
+	flex: 1;
 	color: white;
-	border-right: 2px solid rgb(255, 255, 255);
 	text-align: center;
-	flex: 1; /* Equal width for both columns */
 	padding: 20px;
 }
 
 .profileStats {
-	flex: 2; /* Equal width for both columns */
+	flex: 2;
 	padding: 20px;
 	color: white;
+	border-left: 2px solid rgb(255, 255, 255);
+	min-height: 420px;
 }
 
-#removeProfilePicture {
-	cursor: pointer;
-	text-decoration: underline; /* Optional, adds underline */
-	color: rgb(114, 165, 241); /* Optional, typical link color */
+#bigProfilePicture {
+	max-width: 80%;
+	height: auto;
+	margin-bottom: 20px;
 }
+
