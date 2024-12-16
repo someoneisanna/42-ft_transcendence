@@ -45,7 +45,7 @@ class Friendship(models.Model):
 
 class Message(models.Model):
 	room_name = models.CharField(max_length=255)
-	sender = models.CharField(max_length=20)
+	sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE, default=None)
 	message = models.TextField()
 	sent_at = models.DateTimeField(auto_now_add=True)
 

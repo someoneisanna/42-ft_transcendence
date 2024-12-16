@@ -1,6 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from myapp.models import Message, Friendship
+from myapp.models import User, Message, Friendship
 from asgiref.sync import sync_to_async
 import redis
 
@@ -168,7 +168,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 			oldest_message = Message.objects.filter(room_name=room_name).order_by('sent_at').first()
 			if oldest_message:
 				oldest_message.delete()
-		Message.objects.create(room_name=room_name, sender=username, message=message)
+		user = User.objects.get(username=username)
+		Message.objects.create(room_name=room_name, sender=user, message=message)
 
 	@sync_to_async
 	def get_messages(self, room_name):
