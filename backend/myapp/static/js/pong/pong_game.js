@@ -229,6 +229,7 @@ function init()
 
 	if (gameSettings.gameType === "localTournament")
 	{
+		tournamentRoot.generateTreeHTML();
 		let nextMatch = tournamentRoot.findNextEmptyNode();
 		if (nextMatch === null)
 			return;

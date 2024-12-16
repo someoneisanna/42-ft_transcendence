@@ -527,8 +527,8 @@ class TournamentNode
 
 	generateTreeHTML()
 	{
-		let list = this.reverseLevelOrderTraversalSort(root);
-		var roundSize = nPlayers;
+		let list = this.reverseLevelOrderTraversalSort(this);
+		var roundSize = this.getNumberOfPlayers();
 		const tournamentMapElement = document.getElementById("tournamentMap");
 		tournamentMapElement.innerText = '';
 		while (list.length > 0)
@@ -573,5 +573,18 @@ class TournamentNode
 				return node;
 		}
 		return null;
+	}
+
+	getNumberOfPlayers()
+	{
+		let sortedNodes = this.reverseLevelOrderTraversalSort(this);
+		let total = 0;
+		while (sortedNodes.length > 0)
+		{
+			const node = sortedNodes.pop();
+			if (node.playerName != '' && node.branchLeft == null)
+				total++;
+		}
+		return total;
 	}
 }
