@@ -28,7 +28,7 @@ chatSocket.onmessage = function (e) {
 	const message = data.message;
 	const timestamp = formatDate(data.sent_at);
 
-	console.debug('WS: Received message:', data);
+	// console.debug('WS: Received message:', data);
 
 	if (type === 'authenticated')
 		console.info('WS: ' + username + ' is now connected to the chat ws.');
