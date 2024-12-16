@@ -566,10 +566,11 @@ class TournamentNode
 	findNextEmptyNode()
 	{
 		let sortedNodes = this.reverseLevelOrderTraversalSort(this);
-		for (let i = 0; i < sortedNodes.length; i++)
+		while (sortedNodes.length > 0)
 		{
-			if (sortedNodes[i].playerName === '')
-				return sortedNodes[i];
+			const node = sortedNodes.pop();
+			if (node.playerName === '')
+				return node;
 		}
 		return null;
 	}

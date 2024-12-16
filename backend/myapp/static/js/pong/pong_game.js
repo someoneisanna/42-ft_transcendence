@@ -168,29 +168,33 @@ function endGame(gameEndMessage)
 	};
 	if (gameSettings.typePlayer1 === "cpu" || gameSettings.typePlayer2 === "cpu")
 		game_data.game_type = "ai_match";
-	console.log('Game data:', game_data);
-	fetch('/api/pong_log_stats/', {
-		method: 'POST',
-		headers: {
-			'X-csrftoken': csrftoken_var,
-			'Content-Type': 'application/json'
-	},
-	body: JSON.stringify(game_data),
-	credentials: 'same-origin'
-	})
-	.then(response => {
-		if (response.status === 401 || response.status === 403)
-			window.location.href = '/';
-		else if (!response.ok)
-			throw new Error('Game stats logging failed:', response.statusText);
-		return response.json();
-	})
-	.then(data => {
-		console.log('Game stats logged:', data);
-	})
-	.catch(error => {
-		console.error('Error logging stats:', error);
-	});
+	// aaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+	if (gameSettings.gameType != 'localTournament')
+	{
+		console.log('Game data:', game_data);
+		fetch('/api/pong_log_stats/', {
+			method: 'POST',
+			headers: {
+				'X-csrftoken': csrftoken_var,
+				'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(game_data),
+		credentials: 'same-origin'
+		})
+		.then(response => {
+			if (response.status === 401 || response.status === 403)
+				window.location.href = '/';
+			else if (!response.ok)
+				throw new Error('Game stats logging failed:', response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			console.log('Game stats logged:', data);
+		})
+		.catch(error => {
+			console.error('Error logging stats:', error);
+		});
+	}
 	pongRoomName = '';
 }
 
@@ -212,6 +216,7 @@ function newPlay()
 
 function init()
 {
+	console.log("init");
 	// DEBUG
 	debugColorPickerBackground.value = backgroundColor;
 	debugColorPickerPlayer1.value = pad1.color;
@@ -227,8 +232,10 @@ function init()
 		let nextMatch = tournamentRoot.findNextEmptyNode();
 		if (nextMatch === null)
 			return;
+		console.log("nextMatch", nextMatch);
 		pad1.playerName = nextMatch.branchLeft.playerName;
 		pad2.playerName = nextMatch.branchRight.playerName;
+		console.log("pad1.playerName", pad1.playerName, "pad2.playerName", pad2.playerName);
 	}
 
 	pad1.score = 0;
