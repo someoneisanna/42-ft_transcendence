@@ -1,52 +1,97 @@
 function initializeJS() {
-	var ctx = document.getElementById("myChart4").getContext('2d');
-	var myChart = new Chart(ctx, {
+
+	game_wins = [12, 59, 185, 56];
+	game_losses = [12, 50, 53, 56];
+	tournament_wins = [12, 59, 5];
+	tournament_losses = [12, 59, 5];
+
+	var ctx1 = document.getElementById("chart1").getContext('2d');
+	var chart1 = new Chart(ctx1, {
 		type: 'bar',
 		data: {
-			labels: ["<  1","1 - 2","3 - 4","5 - 9","10 - 14","15 - 19","20 - 24","25 - 29","> - 29"],
-			datasets: [{
-				label: 'Employee',
-				backgroundColor: "#caf270",
-				data: [12, 59, 5, 56, 58,12, 59, 87, 45],
-			}, {
-				label: 'Engineer',
-				backgroundColor: "#45c490",
-				data: [12, 59, 5, 56, 58,12, 59, 85, 23],
-			}, {
-				label: 'Government',
-				backgroundColor: "#008d93",
-				data: [12, 59, 5, 56, 58,12, 59, 65, 51],
-			}, {
-				label: 'Political parties',
-				backgroundColor: "#2e5468",
-				data: [12, 59, 5, 56, 58, 12, 59, 12, 74],
-			}],
+			labels: ["Local", "Online", "vs. AI", "Custom"],
+			datasets: [
+				{
+					label: 'Wins',
+					backgroundColor: "#b3d6ff",
+					data: game_wins,
+				},
+				{
+					label: 'Losses',
+					backgroundColor: "#0C70A0",
+					data: game_losses,
+				}
+			],
 		},
 	options: {
 		tooltips: {
-		  displayColors: true,
-		  callbacks:{
-			mode: 'x',
-		  },
+			displayColors: true,
+			callbacks: { mode: 'x'},
 		},
 		scales: {
-		  xAxes: [{
-			stacked: true,
-			gridLines: {
-			  display: false,
-			}
-		  }],
-		  yAxes: [{
-			stacked: true,
-			ticks: {
-			  beginAtZero: true,
-			},
-			type: 'linear',
-		  }]
+			xAxes: [{
+				stacked: true,
+				gridLines: { display: false }
+			}],
+			yAxes: [{
+				stacked: true,
+				ticks: { beginAtZero: true },
+				type: 'linear',
+			}]
 		},
-			responsive: true,
-			maintainAspectRatio: false,
-			legend: { position: 'bottom' },
+		title: {
+			display: true,
+			text: 'Single Game',
+			fontSize: 16,
+		},
+		responsive: true,
+		maintainAspectRatio: false,
+		legend: { position: 'bottom' },
+		}
+	});
+
+	var ctx2 = document.getElementById("chart2").getContext('2d');
+	var chart2 = new Chart(ctx2, {
+		type: 'bar',
+		data: {
+			labels: ["Local", "Online", "Custom"],
+			datasets: [
+				{
+					label: 'Wins',
+					backgroundColor: "#b3d6ff",
+					data: tournament_wins,
+				},
+				{
+					label: 'Losses',
+					backgroundColor: "#0C70A0",
+					data: tournament_losses,
+				}
+			],
+		},
+	options: {
+		tooltips: {
+			displayColors: true,
+			callbacks:{ mode: 'x' },
+		},
+		scales: {
+			xAxes: [{
+				stacked: true,
+				gridLines: { display: false}
+			}],
+			yAxes: [{
+				stacked: true,
+				ticks: { beginAtZero: true},
+				type: 'linear',
+			}]
+		},
+		title: {
+			display: true,
+			text: 'Tournament',
+			fontSize: 16,
+		},
+		responsive: true,
+		maintainAspectRatio: false,
+		legend: { position: 'bottom' },
 		}
 	});
 }

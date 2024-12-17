@@ -4,9 +4,13 @@
 		<img id="bigProfilePicture" src="{{ profile_pic }}" width="300" height="300" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
 	</div>
 	<div class="profileStats">
-		<h1>Stats</h1>
-		<div class="wrapper">
-			<canvas id="myChart4"></canvas>
+		<div class="statsCharts d-flex justify-content-center ms-4 me-4">
+			<div class="wrapper me-3">
+				<canvas id="chart1"></canvas>
+			</div>
+			<div class="wrapper">
+				<canvas id="chart2"></canvas>
+			</div>
 		</div>
 	</div>
 </div>
