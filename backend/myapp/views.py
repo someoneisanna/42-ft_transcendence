@@ -158,7 +158,8 @@ def register(request):
 			qr_code = generate_2fa_qr_code(secret=secret_key, username=username_input)
 			qr_code64 = base64.b64encode(qr_code).decode('utf-8')
 			
-			user = User.objects.create(username=username_input, password=password_input, check2FA=checkbox_input, skey_2FA=secret_key)
+			user = User.objects.create(username=username_input, password=password_input, check2FA=checkbox_input, skey_2FA=secret_key, 
+				pong_game_wins=[0, 0, 0, 0], pong_game_losses=[0, 0, 0, 0], pong_tournament_wins=[0, 0, 0], pong_tournament_losses=[0, 0, 0])
 
 			token = create_jwt_token(user)
 			response = JsonResponse({'username': user.username, 'checkbox': user.check2FA, 'qr_code': qr_code64}, status=200)
@@ -630,6 +631,7 @@ def pong_log_stats(request):
 			data = json.loads(request.body)
 			game_type = data['game_type']
 			room_name = data['room_name']
+			
 			player1 = User.objects.get(username=data['player1'])
 			if (game_type == 'local' or game_type == 'ai_match'):
 				player2 = None
@@ -641,10 +643,87 @@ def pong_log_stats(request):
 			if game_type == 'remote':
 				if PongGame.objects.filter(room_name=room_name).exists():
 					return JsonResponse({'message': 'Game log already exists'}, status=200)
-
+			
+			# Add game to the list of games
 			PongGame.objects.create(game_type=game_type, room_name=room_name, player1=player1, player2=player2, player1_score=player1_score, player2_score=player2_score)
 
+			# Add game result to each user's database
+			if game_type == 'local':
+				index = 0
+			elif game_type == 'remote':
+				index = 1
+			elif game_type == 'ai_match':
+				index = 2
+			elif game_type == 'custom':
+				index = 3
+
+			if player1_score > player2_score:
+				player1.pong_game_wins[index] += 1
+				player1.save()
+				if player2:
+					player2.pong_game_losses[index] += 1
+					player2.save()
+			elif player1_score < player2_score:
+				player1.pong_game_losses[index] += 1
+				player1.save()
+				if player2:
+					player2.pong_game_wins[index] += 1
+					player2.save()
+	
 			return JsonResponse({'message': 'Game stats logged successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# GET PONG GAME STATS --------------------------------------------------------------------------------------------
+
+def pong_get_stats(request):
+	if request.method == 'GET':
+		try:
+			username = request.GET.get('q', '').strip()
+			user = User.objects.get(username=username)
+			if not user:
+				return JsonResponse({'error': 'User not found'}, status=400)
+
+			game_wins = user.pong_game_wins
+			game_losses = user.pong_game_losses
+			tournament_wins = user.pong_tournament_wins
+			tournament_losses = user.pong_tournament_losses
+			stats = PongGame.objects.filter(player1=user) | PongGame.objects.filter(player2=user)
+			
+			games_list = []
+			if not stats.exists():
+				return JsonResponse({'games': games_list, 'game_wins': game_wins, 'game_losses': game_losses, 'tournament_wins': tournament_wins, 'tournament_losses': tournament_losses})
+
+			for stat in stats:
+				if (stat.game_type == 'local'):
+					opponent = 'Guest'
+				elif (stat.game_type == 'ai_match'):
+					opponent = 'AI'
+				
+				if (stat.player1 == user):
+					username = stat.player1.username
+					if (stat.game_type != 'local' and stat.game_type != 'ai_match'):
+						opponent = stat.player2.username
+					user_score = stat.player1_score
+					opponent_score = stat.player2_score
+				else:
+					username = stat.player2.username
+					if (stat.game_type != 'local' and stat.game_type != 'ai_match'):
+						opponent = stat.player1.username
+					user_score = stat.player2_score
+					opponent_score = stat.player1_score
+
+				games_list.append({
+						'game_type': stat.game_type,
+						'user': username,
+						'opponent': opponent,
+						'user_score': user_score,
+						'opponent_score': opponent_score,
+						'created_at': stat.created_at
+					})
+			return JsonResponse({'games': games_list, 'game_wins': game_wins, 'game_losses': game_losses, 'tournament_wins': tournament_wins, 'tournament_losses': tournament_losses})
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
@@ -654,7 +733,20 @@ def pong_log_stats(request):
 
 def users(request):
 	if request.method == 'GET':
-		users = User.objects.all().values('id', 'username', 'password', 'check2FA', 'skey_2FA', 'profile_pic', 'motto', 'comments_policy', 'allow_game_invitations')
+		users = User.objects.all().values('id', 
+									'username', 
+									'password', 
+									'check2FA', 
+									'skey_2FA', 
+									'profile_pic', 
+									'motto', 
+									'comments_policy', 
+									'allow_game_invitations',
+									'blocked_users',
+									'pong_game_wins',
+									'pong_game_losses',
+									'pong_tournament_wins',
+									'pong_tournament_losses')
 		user_list = list(users)
 		return JsonResponse(user_list, safe=False)
 

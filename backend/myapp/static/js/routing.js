@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					'type': 'leave_pong_room',
 					'username': current_user
 				}));
+				pongIsRemote = false;
 			}
 		}
 		fetch(url)
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						loadScript('/static/js/pong/pong_game.js');
 					else if (url === '/pong_matchmaking/')
 					{
-						pongIsRemote = true;
+						// pongIsRemote = true;
 						loadScript('/static/js/pong/pong_matchmaking.js');
 					}
 					else if (url === '/pong_localTournament/')

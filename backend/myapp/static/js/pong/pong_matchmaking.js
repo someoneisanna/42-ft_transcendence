@@ -12,6 +12,7 @@ function startPongRemoteGame(data) {
 		'room_name': data.room_name,
 		'username': current_user
 	}));
+	pongIsRemote = true;
 	pongRoomName = data.room_name;
 	loadPage('/pong_game/', true);
 }

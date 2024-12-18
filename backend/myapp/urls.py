@@ -44,6 +44,7 @@ urlpatterns = [
 	path('api/unblock_user/', views.unblock_user, name='unblock_user'),															# API for unblocking a user
 	path('api/delete_user/', views.delete_user, name='delete_user'),															# API for deleting all users
 	path('api/pong_log_stats/', views.pong_log_stats, name='pong_log_stats'),													# API for logging pong game stats
+	path('api/pong_get_stats/', views.pong_get_stats, name='pong_get_stats'),													# API for getting pong game stats
 
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('friendships/', views.friendships, name='friendships'),							# API for getting all friends

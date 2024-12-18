@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 class User(models.Model):
 	username = models.CharField(max_length=20)
@@ -12,6 +13,11 @@ class User(models.Model):
 	allow_game_invitations = models.BooleanField(default=True)
 
 	blocked_users = models.ManyToManyField("self", symmetrical=False, related_name="blocked_by")
+
+	pong_game_wins = ArrayField(models.PositiveIntegerField(), size=4, default=list)
+	pong_game_losses = ArrayField(models.PositiveIntegerField(), size=4, default=list)
+	pong_tournament_wins = ArrayField(models.PositiveIntegerField(), size=3, default=list)
+	pong_tournament_losses = ArrayField(models.PositiveIntegerField(), size=3, default=list)
 
 	def __str__(self):
 		return self.username
