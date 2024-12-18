@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .models import User, Invitation, Friendship, Message, PongGame
+from .models import User, Invitation, Friendship, Message, PongGame, Comment
 import json
 import jwt
 import datetime
@@ -12,6 +12,7 @@ from qrcode.image.pil import PilImage
 from io import BytesIO
 import base64
 from django.core.files.storage import default_storage
+from django.utils.dateparse import parse_datetime
 
 # LOAD HTML PAGES ------------------------------------------------------------------------------------------------
 
@@ -55,7 +56,10 @@ def user_profile(request):
 			'profile_pic': user.profile_pic.url})
 
 def dropdown_profile(request):
-	return render(request, 'dropdown_profile.html', {'username': request.user.username, 'profile_pic': request.user.profile_pic.url})
+	return render(request, 'dropdown_profile.html', {
+		'username': request.user.username, 
+		'profile_pic': request.user.profile_pic.url,
+		'motto': request.user.motto})
 
 def dropdown_settings(request):
 	qr_code64 = ''
@@ -724,6 +728,87 @@ def pong_get_stats(request):
 						'created_at': stat.created_at
 					})
 			return JsonResponse({'games': games_list, 'game_wins': game_wins, 'game_losses': game_losses, 'tournament_wins': tournament_wins, 'tournament_losses': tournament_losses})
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# POST A COMMENT IN A USER'S PROFILE -----------------------------------------------------------------------------
+
+def post_profile_comment(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			recipient = User.objects.get(username=data['recipient'])
+			if not recipient:
+				return JsonResponse({'error': 'Recipient not found'}, status=400)
+			author = request.user
+			message = data['message']
+			# if recipient == author:
+			# 	return JsonResponse({'error': 'You cannot post a comment in your own profile'}, status=400)
+			# if recipient.comments_policy == 'nobody':
+			# 	return JsonResponse({'error': 'This user does not accept comments'}, status=400)
+			# if recipient.comments_policy == 'friends' and not Friendship.objects.filter(user1=recipient, user2=author).exists() and not Friendship.objects.filter(user1=author, user2=recipient).exists():
+			# 	return JsonResponse({'error': 'This user only accepts comments from friends'}, status=400)
+			
+			Comment.objects.create(author=author, recipient=recipient, message=message)
+			return JsonResponse({'author': author.username, 'profile-pic': author.profile_pic.url, 'message': message}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# DELETE A COMMENT ------------------------------------------------------------------------------------------------
+
+def delete_profile_comment(request):
+	if request.method == 'DELETE':
+		try:
+			data = json.loads(request.body)
+			id = data['id']
+			author = data['author']
+			recipient = data['recipient']
+			
+			author = User.objects.get(username=author)
+			if not author:
+				return JsonResponse({'error': 'Author not found'}, status=400)
+			
+			recipient = User.objects.get(username=recipient)
+			if not recipient:
+				return JsonResponse({'error': 'Recipient not found'}, status=423)
+			if recipient != request.user:
+				return JsonResponse({'error': 'You cannot delete comments in other users\' profiles'}, status=400)
+
+			comment = Comment.objects.filter(id=id, author=author, recipient=recipient)
+			if not comment.exists():
+				return JsonResponse({'error': 'Comment not found'}, status=400)
+			comment.delete()
+
+			return JsonResponse({'message': 'Comment deleted successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+	
+# GET USER PROFILE COMMENTS --------------------------------------------------------------------------------------
+
+def get_profile_comments(request):
+	if request.method == 'GET':
+		try:
+			username = request.GET.get('q', '').strip()
+			user = User.objects.get(username=username)
+			if not user:
+				return JsonResponse({'error': 'User not found'}, status=400)
+			comments = Comment.objects.filter(recipient=user).order_by('-created_at')
+			comments_list = []
+			for comment in comments:
+				comments_list.append({
+					'id': comment.id,
+					'author': comment.author.username,
+					'profile_pic': comment.author.profile_pic.url,
+					'message': comment.message,
+					'created_at': comment.created_at
+				})
+			return JsonResponse({'comments': comments_list}, status=200)
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:

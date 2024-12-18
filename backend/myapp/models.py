@@ -69,3 +69,12 @@ class PongGame(models.Model):
 
 	def __str__(self):
 		return f"{self.player1.username} is playing against {self.player2.username}"
+
+class Comment(models.Model):
+	author = models.ForeignKey(User, related_name="comments", on_delete=models.CASCADE, default=None)
+	recipient = models.ForeignKey(User, related_name="profile_comments", on_delete=models.CASCADE, default=None)
+	message = models.TextField(default='')
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"Comment by {self.author.username} on {self.recipient.username}"

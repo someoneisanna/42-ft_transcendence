@@ -1,6 +1,7 @@
 function initializeJS() {
 
 	getStatsAndCreateCharts();
+	getComments();
 }
 
 function getDateAndTime(isoDate, dateOrTime) {
@@ -16,7 +17,6 @@ function getDateAndTime(isoDate, dateOrTime) {
 		return formattedTime;
 	}
 }
-
 
 function getStatsAndCreateCharts() {
 	// Get stats from backend
@@ -52,7 +52,7 @@ function getStatsAndCreateCharts() {
 			createChart("chart2", tournament_labels, 'Tournament', tournament_wins, tournament_losses);
 		})
 		.catch(error => {
-			console.error('Error during search:', error);
+			console.error('Error getting stats:', error);
 		});
 }
 
@@ -101,5 +101,107 @@ function createChart(chart, labels, text, game_wins, game_losses)
 		maintainAspectRatio: false,
 		legend: { position: 'bottom' },
 		}
+	});
+}
+
+function getComments() {
+	fetch('/api/get_profile_comments/?q=' + current_user)
+		.then(response => {
+			if (!response.ok)
+				throw new Error('Comments request failed:', response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			data.comments.forEach(element => {
+				timestamp = getDateAndTime(element.created_at, 'date') + " | " + getDateAndTime(element.created_at, 'time');
+				let newElement = `<li id="${element.id}" class="comment">
+					<div class="profile-pic-container">
+						<img id="smallProfilePicture" src="${element.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+					</div>
+					<div class="comment-content">
+						<div class="comment-header">
+							<div class="comment-author">${element.author}</div>
+							<div class="comment-timestamp">${timestamp}</div>
+						</div>
+						<div class="comment-text">${element.message}</div>
+						<div class="comment-footer">
+							<button class="delete-button" onclick="deleteComment(this)">Delete</button>
+						</div>
+					</div>
+				</li>`;
+				document.getElementById('commentsBlock').innerHTML += newElement;
+			});
+		})
+		.catch(error => {
+			console.error('Error getting comments:', error);
+		});
+}
+
+function deleteComment(element) {
+	try {
+		const comment = element.parentElement.parentElement.parentElement;
+		const commentID = comment.id;
+		const commentAuthor = comment.querySelector('.comment-author').textContent;
+		fetch('/api/delete_profile_comment/', {
+			method: 'DELETE',
+			headers: {
+				'X-csrftoken': csrftoken_var,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({id: commentID, author: commentAuthor, recipient: current_user}),
+			credentials: 'same-origin',
+		})
+		.then(response => {
+			if (response.status === 401 || response.status === 403)
+				window.location.href = '/';
+			else if (!response.ok)
+				throw new Error(response.statusText);
+			return response.json();
+		})
+		.then(data => {
+			console.log('Comment deleted:', data);
+			comment.remove();
+		});
+	}
+	catch (error) {
+		console.error('Error deleting comment:', error);
+	}
+}
+
+function postComment() {
+	message = "HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!HELLO!";
+	fetch('/api/post_profile_comment/', {
+		method: 'POST',
+		headers: {
+			'X-csrftoken': csrftoken_var,
+			'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({recipient: current_user, message: message}),
+	credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
+			throw new Error(response.statusText);
+		return response.json();
+	})
+	.then(data => {
+		console.log('Comment posted:', data);
+		let newElement = `<li class="comment">
+			<!-- Profile picture -->
+			<div class="profile-pic-container">
+				<img id="smallProfilePicture" src="${data.profile_pic}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+			</div>
+			<!-- Comment text -->
+			<div class="comment-content">
+				<div class="comment-author">${data.author}</div>
+				<div class="comment-text">${data.message}</div>
+			</div>
+		</li>`;
+		document.getElementById('commentsBlock').innerHTML += newElement;
+	})
+	.catch(error => {
+		console.error('Error sending friend request:', error);
 	});
 }

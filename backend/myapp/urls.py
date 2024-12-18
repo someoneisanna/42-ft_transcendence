@@ -45,6 +45,9 @@ urlpatterns = [
 	path('api/delete_user/', views.delete_user, name='delete_user'),															# API for deleting all users
 	path('api/pong_log_stats/', views.pong_log_stats, name='pong_log_stats'),													# API for logging pong game stats
 	path('api/pong_get_stats/', views.pong_get_stats, name='pong_get_stats'),													# API for getting pong game stats
+	path('api/post_profile_comment/', views.post_profile_comment, name='post_profile_comment'),									# API for posting a profile comment
+	path('api/get_profile_comments/', views.get_profile_comments, name='get_profile_comments'),									# API for getting user comments
+	path('api/delete_profile_comment/', views.delete_profile_comment, name='delete_profile_comment'),							# API for deleting a profile comment
 
 	path('users/', views.users, name='users'),												# API for getting all users
 	path('friendships/', views.friendships, name='friendships'),							# API for getting all friends

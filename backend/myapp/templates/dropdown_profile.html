@@ -3,12 +3,15 @@
 	<div class="profileInfo">
 		<h1>Greetings, {{ username }}!</h1>
 		<img id="bigProfilePicture" src="{{ profile_pic }}" width="300" height="300" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+		<div class="motto-box">
+			<p id="mottoDisplay" class="mottoText">{{ motto }}</p>
+		</div>
 	</div>
 	
 	<div class="profileStats">
 		
-		<h1 class="mb-4">Stats</h2>
-		<div class="statsCharts d-flex justify-content-center ms-4 me-4">
+		<h1>Stats</h2>
+		<div class="statsCharts d-flex justify-content-center ms-4 me-4 mt-4">
 			<div class="wrapper me-3">
 				<canvas id="chart1"></canvas>
 			</div>
@@ -17,7 +20,7 @@
 			</div>
 		</div>
 		
-		<h1 class="mt-4">Game History</h2>
+		<h1 class="mt-5">Game History</h2>
 		<table class="pongTable ms-4 me-4 mt-4 table table-bordered table-auto table-hover table-dark">
 			<thead>
 				<tr>
@@ -32,30 +35,9 @@
 			<tbody id="pongTableContent"></tbody>
 		</table>
 
-		<h1 class="mt-4">Comments</h2>
-			<ul class="comment-list ms-4 me-4 mt-4">
-				<li class="comment">
-					<!-- Profile picture -->
-					<div class="profile-pic-container">
-						<img id="smallProfilePicture" src="{{ profile_pic }}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
-					</div>
-					<!-- Comment text -->
-					<div class="comment-content">
-						<div class="comment-author">John Doe</div>
-						<div class="comment-text">This is a great post! Thanks for sharing!</div>
-					</div>
-				</li>
-				<li class="comment">
-					<!-- Profile picture -->
-					<div class="profile-pic-container">
-						<img id="smallProfilePicture" src="{{ profile_pic }}" width="50" height="50" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
-					</div>
-					<!-- Comment text -->
-					<div class="comment-content">
-						<div class="comment-author">Jane Smith</div>
-						<div class="comment-text">I agree, very insightful!</div>
-					</div>
-				</li>
-			</ul>
+		<h1 class="mt-5">Comments</h2>
+		<ul id="commentsBlock" class="comment-list ms-4 me-4 mt-4">
+		</ul>
+		{% comment %} <button class="btn btn-primary mt-4" id="test" onclick=postComment()>Post Comment</button> {% endcomment %}
 	</div>
 </div>
