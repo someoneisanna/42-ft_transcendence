@@ -53,6 +53,7 @@ urlpatterns = [
 	path('friendships/', views.friendships, name='friendships'),							# API for getting all friends
 	path('delete/', views.delete, name='delete'),											# API for deleting all users
 	path('pong_matches/', views.pong_matches, name='pong_matches'),							# API for getting all pong matches
+	path('comments/', views.comments, name='comments'),										# API for getting all comments
 ]
 
 if settings.DEBUG:

@@ -51,9 +51,19 @@ def user_profile(request):
 		user = User.objects.get(username=username)
 		if not user:
 			redirect('/')
+		pong_game_wins = user.pong_game_wins
+		total_wins = sum(pong_game_wins)
+		pong_game_losses = user.pong_game_losses
+		total_losses = sum(pong_game_losses)
 		return render(request, 'user_profile.html', {
 			'username': user.username, 
-			'profile_pic': user.profile_pic.url})
+			'profile_pic': user.profile_pic.url,
+			'motto': user.motto,
+			'joined': user.joined,
+			'games_played': total_wins + total_losses,
+			'games_won': total_wins,
+			'games_lost': total_losses,
+		})
 
 def dropdown_profile(request):
 	pong_game_wins = request.user.pong_game_wins
@@ -761,8 +771,8 @@ def post_profile_comment(request):
 			# if recipient.comments_policy == 'friends' and not Friendship.objects.filter(user1=recipient, user2=author).exists() and not Friendship.objects.filter(user1=author, user2=recipient).exists():
 			# 	return JsonResponse({'error': 'This user only accepts comments from friends'}, status=400)
 			
-			Comment.objects.create(author=author, recipient=recipient, message=message)
-			return JsonResponse({'author': author.username, 'profile-pic': author.profile_pic.url, 'message': message}, status=200)
+			comment = Comment.objects.create(author=author, recipient=recipient, message=message)
+			return JsonResponse({'id': comment.id, 'author': author.username, 'profile_pic': author.profile_pic.url, 'message': message, 'created_at': comment.created_at}, status=200)
 		except KeyError:
 			return JsonResponse({'error': 'Invalid data'}, status=400)
 	else:
@@ -866,3 +876,9 @@ def pong_matches(request):
 		matches = PongGame.objects.all().values('game_type', 'room_name', 'player1', 'player2', 'player1_score', 'player2_score')
 		match_list = list(matches)
 		return JsonResponse(match_list, safe=False)
+
+def comments(request):
+	if request.method == 'GET':
+		comments = Comment.objects.all().values('author', 'recipient', 'message', 'created_at')
+		comment_list = list(comments)
+		return JsonResponse(comment_list, safe=False)

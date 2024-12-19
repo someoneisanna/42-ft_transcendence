@@ -1,0 +1,23 @@
+.comment-form {
+    position: relative;
+}
+
+#commentInput {
+    padding-right: 60px;
+    resize: none;
+    overflow-y: auto;
+	background: #2b2b2b;
+	color: white;
+}
+
+#commentInput::placeholder {
+	color: white;
+	opacity: 0.4;
+}
+
+#postCommentButton {
+    z-index: 2;
+    pointer-events: auto;
+	font-size: 12px;
+	padding: 5px 10px;
+}
