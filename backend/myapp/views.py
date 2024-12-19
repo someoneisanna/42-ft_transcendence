@@ -56,10 +56,20 @@ def user_profile(request):
 			'profile_pic': user.profile_pic.url})
 
 def dropdown_profile(request):
+	pong_game_wins = request.user.pong_game_wins
+	total_wins = sum(pong_game_wins)
+	pong_game_losses = request.user.pong_game_losses
+	total_losses = sum(pong_game_losses)
+
 	return render(request, 'dropdown_profile.html', {
 		'username': request.user.username, 
 		'profile_pic': request.user.profile_pic.url,
-		'motto': request.user.motto})
+		'motto': request.user.motto,
+		'joined': request.user.joined,
+		'games_played': total_wins + total_losses,
+		'games_won': total_wins,
+		'games_lost': total_losses,
+		})
 
 def dropdown_settings(request):
 	qr_code64 = ''
@@ -822,7 +832,8 @@ def users(request):
 									'username', 
 									'password', 
 									'check2FA', 
-									'skey_2FA', 
+									'skey_2FA',
+									'joined',
 									'profile_pic', 
 									'motto', 
 									'comments_policy', 

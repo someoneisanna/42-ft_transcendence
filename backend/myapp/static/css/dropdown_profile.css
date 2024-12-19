@@ -18,6 +18,15 @@
 	padding: 20px;
 }
 
+.profileInfo .dataBox {
+	text-align: left;
+	margin-left: 10%;
+}
+
+.profileInfo .dataBox p {
+	margin-bottom: 2px;
+}
+
 .profileStats {
 	flex: 2;
 	padding: 20px;

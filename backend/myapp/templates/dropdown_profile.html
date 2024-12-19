@@ -6,6 +6,12 @@
 		<div class="motto-box">
 			<p id="mottoDisplay" class="mottoText">{{ motto }}</p>
 		</div>
+		<div class=dataBox>
+			<p><b>Joined</b> {{ joined|date:"F j, Y" }}</p>
+			<p><b>Games Played:</b> {{ games_played }}</p>
+			<p><b>Games Won:</b> {{ games_won }}</p>
+			<p><b>Games Lost:</b> {{ games_lost }}</p>
+		</div>
 	</div>
 	
 	<div class="profileStats">
