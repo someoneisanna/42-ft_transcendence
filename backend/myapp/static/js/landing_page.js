@@ -200,13 +200,29 @@ registerForm.addEventListener('submit', function(event) {
 	const confirmPassword_input = CryptoJS.SHA256(document.getElementById('inputRegisterConfirmPassword').value).toString();
 	const checkbox_input = document.getElementById('inputRegisterCheckbox').checked;
 	
-	// Validate username length (max 20 characters)
+	// Validate USERNAME
 	if (username_input.length > 20) {
 		document.getElementById('registerError').innerText = 'Username must be 20 characters or less!';
 		return;
 	}
+	// Validate username has only alphanumeric characters
+	if (!username_input.match(/^[0-9a-zA-Z_]+$/)) {
+		document.getElementById('registerError').innerText = 'Username must contain only alphanumeric characters!';
+		return;
+	}
+	// Validate username is not a reserved word
+	const reservedWords = ['guest', 'ai'];
+	if (reservedWords.includes(username_input.toLowerCase())) {
+		document.getElementById('registerError').innerText = "Username cannot be a reserved word.";
+		return false;
+	}
+	// Validate username has no spaces
+	if (username_input.includes(' ')) {
+		document.getElementById('registerError').innerText = 'Username cannot contain spaces!';
+		return
+	}
 
-	// Validate password length (min 8 characters)
+	// Validate PASSWORD
 	if (password_input.length < 1) {
 		document.getElementById('registerError').innerText = 'Password must be at least 1 character!';
 		return;
