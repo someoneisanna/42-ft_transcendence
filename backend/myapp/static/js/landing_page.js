@@ -285,4 +285,20 @@ registerForm.addEventListener('submit', function(event) {
 });
 }
 
+document.getElementById("forgotPasswordForm").addEventListener("submit", function(event) {
+	event.preventDefault();
+	document.querySelector(".forgotPasswordEmailInput").classList.add('hide');
+	document.querySelector(".forgotPasswordCodeInput").classList.remove('hide');
+});
+
+}
+
+function goBackToLanding() {
+	bootstrap.Modal.getInstance(forgotPasswordModal).hide();
+	bootstrap.Modal.getInstance(loginModal).show();
+}
+
+function goBackToEmailInput() {
+	document.querySelector(".forgotPasswordCodeInput").classList.add('hide');
+	document.querySelector(".forgotPasswordEmailInput").classList.remove('hide');
 }

@@ -63,9 +63,11 @@
 								<label for="inputLoginUsername">Username</label>
 								<input type="text" class="form-control" id="inputLoginUsername" placeholder="Enter Username" name="username" autocomplete="username">
 							</div>
-							<div class="form-group loginRegisterText mt-2">
+							<div class="form-group loginRegisterText mt-2 position-relative">
 								<label for="inputLoginPassword">Password</label>
 								<input type="password" class="form-control" id="inputLoginPassword" placeholder="Password">
+								<a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" class="small position-absolute" style="top: 65px; right: 0px;">Forgot Password?</a>
+								{% comment %} <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a> {% endcomment %}
 							</div>
 							<div class="form-group loginRegisterText mt-3 hide" id="totpContainer">
 								<label for="inputLogin2FA">2FA Code</label>
@@ -79,8 +81,8 @@
 								</div>
 							</div>
 							<div class="d-flex justify-content-between align-items-center mt-3">
-								<p class="mb-0" id="loginError"></p>
-								<button type="submit" class="btn btn-primary mt-3">Login</button>
+								<p class="mb-0 mt-4" id="loginError"></p>
+								<button type="submit" class="btn btn-primary mt-4">Login</button>
 							</div>
 						</form>
 					</div>
@@ -116,6 +118,59 @@
 					</div>
 
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Forgot Password Modal -->
+
+<div class="modal top fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="loginRegisterContent modal-content neon-border">
+			<div class="modal-body text-white">
+				<h5 class="modal-title text-center mb-3" id="forgotPasswordLabel">Forgot Password</h5>
+				<div class="forgotPasswordEmailInput">
+					<p class="textJustify">Enter your email address below, and we'll send you a verification code to reset your password.</p>
+					<form id="forgotPasswordForm">
+						<div class="form-group loginRegisterText mt-3">
+							<label for="inputForgotPasswordEmail">Email Address</label>
+							<input type="email" class="form-control" id="inputForgotPasswordEmail" placeholder="Enter your email" name="email" required>
+							<p class="mt-2" id="forgotPasswordEmailError" style="color: red;"></p>
+						</div>
+						<div class="d-flex justify-content-between align-items-center mt-4">
+							<button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="goBackToLanding()">Cancel</button>
+							<button type="submit" class="btn btn-primary">Send Email</button>
+						</div>
+					</form>
+				</div>
+				<div class="forgotPasswordCodeInput hide">
+					<p class="textJustify">Enter the verification code sent to your email below. Then, enter your new password.</p>
+					<form id="forgotPasswordCodeForm">
+						<div class="form-group loginRegisterText mt-4" id="forgotPasswordtotpContainer">
+							<div class="form-group d-flex justify-content-center">
+								<input type="text" class="form-control code-input" maxlength="1">
+								<input type="text" class="form-control code-input" maxlength="1">
+								<input type="text" class="form-control code-input" maxlength="1">
+								<input type="text" class="form-control code-input" maxlength="1">
+								<input type="text" class="form-control code-input" maxlength="1">
+								<input type="text" class="form-control code-input" maxlength="1">
+							</div>
+						</div>
+						<div class="form-group loginRegisterText mt-4">
+							<label>New Password</label>
+							<input type="password" class="form-control" id="inputRegisterPassword" name="password" placeholder="Password" autocomplete="new-password" required>
+						</div>
+						<div class="form-group loginRegisterText mt-2">
+							<label>Confirm New Password</label>
+							<input type="password" class="form-control" id="inputRegisterConfirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+						</div>
+						<div class="d-flex justify-content-between align-items-center mt-4">
+							<button type="button" class="btn btn-danger" onclick="goBackToEmailInput()">Back</button>
+							<button type="submit" class="btn btn-primary">Continue</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
