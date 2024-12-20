@@ -4,7 +4,7 @@ function getDefaultSettings()
 	settings.gameType = "local";
 	settings.initialSpeed = 10.0;
 	settings.speedIncrease = 1;
-	settings.targetScore = 1;
+	settings.targetScore = 10;
 	settings.typePlayer1 = "human";
 	settings.typePlayer2 = "human";
 	settings.namePlayer1 = "";
@@ -168,7 +168,7 @@ function endGame(gameEndMessage)
 	};
 	if (gameSettings.typePlayer1 === "cpu" || gameSettings.typePlayer2 === "cpu")
 		game_data.game_type = "ai_match";
-	// aaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
 	if (gameSettings.gameType != 'localTournament')
 	{
 		console.log('Game data:', game_data);
@@ -399,7 +399,45 @@ function drawObjects()
 	// draw background
 	ctx.fillStyle = backgroundColor;
 	ctx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-	
+
+	// draw line in the middle
+	ctx.fillStyle = "#ffffff44";
+	ctx.fillRect(canvasElement.width/2 - 8 * scaleFactor, 0, 16 * scaleFactor, canvasElement.height);
+
+	// draw scores
+	ctx.textAlign = "center";
+	ctx.font = 200 * scaleFactor + 'px monospace';
+	ctx.strokeStyle = "grey";
+	ctx.lineWidth = 10 * scaleFactor;
+	ctx.strokeText(pad1.score, canvasElement.width * 0.5 * 0.9, canvasElement.height * 0.15);
+	ctx.fillStyle = "#f8f8f8";
+	ctx.fillText(pad1.score, canvasElement.width * 0.5 * 0.9, canvasElement.height * 0.15);
+
+	ctx.textAlign = "center";
+	ctx.font = 200 * scaleFactor + 'px monospace';
+	ctx.strokeStyle = "grey";
+	ctx.lineWidth = 10 * scaleFactor;
+	ctx.strokeText(pad2.score, canvasElement.width * 0.5 + canvasElement.width * 0.5 * 0.1, canvasElement.height * 0.15);
+	ctx.fillStyle = "#f8f8f8";
+	ctx.fillText(pad2.score, canvasElement.width * 0.5 + canvasElement.width * 0.5 * 0.1, canvasElement.height * 0.15);
+
+	// draw usernames
+	ctx.textAlign = "left";
+	ctx.font = 80 * scaleFactor + 'px monospace';
+	ctx.strokeStyle = "grey";
+	ctx.lineWidth = 10 * scaleFactor;
+	ctx.strokeText(pad1.playerName, canvasElement.width * 0.5 * 0.1, canvasElement.height * 0.1);
+	ctx.fillStyle = "#f8f8f8";
+	ctx.fillText(pad1.playerName, canvasElement.width * 0.5 * 0.1, canvasElement.height * 0.1);
+
+	ctx.textAlign = "right";
+	ctx.font = 80 * scaleFactor + 'px monospace';
+	ctx.strokeStyle = "grey";
+	ctx.lineWidth = 10 * scaleFactor;
+	ctx.strokeText(pad2.playerName, canvasElement.width * 0.5 + canvasElement.width * 0.5 * 0.9, canvasElement.height * 0.1);
+	ctx.fillStyle = "#f8f8f8";
+	ctx.fillText(pad2.playerName, canvasElement.width * 0.5 + canvasElement.width * 0.5 * 0.9, canvasElement.height * 0.1);
+
 	// draw temporary effects
 	listTemps.forEach(obj => {
 		obj.draw();
@@ -502,6 +540,7 @@ var fieldHeight;
 var scaleFactor;
 
 
+var pressEsc;
 var pressW;
 var pressS;
 var pressUp;
@@ -651,6 +690,7 @@ function initializeJS() {
 		scaleFactor = canvasContainer.clientWidth / 1920;
 	});
 
+	pressEsc = false;
 	pressW = false;
 	pressS = false;
 	pressUp = false;
@@ -658,7 +698,9 @@ function initializeJS() {
 
 	document.addEventListener('keydown', function(event)
 	{
-		if (event.key === "w" || event.key === "W")
+		if (event.key === "Escape")
+			pressEsc = true;
+		else if (event.key === "w" || event.key === "W")
 			pressW = true;
 		else if (event.key === "s" || event.key === "S")
 			pressS = true;
@@ -670,9 +712,11 @@ function initializeJS() {
 
 	document.addEventListener('keyup', function(event)
 	{
-		if (event.key === "w")
+		if (event.key === "Escape")
+			pressEsc = false;
+		else if (event.key === "w" || event.key === "W")
 			pressW = false;
-		else if (event.key === "s")
+		else if (event.key === "s" || event.key === "S")
 			pressS = false;
 		else if (event.key === "ArrowUp")
 			pressUp = false;
@@ -684,7 +728,7 @@ function initializeJS() {
 	padHeight = 200;
 	padWidth = 40;
 	ballRadius = 35;
-	backgroundColor = "#f7ffbd";
+	backgroundColor = "#435570";
 
 	if (pongIsRemote)
 	{
