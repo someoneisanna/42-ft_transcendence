@@ -173,6 +173,7 @@ def register(request):
 		try:
 			data = json.loads(request.body)
 			username_input = data['username']
+			email_input = data['email']
 			password_input = data['password']
 			checkbox_input = data['checkbox']
 
@@ -183,7 +184,7 @@ def register(request):
 			qr_code = generate_2fa_qr_code(secret=secret_key, username=username_input)
 			qr_code64 = base64.b64encode(qr_code).decode('utf-8')
 			
-			user = User.objects.create(username=username_input, password=password_input, check2FA=checkbox_input, skey_2FA=secret_key, 
+			user = User.objects.create(username=username_input, email=email_input, password=password_input, check2FA=checkbox_input, skey_2FA=secret_key, 
 				pong_game_wins=[0, 0, 0, 0], pong_game_losses=[0, 0, 0, 0], pong_tournament_wins=[0, 0, 0], pong_tournament_losses=[0, 0, 0])
 
 			token = create_jwt_token(user)
@@ -259,7 +260,64 @@ def logout(request):
 		return response
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# SEND EMAIL TO RESET PASSWORD -----------------------------------------------------------------------------------
+
+def send_email(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			email_input = data['email']
+
+			if not User.objects.filter(email=email_input).exists():
+				return JsonResponse({'error': 'Email doesn\'t exist. Please register.'}, status=400)
+			user = User.objects.get(email=email_input)
+
+			verification_code = pyotp.random_base32()
+			totp = pyotp.TOTP(verification_code)
+			verification_code = totp.now()
+
+			print("Your 6-digit verification code is:", verification_code)
+			user.verification_code = verification_code
+			user.save()
+
+			subject = 'ft_transcendence - Reset Password'
+			message = 'Enter this verification code to reset your password: ' + verification_code
+			send_mail(subject, message, settings.EMAIL_HOST_USER, [email_input])
+
+			return JsonResponse({'message': 'Email sent successfully'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
 	
+# VERIFY PASSWORD CODE -------------------------------------------------------------------------------------------
+
+def verify_password_code(request):
+	if request.method == 'POST':
+		try:
+			data = json.loads(request.body)
+			code_input = data['code']
+			email_input = data['email']
+			password_input = data['password']
+
+			if not User.objects.filter(email=email_input).exists():
+				return JsonResponse({'error': 'Email doesn\'t exist. Please register.'}, status=400)
+			user = User.objects.get(email=email_input)
+
+			if user.verification_code != code_input:
+				return JsonResponse({'error': 'Incorrect verification code. Please try again.'}, status=400)
+			
+			user.password = password_input
+			user.verification_code = ''
+			user.save()
+
+			return JsonResponse({'message': 'Verification code correct'}, status=200)
+		except KeyError:
+			return JsonResponse({'error': 'Invalid data'}, status=400)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 # CHANGE PROFILE PICTURE -----------------------------------------------------------------------------------------
 
 def change_pic(request):
@@ -841,12 +899,14 @@ def users(request):
 	if request.method == 'GET':
 		users = User.objects.all().values('id', 
 									'username', 
-									'password', 
+									'email', 
+									'password',
 									'check2FA', 
 									'skey_2FA',
+									'verification_code',
 									'joined',
 									'profile_pic', 
-									'motto', 
+									'motto',
 									'comments_policy', 
 									'allow_game_invitations',
 									'blocked_users',
@@ -883,22 +943,3 @@ def comments(request):
 		comments = Comment.objects.all().values('author', 'recipient', 'message', 'created_at')
 		comment_list = list(comments)
 		return JsonResponse(comment_list, safe=False)
-
-# SEND EMAIL TO RESET PASSWORD -----------------------------------------------------------------------------------
-
-def send_mail_page(request):
-	context = {}
-
-	if request.method == 'POST':
-		address = request.POST.get('address')
-		subject = request.POST.get('subject')
-		message = request.POST.get('message')
-		if address and subject and message:
-			try:
-				send_mail(subject, message, settings.EMAIL_HOST_USER, [address])
-				context['result'] = 'Email sent successfully'
-			except Exception as e:
-				context['result'] = f'Error sending email: {e}'
-		else:
-			context['result'] = 'All fields are required'
-	return render(request, "email.html", context)

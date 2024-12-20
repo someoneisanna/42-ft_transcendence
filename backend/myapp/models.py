@@ -3,11 +3,12 @@ from django.contrib.postgres.fields import ArrayField
 
 class User(models.Model):
 	username = models.CharField(max_length=20)
+	email = models.EmailField(max_length=50, default='')
 	password = models.CharField(max_length=64)
 	check2FA = models.BooleanField(default=False)
 	skey_2FA = models.CharField(max_length=32)
+	verification_code = models.CharField(max_length=6, default='')
 
-	joined = models.DateTimeField(auto_now_add=True)
 	profile_pic = models.ImageField(upload_to='profile_pics/', default='default.jpg')
 	motto = models.CharField(max_length=100, default='')
 	comments_policy = models.CharField(max_length=10, default='anyone')
@@ -15,6 +16,7 @@ class User(models.Model):
 
 	blocked_users = models.ManyToManyField("self", symmetrical=False, related_name="blocked_by")
 
+	joined = models.DateTimeField(auto_now_add=True)
 	pong_game_wins = ArrayField(models.PositiveIntegerField(), size=4, default=list)
 	pong_game_losses = ArrayField(models.PositiveIntegerField(), size=4, default=list)
 	pong_tournament_wins = ArrayField(models.PositiveIntegerField(), size=3, default=list)

@@ -19,7 +19,7 @@ class customMiddleware:
 				return JsonResponse({'error': 'CSRF token is missing. Please refresh the page and try again.'}, status=403)
 	
 		# Paths that do not require a jwt token
-		untokenized_paths = ['favicon.ico', '/', '/api/login/', '/api/register/',
+		untokenized_paths = ['favicon.ico', '/', '/api/login/', '/api/register/', '/api/send_email/',
 			'/users/' ,'/delete/', '/friendships/', '/pong_matches/', '/comments/']
 		if request.path in untokenized_paths:
 			return self.get_response(request)

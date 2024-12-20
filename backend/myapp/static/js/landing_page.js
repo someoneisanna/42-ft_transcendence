@@ -181,118 +181,197 @@ function initializeJS() {
 
 	const registerForm = document.getElementById('registerForm');
 	if (registerForm) {
+		registerForm.addEventListener('submit', function(event) {
+			
+			// Prevent the default form submission (page refresh)
+			event.preventDefault();
 
-	registerForm.addEventListener('submit', function(event) {
-		
-		// Prevent the default form submission (page refresh)
-		event.preventDefault();
-
-		// Check if the button is the "continue" after 2FA setup
-		if (isRegistered) {
-			userLoggedIn();
-			return;
-		}
-
-		// Get the values from the input fields
-		const username_input = document.getElementById('inputRegisterUsername').value;
-		const password_input = CryptoJS.SHA256(document.getElementById('inputRegisterPassword').value).toString();
-		const confirmPassword_input = CryptoJS.SHA256(document.getElementById('inputRegisterConfirmPassword').value).toString();
-		const checkbox_input = document.getElementById('inputRegisterCheckbox').checked;
-		
-		// Validate USERNAME
-		if (username_input.length > 20) {
-			document.getElementById('registerError').innerText = 'Username must be 20 characters or less!';
-			return;
-		}
-		// Validate username has only alphanumeric characters
-		if (!username_input.match(/^[0-9a-zA-Z_]+$/)) {
-			document.getElementById('registerError').innerText = 'Username must contain only alphanumeric characters!';
-			return;
-		}
-		// Validate username is not a reserved word
-		const reservedWords = ['guest', 'ai'];
-		if (reservedWords.includes(username_input.toLowerCase())) {
-			document.getElementById('registerError').innerText = "Username cannot be a reserved word.";
-			return false;
-		}
-		// Validate username has no spaces
-		if (username_input.includes(' ')) {
-			document.getElementById('registerError').innerText = 'Username cannot contain spaces!';
-			return
-		}
-
-		// Validate PASSWORD
-		if (password_input.length < 1) {
-			document.getElementById('registerError').innerText = 'Password must be at least 1 character!';
-			return;
-		}
-
-		// Validate passwords match
-		if (password_input !== confirmPassword_input) {
-			document.getElementById('registerError').innerText = 'Passwords do not match!';
-			return;
-		}
-
-		// Create the data object
-		const user_data = {
-			username: username_input,
-			password: password_input,
-			checkbox: checkbox_input
-		};
-
-		// Send POST request to your API
-		fetch('/api/register/', {
-			method: 'POST',
-			headers: {
-				'X-CSRFToken': csrftoken_var,
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(user_data),
-			credentials: 'same-origin'
-		})
-		.then(response => {
-			if (response.status === 401 || response.status === 403) {
-				window.location.href = '/';
-			} else if (!response.ok) {
-				return response.json().then(err => {
-					document.getElementById('registerError').innerText = err.error;
-					throw new Error(err.error);
-				});
-			}
-			return response.json();
-		})
-		.then(data => {
-			console.log('Registration Success:', data.username);
-			current_user = data.username;
-			document.getElementById('registerError').innerText = '';
-			if (checkbox_input === true) {
-				alert('Registration successful! Please scan the QR code for 2FA setup.');
-				document.getElementById('registerButton').innerText = 'Continue';
-				document.getElementById('checkboxContainer').classList.toggle('hide');
-				document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
-				let qrCodeId = document.getElementById('qrCodeContainer');
-				qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
-				qrCodeId.classList.toggle('mt-2');
-				isRegistered = true;
-			}
-			else
+			// Check if the button is the "continue" after 2FA setup
+			if (isRegistered) {
 				userLoggedIn();
-		})
-		.catch((error) => {
-			console.error('Registration Error:', error);
+				return;
+			}
+
+			// Get the values from the input fields
+			const username_input = document.getElementById('inputRegisterUsername').value;
+			const email_input = document.getElementById('inputRegisterEmail').value;
+			const password_input = CryptoJS.SHA256(document.getElementById('inputRegisterPassword').value).toString();
+			const confirmPassword_input = CryptoJS.SHA256(document.getElementById('inputRegisterConfirmPassword').value).toString();
+			const checkbox_input = document.getElementById('inputRegisterCheckbox').checked;
+			
+			// Validate USERNAME
+			if (username_input.length > 20) {
+				document.getElementById('registerError').innerText = 'Username must be 20 characters or less!';
+				return;
+			}
+			// Validate username has only alphanumeric characters
+			if (!username_input.match(/^[0-9a-zA-Z_]+$/)) {
+				document.getElementById('registerError').innerText = 'Username must contain only alphanumeric characters!';
+				return;
+			}
+			// Validate username is not a reserved word
+			const reservedWords = ['guest', 'ai'];
+			if (reservedWords.includes(username_input.toLowerCase())) {
+				document.getElementById('registerError').innerText = "Username cannot be a reserved word.";
+				return false;
+			}
+			// Validate username has no spaces
+			if (username_input.includes(' ')) {
+				document.getElementById('registerError').innerText = 'Username cannot contain spaces!';
+				return
+			}
+
+			// Validate PASSWORD
+			if (password_input.length < 1) {
+				document.getElementById('registerError').innerText = 'Password must be at least 1 character!';
+				return;
+			}
+
+			// Validate passwords match
+			if (password_input !== confirmPassword_input) {
+				document.getElementById('registerError').innerText = 'Passwords do not match!';
+				return;
+			}
+
+			// Create the data object
+			const user_data = {
+				username: username_input,
+				email: email_input,
+				password: password_input,
+				checkbox: checkbox_input
+			};
+
+			// Send POST request to your API
+			fetch('/api/register/', {
+				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrftoken_var,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(user_data),
+				credentials: 'same-origin'
+			})
+			.then(response => {
+				if (response.status === 401 || response.status === 403) {
+					window.location.href = '/';
+				} else if (!response.ok) {
+					return response.json().then(err => {
+						document.getElementById('registerError').innerText = err.error;
+						throw new Error(err.error);
+					});
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log('Registration Success:', data.username);
+				current_user = data.username;
+				document.getElementById('registerError').innerText = '';
+				if (checkbox_input === true) {
+					alert('Registration successful! Please scan the QR code for 2FA setup.');
+					document.getElementById('registerButton').innerText = 'Continue';
+					document.getElementById('checkboxContainer').classList.toggle('hide');
+					document.getElementById('qrCodeText').innerText = 'Scan the QR code below to get the 2FA code:';
+					let qrCodeId = document.getElementById('qrCodeContainer');
+					qrCodeId.innerHTML = `<img src="data:image/png;base64,${data.qr_code}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">`;
+					qrCodeId.classList.toggle('mt-2');
+					isRegistered = true;
+				}
+				else
+					userLoggedIn();
+			})
+			.catch((error) => {
+				console.error('Registration Error:', error);
+			});
 		});
-	});
 	}
 
+	let email;
+
 	const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+	console.log('Forgot Password Form:', forgotPasswordForm);
 	if (forgotPasswordForm) {
+		email = document.getElementById("inputForgotPasswordEmail").value;
+		console.log('Email:', email);
 		forgotPasswordForm.addEventListener("submit", function(event) {
 			event.preventDefault();
 			document.querySelector(".forgotPasswordEmailInput").classList.add('hide');
 			document.querySelector(".forgotPasswordCodeInput").classList.remove('hide');
+			// sendResetPasswordEmail(email);
 		});
 	}
 
+	const forgotPasswordCodeForm = document.getElementById("forgotPasswordCodeForm");
+	if (forgotPasswordCodeForm) {
+		forgotPasswordCodeForm.addEventListener("submit", function(event) {
+			event.preventDefault();
+			let codeInputs = document.querySelectorAll('.code-input');
+			let code = "";
+			codeInputs.forEach(input => {
+				code += input.value;
+			});
+			let password = CryptoJS.SHA256(document.getElementById('inputForgotPasswordPassword').value).toString();
+			let confirmPassword = CryptoJS.SHA256(document.getElementById('inputForgotPasswordConfirmPassword').value).toString();
+			if (password !== confirmPassword) {
+				document.getElementById('forgotPasswordError').innerText = 'Passwords do not match!';
+				return;
+			}
+			verifyResetPasswordCode(code, email, password);
+		});
+	}
+}
+
+function verifyResetPasswordCode(code, email, password) {
+	fetch('/api/verify_password_code/', {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({email: email, code: code, password: password}),
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
+			throw new Error("Failed to post content.");
+		return response.json();
+	})
+	.then(data => {
+		console.log('Reset Password Success:', data);
+		bootstrap.Modal.getInstance(forgotPasswordModal).hide();
+		bootstrap.Modal.getInstance(loginModal).show();
+	})
+	.catch((error) => {
+		console.error('Reset Password failed:', error);
+		document.getElementById('forgotPasswordError').innerText = 'Invalid code. Please try again.';
+	});
+}
+
+function sendResetPasswordEmail(email) {
+	console.log('Sending email to:', email);
+	fetch('/api/send_email/', {
+		method: 'POST',
+		headers: {
+			'X-CSRFToken': csrftoken_var,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({email: email}),
+		credentials: 'same-origin'
+	})
+	.then(response => {
+		if (response.status === 401 || response.status === 403)
+			window.location.href = '/';
+		else if (!response.ok)
+			throw new Error("Failed to post content.");
+		return response.json();
+	})
+	.then(data => {
+		console.log('Forgot Password Success:', data);
+	})
+	.catch((error) => {
+		console.error('Forgot Password failed:', error);
+	});
 }
 
 function goBackToLanding() {
