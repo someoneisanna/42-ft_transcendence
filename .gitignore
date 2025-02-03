@@ -1,0 +1,10 @@
+backend/media/profile_pics/*
+frontend/*
+nginx/ssl_certs/*
+database/*
+backend/backend/__pycache__/*
+backend/myapp/__pycache__/*
+backend/myapp/middleware/__pycache__/*
+backend/myapp/migrations/
+__pycache__/
+

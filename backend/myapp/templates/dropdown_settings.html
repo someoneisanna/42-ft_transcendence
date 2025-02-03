@@ -1,0 +1,142 @@
+{% load static %}
+
+<div class="settingsPage neon-border">
+	<div class="settingsInfo">
+		<img id="bigProfilePicture" src="{{ profile_pic }}"  width="300" height="300" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+		<br>
+		<form id="changeProfilePictureForm">
+			<input type="file" id="browseForProfilePicture" name="profile_picture" accept="image/*" required>
+			<button id="tlUploadButton" class="btn btn-light" type="submit">Upload</button>
+			<p id="uploadError"></p>
+		</form>
+		<a id="removeProfilePicture" onclick="removeProfilePic()">Remove Profile Picture</a>
+	</div>
+	<div class="settingsStats">
+		<div class="settingBlock">
+			<h3 id="tlMotto">Your Motto</h3>
+			<textarea class="ms-3 mt-2 form-control w-50" type="text" id="motto" name="motto" placeholder="Your motto" required maxlength="100" oninput="updateMottoCharCount()">{{ motto }}</textarea>
+			{% if n_characters != 0 %}
+				<div id="motto-char-count" class="ms-3 mb-2 mt-1">{{ n_characters }} / 100</div>
+			{% else %}
+				<div id="motto-char-count" class="ms-3 mb-2 mt-1">0 / 100</div>
+			{% endif %}
+			<div class="d-flex justify-content-between align-items-center">
+				<button id="tlUpdateMotto" class="ms-3 btn btn-light settingsUpdateButton" onclick="updateMotto()">Update</button>
+				<div class="ms-2 settingsErrorText" id="updateMottoError"></div>
+			</div>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3 id="tlUpdateEmailText">Update email</h3>
+			<form id="change-email-form" onsubmit="updateEmail(event)">
+				<input class="ms-3 mt-2 mb-1 form-control w-50" name="email" type="email" id="new-email" placeholder="New email" required>
+				<input class="ms-3 mb-3 form-control w-50" name="password" type="password" id="current-password" placeholder="Password" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
+				<div class="d-flex justify-content-between align-items-center">
+					<button id="tlUpdateEmail" class="ms-3  btn btn-light settingsUpdateButton" type="submit">Update</button>
+					<div class="ms-2 settingsErrorText" id="updateEmailError"></div>
+				</div>
+			</form>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3 id="tlChangePasswordText">Change password</h3>
+			<form id="change-password-form" onsubmit="updatePassword(event)">
+				<input class="ms-3 mt-2 mb-1 form-control w-50" name="password" type="password" id="old-password" placeholder="Old password" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
+				<input class="ms-3 mb-1 form-control w-50" name="password" type="password" id="new-password" placeholder="New password" required>
+				<input class="ms-3 mb-3 form-control w-50" name="password" type="password" id="new-password-confirmation" placeholder="Confirm new password" required>
+				<div class="d-flex justify-content-between align-items-center">
+					<button id="tlChangePasswordButton" class="ms-3  btn btn-light settingsUpdateButton" type="submit">Change</button>
+					<div class="ms-2 settingsErrorText" id="updatePasswordError"></div>
+				</div>
+			</form>
+		</div>
+		<div class="settingBlock">
+			<h3 id="tlLanguage">Change Default Language</h3>
+			<select id="languageDropdown" class="form-select ms-3 mb-3 bg-dark text-light" aria-label="Default select" style="width: 400px;">
+				<option {% if default_language == "0" %} selected {% endif %} id=tlEN value="0">English</option>
+				<option {% if default_language == "1" %} selected {% endif %} id=tlPT value="1">Portuguese</option>
+				<option {% if default_language == "2" %} selected {% endif %} id=tlFR value="2">French</option>
+				<option {% if default_language == "3" %} selected {% endif %} id=tlES value="3">Spanish</option>
+			</select>
+			<div class="d-flex justify-content-between align-items-center">
+				<button id="tlChangeLanguageButton" class="ms-3 btn btn-light settingsUpdateButton" onclick="updateLanguage()">Change</button>
+				<div class="ms-2 settingsErrorText" id="changeLanguageError"></div>
+			</div>
+		</div>
+		<div class="settingBlock mt-3">
+			<div class="d-flex align-items-center justify-content-start">
+				<h3 id="tl2FAText" class="mb-0 me-3">Two-factor authentication</h3>
+				<div class="form-check form-switch ms-3">
+					<input class="form-check-input settingsSwitch" type="checkbox" role="switch" id="settings2fa" onchange="update2FAcheck(this)"
+						{% if check2FA %}
+							checked
+						{% endif %}
+					>
+				</div>
+			</div>
+			<p id="qrCodeSettingsText">
+				{% if check2FA %}
+					Scan this QR code with your 2FA app to enable 2FA:
+				{% endif %}
+			</p>
+			<div id="qrCodeSettingsContainer">
+				{% if check2FA %}
+					<img src="data:image/png;base64, {{ qr_code }}" alt="QR Code for 2FA" style="width: 200px; height: 200px;">
+				{% endif %}
+			</div>
+		</div>
+		<div class="settingBlock mt-3">
+			<h3 id="tlAllowCommentsText">Allow comments on your profile</h3>
+			<div class="mt-2 ms-3 form-check">
+				<input class="form-check-input" name="commentPolicy" type="radio" id="settingsComments1" value="anyone"
+					{% if comments_policy == "anyone" %}
+						checked
+					{% endif %}
+				>
+				<label id="tlFromAnyone" class="form-check-label" for="settingsComments1">
+					From anyone
+				</label>
+			</div>
+			<div class="ms-3 form-check">
+				<input class="form-check-input" name="commentPolicy" type="radio" id="settingsComments2" value="friends"
+					{% if comments_policy == "friends" %}
+						checked
+					{% endif %}
+				>
+				<label id="tlFromFriendsOnly" class="form-check-label" for="settingsComments2">
+					From friends only
+				</label>
+			</div>
+			<div class="ms-3 mb-3 form-check">
+				<input class="form-check-input" name="commentPolicy" type="radio" id="settingsComments3" value="nobody"
+					{% if comments_policy == "nobody" %}
+						checked
+					{% endif %}
+				>
+				<label id="tlDontAllow" class="form-check-label" for="settingsComments3">
+					Don't allow
+				</label>
+			</div>
+			<div class="d-flex justify-content-between align-items-center">
+				<button class="ms-3 btn btn-light" id="updateCommentsPolicyButton" onclick="updateCommentsPolicy(event)">Apply</button>
+				<div class="ms-2 settingsErrorText" id="updateCommentsPolicyError"></div>
+			</div>
+		</div>
+		<div class="settingBlock mt-3 d-flex align-items-center justify-content-start">
+			<h3 id="tlAllowInvites" class="mb-0 me-3">Allow people to invite you to games</h3>
+			<div class="form-check form-switch ms-3">
+				<input class="form-check-input settingsSwitch" type="checkbox" role="switch" id="settingsInviteSwitch" onchange="updateGameInvitationsPolicy(this)"
+					{% if allow_game_invitations %}
+						checked
+					{% endif %}
+				>
+			</div>
+		</div>
+		<div class="settingBlock mt-3 d-flex justify-content-start align-items-center">
+			<h3 id="tlResetStatsText" class="mb-0">Reset stats</h3>
+			<button class="ms-4 btn btn-danger" id="resetStats" onclick="resetStats()">Reset</button>
+		</div>
+		<div class="settingBlock mt-3 d-flex justify-content-start align-items-center">
+			<h3 id="tlDeleteAccountText" class="mb-0">Delete account</h3>
+			<button class="ms-4 btn btn-danger" id="deleteAccount" onclick="deleteAccount()">Delete</button>
+		</div>
+	</div>
+</div>

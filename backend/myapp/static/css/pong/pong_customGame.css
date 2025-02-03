@@ -1,0 +1,59 @@
+#customGamePanel {
+	margin-left: 20%;
+	margin-right: 20%;
+	padding: 30px;
+	width: 40%;
+	margin: 50px auto;
+	min-width: 600px;
+}
+
+.customGameSetting {
+	border: 1px solid grey;
+	background-color: #111;
+	border-radius: 4px;
+	margin-bottom: 6px;
+}
+
+.customGameSettingLabel {
+	color: white;
+	font-size: 1.1em;
+	margin: 5px;
+}
+
+.customGameSettingInput {
+	margin: 5px;
+}
+
+.customGameSettingInput input {
+	background-color: #000; /* Background color */
+}
+
+.customGameSettingInput input{
+    color: #fff; /* Text color */
+    border: 1px solid #404040; /* Border color */
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+.customGameValue {
+	width: 50px;
+	text-align: center;
+}
+
+.customGameSwitch {
+	transform: scale(1.5);
+}
+
+.customGameButton {
+	background-color: #0b2a53;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	padding: 6px 12px;
+	font-size: 16px;
+}
+
+.customGameButton:hover {
+	background-color: rgb(17, 61, 128);
+}

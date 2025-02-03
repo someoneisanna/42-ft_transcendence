@@ -1,0 +1,24 @@
+.buttonGroup {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding-top: 5%;
+}
+
+.pongMenuButton{
+	max-width: 50%;
+	color: white;
+	margin-bottom:10px;
+}
+
+.pongMenuButton p{
+	font-style: italic;
+}
+
+.pongMenuButton:hover{
+	color: rgb(134, 186, 255);
+	box-shadow: 0 0 20px rgba(179, 214, 255, 1), 0 0 40px rgba(179, 214, 255, 0.5);
+}
+

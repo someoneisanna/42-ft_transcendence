@@ -1,0 +1,16 @@
+
+#layoutContent {
+    height: calc(100vh - 50px); /* Total height: 50px (header) + 30px (footer) = 80px */
+    display: flex; /* Enable Flexbox */
+    flex-direction: row; /* Ensure they are in a row */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+
+.gameChoice:hover {
+    transform: scale(1.1); /* Optional: Scale image on hover */
+}
+
+#buttonGame1, #buttonGame2 {
+    margin: 0 20px; /* Add horizontal spacing between images */
+}

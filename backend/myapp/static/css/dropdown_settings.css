@@ -1,0 +1,105 @@
+.settingsPage {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	padding: 20px;
+	justify-content: center;
+	align-items: flex-start;
+	width: 75%;
+	box-sizing: border-box;
+	margin: 50px auto;
+	min-width: 745px;
+}
+
+.settingsInfo{
+	flex: 1;
+	color: white;
+	text-align: center;
+	padding: 20px;
+}
+
+.settingsStats {
+	flex: 2;
+	padding: 20px;
+	color: white;
+	border-left: 2px solid rgb(255, 255, 255);
+}
+
+#browseForProfilePicture {
+	width: 65%;
+	overflow: hidden;
+	text-overflow: clip;
+	white-space: nowrap;
+}
+
+.settingBlock {
+	border: 1px solid #2b2b2b;
+	border-radius: 8px;
+	padding: 20px;
+	background-color: #111;
+}
+
+.settingBlock textarea, .settingBlock input:not([type="checkbox"]) {
+	background-color: #000; /* Background color */
+    color: #fff; /* Text color */
+    border: 1px solid #404040; /* Border color */
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+#qrCodeSettingsText {
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+#qrCodeSettingsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+} 
+
+.settingBlock input[type="radio"] {
+    border-radius: 100px;
+}
+
+.settingsPage button {
+	background-color: #0b2a53;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	padding: 6px 12px;
+	font-size: 16px;
+}
+
+.settingsPage .settingsSwitch {
+	transform: scale(2);
+	width: 2em;
+	height: 1em;
+}
+
+#motto-char-count {
+	font-size: 15px;
+	font-style: italic;
+}
+
+.settingsErrorText {
+    transition: opacity 0.1s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 3s forwards; /* The animation stays in its final state */
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1; /* Fully visible */
+    }
+    90% {
+        opacity: 0; /* Start fading out */
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden; /* Optional: Remove from visual flow */
+    }
+}

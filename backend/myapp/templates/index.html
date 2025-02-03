@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ft_transcendence</title>
+	<!-- Font Awesome -->
+	<script src="https://kit.fontawesome.com/28069d7203.js" crossorigin="anonymous"></script>
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Ultra&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Six+Caps&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Climate+Crisis&family=Jersey+15&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Shrikhand&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Anton+SC&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&display=swap" rel="stylesheet">
+	<!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="{% static 'css/index.css' %}">
+	<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+	<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+	<link rel="stylesheet" href="{% static 'css/game_choice.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dropdown_profile.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dropdown_friends.css' %}">
+	<link rel="stylesheet" href="{% static 'css/dropdown_settings.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pong/pong_menu.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pong/pong_game.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pong/pong_matchmaking.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pong/pong_localTournament.css' %}">
+	<link rel="stylesheet" href="{% static 'css/pong/pong_customGame.css' %}">
+	
+	<!-- Add favicon.ico -->
+	<link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+
+	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+	<div id="layout"></div>
+	<div id="content"></div>
+	
+	<!-- Chat -->
+	<div id="chat" class="hiddenChat">
+		<button id="chatButton" onclick="toggleChatWindow()">Chat<i class="fas fa-chevron-up ms-2"></i></button>
+		<div class="chatContent showFriendsOnly">
+			<div id="chatFriendsList">
+				<div class="scrollableFriends">
+					<ul id="chatFriendsListContent" class="list-unstyled mb-0">
+					</ul>
+				</div>
+			</div>
+			<div id="chatWindow" class="chatWindow noChatClicked">
+				<div class="card-header d-flex justify-content-between align-items-center p-2">
+					<h5 id="tlChat" class="mb-0">Chat</h5>
+					<div id="chatUpperCornerButtons">
+						<button type="button" id="tlChatGoToProfile" class="profileButtonClass btn btn-sm btn-outline-light" title="Go to User Profile"> <i class="fa-solid fa-user"></i></button>
+						<button type="button" id="inviteToMatchButton" class="matchButtonClass btn btn-sm btn-outline-light" title="Invite User to a Match"><i class="fas fa-table-tennis"></i></button>
+						<button type="button" id="cancelInviteToMatchButton" class="cancelMatchButtonClass btn btn-sm btn-outline-light hide" title="You already invited user to a match. Click to cancel.">
+							<div class="icon-with-x">
+								<i class="fas fa-table-tennis"></i>
+								<i class="fa-solid fa-slash x-overlay"></i>
+							</div>
+						</button>
+						<button type="button" id="tlChatBlockUser" class="blockButtonClass btn btn-sm btn-outline-danger" title="Block User"> <i class="fa fa-ban"></i></button>
+					</div>
+				</div>
+				<div class="matchInvitationText" id="matchInvitationTextContainer"></div>
+				<div class="scrollableTexts">
+					<div id="textsContainer" class="pt-2">
+					</div>
+				</div>
+				<div class="text-muted d-flex justify-content-start align-items-center pt-3">
+					<input type="text" class="ms-2 form-control form-control-md" id="sendMessageInput" placeholder="Type message"></input>
+					<a class="ms-3 text-muted" onclick="toggleEmojiPicker()"><i class="fas fa-smile"></i></a>
+					<a class="sendMessageButton ms-3"><i class="fas fa-paper-plane"></i></a>
+				</div>
+			</div>
+		</div>
+		<div class="emojiPicker hideEmojis">
+			<button class="emoji" onclick="insertEmoji('😄')">😄</button>
+			<button class="emoji" onclick="insertEmoji('😍')">😍</button>
+			<button class="emoji" onclick="insertEmoji('🥺')">🥺</button>
+			<button class="emoji" onclick="insertEmoji('😜')">😜</button><br>
+			<button class="emoji" onclick="insertEmoji('😇')">😇</button>
+			<button class="emoji" onclick="insertEmoji('😉')">😉</button>
+			<button class="emoji" onclick="insertEmoji('🤗')">🤗</button>
+			<button class="emoji" onclick="insertEmoji('😌')">😌</button><br>
+			<button class="emoji" onclick="insertEmoji('🙃')">🙃</button>
+			<button class="emoji" onclick="insertEmoji('😏')">😏</button>
+			<button class="emoji" onclick="insertEmoji('😝')">😝</button>
+			<button class="emoji" onclick="insertEmoji('😎')">😎</button><br>
+			<button class="emoji" onclick="insertEmoji('🥳')">🥳</button>
+			<button class="emoji" onclick="insertEmoji('🤩')">🤩</button>
+			<button class="emoji" onclick="insertEmoji('😬')">😬</button>
+			<button class="emoji" onclick="insertEmoji('🤡')">🤡</button>
+		</div>
+	</div>
+
+	<!-- Chat: Pong Match Invitation Modal -->
+	<div class="modal fade" id="pongStartMatchModal" tabindex="-1" role="dialog" aria-labelledby="pongStartMatchModalTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal" role="document">
+			<div class="modal-content" style="background-color: rgba(30, 30, 30, 0.9); border: 1px solid white;">
+				<button type="button" class="btn btn-sm text-white hide" id="cancelPongMatchXButton"><i class="fa fa-close"></i></button>
+				<div class="modal-body" id="pongStartMatchModalBody">
+					<div class="d-flex justify-content-between align-items-center">
+						<icon class="fas fa-table-tennis fa-3x text-white"></icon>
+						<h5 class="modal-title text-center text-white" id="pongStartMatchModalLongTitle1">Start Pong Match?</h5>
+					</div>
+					<div class="d-flex justify-content-center align-items-center mt-3">
+						<button type="button" class="btn btn-danger me-2" id="cancelPongMatchChat">Cancel Match</button>
+						<button type="button" class="btn btn-success" id="startPongMatchChat">Yes</button>
+					</div>
+				</div>
+				<div class="modal-body hide" id="pongMatchChatStartedBody">
+					<h5 class="modal-title text-center text-white" id="pongStartMatchModalLongTitle2">Waiting for opponent...</h5>
+					<div class="d-flex justify-content-center align-items-center mt-3" id="loadingPongMatchMessage">
+						<div class="spinner-border text-white" role="status">
+							<span id="tlLoading" class="visually-hidden">Loading...</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Cookie Consent Modal -->
+	<div id="cookieconsent" class="modal  modal-lg fade" tabindex="-1" aria-labelledby="cookieconsentLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header text-white">
+					<h5 class="modal-title" id="cookieconsentLabel">Cookies Notice</h5>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-2 d-flex align-items-center justify-content-center">
+							<i class="fas fa-cookie-bite fa-4x text-primary"></i>
+						</div>
+						<div class="col-10">
+							<p id="tlCookieModal">We use only strictly necessary cookies to ensure our website functions properly. These cookies are essential for core functionalities like security, session management, and accessibility. No tracking, analytics, or third-party cookies are used. By continuing to use our website, you consent to the use of these essential cookies.</p>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="acceptCookiesButton" type="button" class="btn btn-primary" data-bs-dismiss="modal">Accept</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap JS and Popper.js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- CryptoJS for password hashing-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+	<!-- Chart.js for statistics -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
+	
+	<!-- Custom JS -->
+	<script src="{% static 'js/translations.js' %}"></script>
+	<script src="{% static 'js/translate.js' %}"></script>
+	<script src="{% static 'js/index.js' %}"></script>
+	<script src="{% static 'js/csrf.js' %}"></script>
+	<script src="{% static 'js/routing.js' %}"></script>
+	<script src="{% static 'js/landing_page.js' %}"></script>
+	<script src="{% static 'js/layout.js' %}"></script>
+	<script src="{% static 'js/dropdown_profile.js' %}"></script>
+	<script src="{% static 'js/dropdown_friends.js' %}"></script>
+	<script src="{% static 'js/dropdown_settings.js' %}"></script>
+	<script src="{% static 'js/user_profile.js' %}"></script>
+	<script src="{% static 'js/pong/pong_menu.js' %}"></script>
+	<script src="{% static 'js/pong/pong_init.js' %}"></script>
+	<script src="{% static 'js/pong/pong_game.js' %}"></script>
+	<script src="{% static 'js/pong/pong_quickplay.js' %}"></script>
+	<script src="{% static 'js/pong/pong_matchmaking.js' %}"></script>
+	<script src="{% static 'js/pong/pong_remote.js' %}"></script>
+	<script src="{% static 'js/pong/pong_tournament.js' %}"></script>
+	<script src="{% static 'js/pong/pong_localTournament.js' %}"></script>
+	<script src="{% static 'js/pong/pong_customGame.js' %}"></script>
+</body>
+</html>

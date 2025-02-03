@@ -1,0 +1,27 @@
+<div class="friendsPage neon-border">
+	<div class="friendsList">
+		<h1 id="tlFriendsText">Friends</h1>
+		<ul id="friendsListContent">
+		</ul>
+	</div>
+	<div class="friendsSearch">
+		<div id="friendsSearchBar">
+			<div class="input-group rounded">
+				<input 
+					type="search" 
+					id="searchInput" 
+					class="form-control rounded" 
+					placeholder="Search usernames" 
+					aria-label="Search" 
+					aria-describedby="search-addon" 
+					onkeyup="handleLiveSearch()" 
+				/>
+				<span class="input-group-text border-0" id="search-addon">
+					<i class="fas fa-search"></i>
+				</span>
+			</div>
+		</div>
+		<ul id="friendsSearchResults">
+		</ul>
+	</div>
+</div>

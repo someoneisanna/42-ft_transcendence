@@ -1,0 +1,16 @@
+<div id="participantsBox" class="d-flex flex-row">
+	<div class="participantsBoxElement participant d-flex flex-column align-items-center justify-content-center">
+		<img class="participantProfilePicture rounded-circle" src="{{ profile_pic }}" width="150" height="150" onerror="this.onerror=null; this.src='/media/default.jpg';">
+		<input class="participantName" type="text" value="{{ name }}" readonly>
+	</div>
+	<div class="participantsBoxElement participant d-flex flex-column align-items-center justify-content-center position-relative">
+		<img class="participantProfilePicture rounded-circle" src="/media/default.jpg" width="150" height="150">
+		<input class="participantName" type="text" maxlength="20" value="Guest#1" oninput="nameValidate(this)">
+	</div>
+	<div id="addParticipantButton" class="participantsBoxElement d-flex flex-column align-items-center justify-content-center">
+		<i class="fas fa-plus-circle fa-6x" onclick="pongTournamentAddParticipant()"></i>
+	</div>
+</div>
+<div class="d-flex">
+	<button id="tournamentStartButton" class="align-items-center justify-content-center" onclick="pongTournamentStart()">Start Tournament</button>
+</div>

@@ -1,0 +1,64 @@
+<div class="profilePage neon-border">
+	
+	<div class="profileInfo">
+		<h1>{{ username }}</h1>
+		<img id="bigProfilePicture" src="{{ profile_pic }}" width="300" height="300" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+		
+		{% if motto %}
+		<div class="motto-box">
+			<p id="mottoDisplay" class="mottoText">{{ motto }}</p>
+		</div>
+		{% endif %}
+		
+		<div class=dataBox>
+			<p><b id="tlJoined">Joined</b> {{ joined|date:"F j, Y" }}</p>
+			<p><b id="tlPlayed">Games Played:</b> {{ games_played }}</p>
+			<p><b id="tlWon">Games Won:</b> {{ games_won }}</p>
+			<p><b id="tlLost">Games Lost:</b> {{ games_lost }}</p>
+			<p><b id="tlTournamentGamesPlayed">Tournament Games Played:</b> {{ tournaments_played }}</p>
+			<p><b id="tlTournamentGamesWon">Tournament Games Won:</b> {{ tournaments_won }}</p>
+			<p><b id="tlTournamentGamesLost">Tournament Games Lost:</b> {{ tournaments_lost }}</p>
+			<p><b id="tlTournamentsWon">Number of Tournaments Won:</b> {{ tournaments_final_won }}</p>
+		</div>
+	</div>
+	
+	<div class="profileStats">
+		
+		<h1 id="tlStats">Stats</h2>
+		<div class="statsCharts d-flex justify-content-center ms-4 me-4 mt-4">
+			<div class="wrapper me-3">
+				<canvas id="chart1"></canvas>
+			</div>
+			<div class="wrapper">
+				<canvas id="chart2"></canvas>
+			</div>
+		</div>
+		
+		<h1 id="tlGameHistory" class="mt-5">Game History</h2>
+		<table class="pongTable ms-4 me-4 mt-4 table table-bordered table-auto table-hover table-dark">
+			<thead>
+				<tr>
+					<th id="tlTableDate" scope="col">Date</th>
+					<th id="tlTableTime" scope="col">Time</th>
+					<th id="tlTableType" scope="col">Game Type</th>
+					<th id="tlTableUsername" scope="col">Username</th>
+					<th id="tlTableScore" scope="col">Score</th>
+					<th id="tlTableOpponent" scope="col">Opponent</th>
+				</tr>
+			</thead>
+			<tbody id="pongTableContent"></tbody>
+		</table>
+		<div class="pagination-controls d-flex justify-content-end">
+			<button id="previousPage" class="btn btn-dark btn-sm btn-primary ms-4 me-2" onclick="getGameHistory('prev')" disabled><i class="fa-solid fa-chevron-left"></i> Previous</button>
+			<button id="nextPage" class="btn btn-dark btn-sm btn-primary me-4" onclick="getGameHistory('next')">Next <i class="fa-solid fa-chevron-right"></i></button>
+		</div>
+
+		<h1 id="tlComments" class="mt-5">Comments</h2>
+		<ul id="commentsBlock" class="comment-list ms-4 me-4 mt-4">
+		</ul>
+		<div class="comment-form mt-4 ms-4 me-4 position-relative">
+			<textarea id="commentInput" rows="3" class="form-control" placeholder="Write your comment here..."></textarea>
+			<button id="postCommentButton" class="btn btn-primary position-absolute end-0 bottom-0 m-2" onclick="postComment('other_profile')">Post</button>
+		</div>
+	</div>
+</div>

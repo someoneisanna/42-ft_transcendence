@@ -1,0 +1,233 @@
+#cookieconsent .modal-content {
+    background-color: rgba(0, 0, 0, 0.91);
+    border: 1px solid #3c3c3c;
+}
+
+#cookieconsent .modal-body {
+    color: #ffffff;
+    text-align: justify;
+    padding-right: 30px;
+}
+
+#cookieconsent .modal-header {
+    background-color: rgba(126, 148, 172, 0.17);
+    color: #ffffff;
+}
+
+.hiddenChat {
+	display: none;
+}
+
+#chatButton {
+    position: fixed;
+    bottom: 0px;
+    z-index: 1000;
+    width: 25%;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    color: white;
+    left: 10px;
+}
+
+.chatContent {
+    display: none;
+    position: fixed;
+    bottom: 55px;
+    left: 10px;
+    width: 775px;
+    background-color: rgba(6, 8, 9, 0.98);
+    color: white;
+    border-radius: 25px;
+    z-index: 1001;
+    padding: 10px;
+    height: 500px;
+    border: 1px solid #cce0e3;
+    box-shadow: 0 0 5px rgb(179, 214, 255), 0 0 1px rgba(179, 214, 255, 0.5);
+}
+
+.showChat {
+    display: flex;
+    justify-content: space-between;
+}
+
+#chatFriendsList {
+    flex: 4;
+    padding: 20px;
+}
+
+#chatFriendsList h5 {
+    color: rgb(0, 0, 0);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#chatFriendsListContent a {
+    color: white;
+    text-decoration: none;
+}
+
+.smallMessage {
+    font-size: 13px;
+    color: rgb(172, 172, 172);
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.smallTime {
+    font-size: 10px;
+    font-style: italic;
+    color: rgb(172, 172, 172);
+}
+
+#chatWindow {
+    flex: 5;
+    padding: 10px;
+    border-left: 1px solid rgb(255, 255, 255);
+}
+
+.matchInvitationText {
+    color: white;
+    font-size: 12px;
+    border-top: 1px solid rgb(255, 255, 255);
+}
+
+#alertContainer {
+    position: absolute;
+    z-index: 1000;
+    width: 50%;
+    border-radius: 8px; /* Rounded corners for better aesthetics */
+    font-size: 13px; /* Adjust font size for readability */
+}
+
+.scrollableTexts {
+    height: 78%;
+    overflow-y: scroll;
+}
+
+.scrollableFriends {
+    height: 440px;
+    overflow-y: scroll;
+}
+
+.noChatClicked{
+    display: none;
+}
+
+.showFriendsOnly {
+    width: 370px;
+}
+
+.setDarkerBackground {
+    background: rgb(43, 43, 43);
+}
+
+.smallerText {
+    font-size: 10px;
+    font-style: italic;
+    /* text-align: right; */
+    color: white;
+}
+
+.messageText {
+    word-wrap: break-word;
+    max-width: 335px;
+}
+
+.emojiPicker {
+    position: absolute;
+    bottom: 115px;
+    left: 720px;
+    background-color: rgba(34, 34, 34, 0.9);
+    border: 1px solid #222121;
+    border-radius: 5px;
+    padding: 2px;
+    z-index: 1001;
+}
+
+.fa-smile {
+    color: #5c5454;
+}
+
+.fa-smile:hover, .fa-paper-plane:hover {
+    cursor: pointer;
+}
+
+.emoji {
+    font-size: 15px;
+    border: none;
+    background: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.emoji:hover {
+    background-color: #f0f0f0;
+}
+
+.hideEmojis {
+    display: none;
+}
+
+#content {
+    padding-top: 50px;
+}
+
+.online-indicator {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: rgb(110, 110, 110); /* #28a745;  Bootstrap green color */
+    border: 0.5px solid white; /* Matches the background of the avatar */
+    border-radius: 50%;
+    bottom: 15px;
+    right: 2px;
+}
+
+.icon-with-x {
+    position: relative;
+    display: inline-block;
+}
+
+.icon-with-x .x-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.7em;
+    color: rgba(130, 130, 130, 0.7);
+    pointer-events: none;
+}
+
+#cancelPongMatchXButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1000;
+    font-size: 15px;
+    padding: 1px 3px;
+}
+
+::-webkit-scrollbar {
+    width: 3px; /* Adjust width if needed */
+  }
+  
+  /* Style the scrollbar track background */
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1); /* Light transparent track background */
+    border-radius: 6px; /* Rounded edges like Firefox */
+  }
+  
+  /* Style the scrollbar thumb */
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(96, 96, 96, 0.8); /* Gray thumb */
+    border-radius: 6px; /* Rounded edges like Firefox */
+    border: 3px solid rgba(0, 0, 0, 0.1); /* Matches the track for a clean gap */
+  }
+  
+  /* Style the scrollbar thumb on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(96, 96, 96, 1); /* Slightly darker on hover */
+  }

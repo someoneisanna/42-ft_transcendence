@@ -1,0 +1,64 @@
+<!-- Header -->
+<div id="header" class="d-flex justify-content-between align-items-center">
+	<div id="home-text" onclick="goHome()">
+		<a>ft_transcendence</a>
+	</div>
+	<div id="headerRight" class="d-flex justify-content-end align-items-center">
+		{% comment %} <div id="languages" class="d-flex justify-content-end align-items-center me-3">
+			<a class="d-flex align-items-center" onclick="changeLanguage(0)"><i class="fa-solid fa-language"></i></a>
+			<button class="d-flex align-items-center" onclick="changeLanguage(1)"><img src="https://flagcdn.com/24x18/br.png" alt="English" width="24" height="18"></button>
+			<button class="d-flex align-items-center" onclick="changeLanguage(2)"><img src="https://flagcdn.com/24x18/fr.png" alt="English" width="24" height="18"></button>
+			<button class="d-flex align-items-center" onclick="changeLanguage(3)"><img src="https://flagcdn.com/24x18/es.png" alt="English" width="24" height="18"></button>
+		</div> {% endcomment %}
+		<div id="changeLanguageButton" class="me-3">
+			<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				<div class="d-inline-block ">
+					<i id="languagePlanet" class="fa-solid fa-earth-americas iconFromHeader"></i>
+				</div>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" id="languageList">
+				<li class="dropdown-item text-white d-flex justify-content-between align-items-center" onclick="changeLanguage(0)">
+					<p id="dropdownEN" class="m-0 me-2">🇬🇧 English</p>
+				</li>
+				<li class="dropdown-item text-white d-flex justify-content-between align-items-center" onclick="changeLanguage(1)">
+					<p id="dropdownPT" class="m-0 me-2">🇧🇷 Portuguese</p>
+				</li>
+				<li class="dropdown-item text-white d-flex justify-content-between align-items-center" onclick="changeLanguage(2)">
+					<p id="dropdownFR" class="m-0 me-2">🇫🇷 French</p>
+				</li>
+				<li class="dropdown-item text-white d-flex justify-content-between align-items-center" onclick="changeLanguage(3)">
+					<p id="dropdownES" class="m-0 me-2">🇪🇸 Spanish</p>
+				</li>
+			</ul>
+		</div>
+		<div id="notificationButton" class="me-3">
+			<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+				<div class="d-inline-block ">
+					<i id="notificationBell" class="fa fa-bell iconFromHeader"></i>
+				</div>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end" id="notificationList">
+				<h6 id="tlPendingInvitations" class="text-white ms-3 me-3">Pending Invitations</h6>
+				<li><hr class="dropdown-divider"></li>
+			</ul>
+		</div>
+		<div class="dropdown">
+			<a href="" class="d-flex justify-content-end align-items-center link-body-emphasis text-decoration-none dropdown-toggle" id="dropdownClicker" data-bs-toggle="dropdown" aria-expanded="false">
+				<div class="d-inline-block ms-2 me-2">
+					<p id="username" class="m-0">{{ username }}</p>
+				</div>
+				<div class="d-inline-block">
+					<img id="smallProfilePicture" src="{{ profile_pic }}" width="42" height="42" class="rounded-circle" onerror="this.onerror=null; this.src='/media/default.jpg';">
+					<img id="santaHat" class="hide" src="/media/santahat.png" style="position: absolute; top: -10px; right: -3px; width: 60px; height: 42px; z-index: 2;">
+				</div>
+			</a>
+			<ul class="dropdown-menu dropdown-menu-end">
+				<li><a id="tlDropdownProfile" class="dropdown-item text-white" onclick="goToProfile()">Profile</a></li>
+				<li><a id="tlDropdownFriends" class="dropdown-item text-white" onclick="goToFriends()">Friends</a></li>
+				<li><a id="tlDropdownSettings" class="dropdown-item text-white" onclick="goToSettings()">Settings</a></li>
+				<li><hr class="dropdown-divider"></li>
+				<li><a id="tlDropdownLogout" class="dropdown-item text-white" onclick="signOut()">Sign out</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

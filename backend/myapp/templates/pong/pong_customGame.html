@@ -1,0 +1,85 @@
+<div id="customGamePanel" class="neon-border">
+	<!-- <div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div class="customGameSettingLabel">Room Name</div>
+		<div class="customGameSettingInput "><input id="customGameRoomNameInput" type="text"/></div>
+	</div> -->
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlTargetScore" class="customGameSettingLabel">Target Score</div>
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="customGameSettingInput pt-1"><input id="customGameTargetScoreInput" type="range" min="1" max="10" step="1"></div>
+			<p id="customGameTargetScoreValue" class="m-0 me-1 text-white customGameValue">3</p>
+		</div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlPaddleSpeed" class="customGameSettingLabel">Paddle Speed</div>
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="customGameSettingInput pt-1"><input id="customGamePaddleSpeedInput" type="range" min="300" max="3000" step="100" value="500"></div>
+			<p id="customGamePaddleSpeedValue" class="m-0 me-1 text-white customGameValue">3</p>
+		</div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlInitialBallSpeed" class="customGameSettingLabel">Initial Ball Speed</div>
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="customGameSettingInput pt-1"><input id="customGameBallSpeedInput" type="range" min="400" max="2000" step="100" value="600"></div>
+			<p id="customGameBallSpeedValue" class="m-0 me-1 text-white customGameValue">600</p>
+		</div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlBallSpeedIncreaseRate" class="customGameSettingLabel">Ball Speed Increase Rate</div>
+		<div class="d-flex justify-content-between align-items-center">
+			<div class="customGameSettingInput pt-1"><input id="customGameBallSpeedIncreaseInput" type="range" min="0" max="300" step="10" value="60"></div>
+			<p id="customGameBallSpeedIncreaseValue" class="m-0 me-1 text-white customGameValue">60</p>
+		</div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlPowerUps" class="customGameSettingLabel">Power-ups</div>
+		<div class="form-check form-switch me-2">
+			<input class="form-check-input customGameSwitch" type="checkbox" role="switch" id="customGameSwitchID">
+		</div>
+	</div>
+	<div class="customGamePowerUpSettings ms-4 hide">
+		<div class="customGameSetting d-flex justify-content-between align-items-center">
+			<div id="tlPowerUpSpawnInterval" class="customGameSettingLabel">Power-up Spawn Interval</div>
+			<div class="d-flex justify-content-between align-items-center">
+				<div class="customGameSettingInput pt-1"><input id="customPowerupsIntervalInput" type="range" min="1" max="10" step="1" value="3"></div>
+				<p id="customPowerupsIntervalValue" class="m-0 me-1 text-white customGameValue">3</p>
+			</div>
+		</div>
+		<div class="customGameSetting d-flex justify-content-between align-items-center">
+			<div id="tlPowerUpEffectsIntensity" class="customGameSettingLabel">Power-up Effects Intensity</div>
+			<div class="d-flex justify-content-between align-items-center">
+				<div class="customGameSettingInput pt-1"><input id="customPowerupsStrengthInput" type="range" min="0.5" max="3" step="0.5" value="3"></div>
+				<p id="customPowerupsStrengthValue" class="m-0 me-1 text-white customGameValue">3</p>
+			</div>
+		</div>
+		<div class="customGameSetting d-flex justify-content-between align-items-center">
+			<div id="tlPowerUpEffectsDuration" class="customGameSettingLabel">Power-up Despawn Time</div>
+			<div class="d-flex justify-content-between align-items-center">
+				<div class="customGameSettingInput pt-1"><input id="customPowerupsDurationInput" type="range" min="1" max="10" step="1" value="3"></div>
+				<p id="customPowerupsDurationValue" class="m-0 me-1 text-white customGameValue">3</p>
+			</div>
+		</div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlBackgroundColor" class="customGameSettingLabel">Background Color</div>
+		<div class="customGameSettingInput"><input id="colorPickerBackground" type="color"></div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlPaddleColorLeft" class="customGameSettingLabel">Left Paddle Color</div>
+		<div class="customGameSettingInput"><input id="colorPickerPaddleLeft" type="color"></div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlPaddleColorRight" class="customGameSettingLabel">Right Paddle Color</div>
+		<div class="customGameSettingInput"><input id="colorPickerPaddleRight" type="color"></div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlBallColor" class="customGameSettingLabel">Ball Color</div>
+		<div class="customGameSettingInput"><input id="colorPickerBall" type="color"></div>
+	</div>
+	<div class="customGameSetting d-flex justify-content-between align-items-center">
+		<div id="tlBallTrailColor" class="customGameSettingLabel">Ball Trail Color</div>
+		<div class="customGameSettingInput"><input id="colorPickerTrail" type="color"></div>
+	</div>
+	<button id="customGameDefaultButton" class="customGameButton" onclick="resetToDefaults()">Default Settings</button>
+	<button id="customGameCreateButton" class="customGameButton" onclick="pongCustomGameStart()">Start Custom Game</button>
+</div>
