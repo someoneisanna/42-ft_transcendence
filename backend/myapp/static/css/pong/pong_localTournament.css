@@ -32,12 +32,8 @@
 	background-color: #0b2a53;
 	color: white;
 	border: none;
-	border-radius: 4px;
-	padding: 6px 12px;
-	font-size: 16px;
 }
 
 #tournamentStartButton:hover {
-	background-color: rgb(17, 61, 128);
+	transform: scale(110%);
 }
-
