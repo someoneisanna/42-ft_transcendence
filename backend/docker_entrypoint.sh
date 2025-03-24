@@ -15,7 +15,7 @@ until redis-cli -h "redis" ping | grep -q PONG; do
 done
 
 >&2 echo "Postgres and Redis are up - applying migrations"
-python manage.py makemigrations
+python manage.py makemigrations myapp
 python manage.py migrate
 
 >&2 echo "Postgres is up - executing command"
