@@ -18,20 +18,20 @@ help:
 	@echo "  certs      Generate self-signed certificates"
 
 up: mkdirs
-	@docker-compose -p $(NAME) up --build
+	@docker compose -p $(NAME) up --build
 
 down:
-	@docker-compose -p $(NAME) down
+	@docker compose -p $(NAME) down
 
 down_c:
-	@docker-compose -p $(NAME) down
+	@docker compose -p $(NAME) down
 	@docker rmi -f $$(docker images -q) || true
 	@docker volume rm $$(docker volume ls -q) || true
 	@docker network rm ft_transcendence_network || true
 
 status:
 	@echo "\n--------------------------------------- CONTAINERS -------------------------------------\n"
-	@docker-compose -p $(NAME) ps
+	@docker compose -p $(NAME) ps
 	@echo "\n--------------------------------------- IMAGES -----------------------------------------\n"
 	@docker images
 	@echo "\n--------------------------------------- VOLUMES ----------------------------------------\n"
